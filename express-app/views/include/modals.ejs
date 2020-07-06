@@ -292,8 +292,8 @@
             </div>
           </div>
           <small id="imageHelp" class="form-text text-muted">You can change the position later.</small>
+          <legend>Button binding:</legend>
           <div class="form-group">
-            <label for="button-binding">Button binding</label>
             <select class="form-control" id="button-start-binding">
               <option value='start'>Start Game</option>
               <option value='main'>Open Main Menu</option>
@@ -331,7 +331,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="modal" id="slider-modal">
   <div class="modal-dialog">
@@ -411,6 +410,100 @@
       <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-primary upload-slider" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="fonts-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Add Font</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p>The fonts are .ttf files that will give the style to the text on the game. You can download free fonts from <a href="https://fonts.google.com/">Google Fonts</a> or other font pages like <a href="https://www.fontsquirrel.com/">Font Squirrel</a>.</p>
+        <fieldset>
+          <legend>Font file (.ttf):</legend>
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="font-input">
+                <label class="custom-file-label" for="font-input">Choose file</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="font-name">Font Name</label>
+            <input class="form-control" id="font-name" >
+          </div>
+          <small class="form-text text-muted">The name will be used as key to refer to this font inside the game.</small>
+        </fieldset>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary upload-font" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="label-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Label</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>A label is just a text, with no particular purpose or behaviour.</p>
+        <fieldset>
+          <legend>Text:</legend>
+          <div class="form-group">
+            <input class="form-control" id="label-start-text">
+          </div>
+          <legend>Size:</legend>
+          <div class="form-group">
+            <input class="form-control" type="number" id="label-start-size">
+          </div>
+          <legend>Position:</legend>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">X</span>
+              </div>
+              <input type="number" class="form-control" id="label-start-x" value="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Y</span>
+              </div>
+              <input type="number" class="form-control" id="label-start-y" value="0">
+            </div>
+          </div>
+          <small class="form-text text-muted">You can change the position later.</small>
+          <legend>Font:</legend>
+          <div class="form-group">
+            <select class="form-control font-select" id="label-start-font">
+            </select>
+          </div>
+          <small class="form-text text-muted">You can change the font later.</small>
+          <legend>Color:</legend>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary add-label" data-dismiss="modal">Add</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
 

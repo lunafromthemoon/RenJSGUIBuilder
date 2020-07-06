@@ -21,13 +21,18 @@ router.get("/pageFour", function(req, res) {
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+const guisDir = '../guis/';
+if (!fs.existsSync(guisDir)){
+  fs.mkdirSync(guisDir);
+}
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-  	var dir = '../guis/'+req.params.guiName;
+  	var dir = guisDir+req.params.guiName;
   	if (!fs.existsSync(dir)){
 	    fs.mkdirSync(dir);
-	}
+	  }
     cb(null, dir)
   },
   filename: function (req, file, cb) {
@@ -47,7 +52,9 @@ router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, n
     error.httpStatusCode = 400
     return next(error)
   }
-  var fileName = req.params.asset + path.extname(file.originalname)
+  var ext = path.extname(file.originalname)
+  var fileName = req.params.asset + ext
+  if (ext == '.ttf')
   res.json({"fileName":fileName})
   
 });

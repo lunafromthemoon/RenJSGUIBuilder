@@ -1,5 +1,6 @@
-
-var game = new Phaser.Game(800, 600, Phaser.AUTO, "preload-canvas");
+var width = 800;
+var height = 600;
+var game = new Phaser.Game(width, height, Phaser.AUTO, "preload-canvas");
 
 var gameLoader = {
 
@@ -166,6 +167,42 @@ var gameLoader = {
   //   }, this);
   //   game.load.start();
   // }
+  addFont: function (name, fileName) {
+    assets[currentMenu].push({fileName:fileName,name:name});
+    $("<style>")
+    .prop("type", "text/css")
+    .html(`\
+      @font-face {\
+          font-family: '${name}';\
+          src: url('/assets/${guiName}/${fileName}');\
+          src: url('/assets/${guiName}/${fileName}').format('truetype');\
+      }`)
+    .appendTo("head");
+    var temp = $(".font-template").clone();
+
+    temp.removeClass('font-template');
+    temp.find('h4').css('font-family',name);
+    temp.find('.card-header').html(name);
+    $("#fonts-container").append(temp)
+    temp.find('.font-text').on('input',function(e){
+      var val = $(this).val();
+      $(this).siblings('h4').html(val);
+    })
+    temp.show();
+    $(".font-select").append(`<option>${name}</option>`);
+    game.add.text(width, height, name, {font: '42px '+name, fill: "#ffffff"});
+  },
+
+  addLabel: function(x,y,size,text,font) {
+    if ( !('labels' in assets[currentMenu])){
+      assets[currentMenu].labels = []
+    }
+    var config = {x:x,y:y,size:size,text:text,font:font};
+    assets[currentMenu].labels.push(config);
+    var text = game.add.text(x, y, text, {font: size+'px '+font, fill: "#ffffff"});
+    text.config = config;
+    this.makeDraggable(text,'label')
+  }
 }
 
 function showFrame(frame){
@@ -179,11 +216,18 @@ function changeMenu(menu){
     $(".menu-section").removeClass('active');
     $(".menu-title").html($(`.menu-${menu} > a`).html());
     $(`.menu-${menu}`).addClass('active');
-    currentMenu = menu;
-    game.state.start('gameLoader');
     $(".asset-add").hide();
-    $(".asset-all").show();
     $(`.asset-${menu}`).show();
+    currentMenu = menu;
+    if(menu == "fonts"){
+      $("#canvas-container").hide();
+      $("#fonts-container").show();
+    } else{
+      $(".asset-all").show();
+      $("#fonts-container").hide();
+      $("#canvas-container").show();
+      game.state.start('gameLoader');
+    }
   }
 }
 
@@ -193,7 +237,6 @@ game.state.start('gameLoader');
 
 $('.modal').on('shown.bs.modal', function (e) {
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
-  console.log(thumbnail)
 	$(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
   // if ($(this).attr('id') == "button-modal"){
@@ -212,7 +255,8 @@ var assets = {
   main: {},
   settings: {},
   hud: {},
-  saveload: {}
+  saveload: {},
+  fonts: []
 }
 
 changeMenu('loader');
@@ -228,8 +272,6 @@ function uploadAsset(file, asset, callback){
         processData: false,
         contentType: false,
         success: function (dataR) {
-            console.log(dataR)
-            
             callback(dataR.fileName)
         },
         error: function (xhr, status, error) {
@@ -242,6 +284,15 @@ $('.upload-bg').click(function(e){
   uploadAsset(lastUpload,'background',function(fileName){
     gameLoader.addBackground(fileName)
   });
+})
+
+$('.add-label').click(function(e){
+  var text = $("#label-start-text").val();
+  var size = $("#label-start-size").val();
+  var x = $("#label-start-x").val();
+  var y = $("#label-start-y").val();
+  var font = $("#label-start-font").val();
+  gameLoader.addLabel(x,y,size,text,font)
 })
 
 $('.remove-selected').click(function(e){
@@ -296,25 +347,54 @@ $('.upload-button').click(function(e){
   });
 })
 
-v
+$('.upload-font').click(function(e){
+  var name = $("#font-name").val();
+  uploadAsset(lastUpload,name,function(fileName){
+    gameLoader.addFont(name,fileName)
+  });
+})
+
 
 $('#button-start-binding').on('change',function(e){
   var val = $("#button-start-binding").val();
   if (val =="save" || val == "load"){
     $("#slot-start-value").show();
+  } else {
+    $("#slot-start-value").hide();
   }
-}
+})
+
+$('#button-binding').on('change',function(e){
+  var val = $("#button-binding").val();
+  if (val =="save" || val == "load"){
+    $("#slot-value").show();
+  } else {
+    $("#slot-value").hide();
+  }
+})
+
+
+
+$('.button-slot').on('change',function(e){
+  var val = $(".button-slot").val();
+  selected.config.slot = val;
+})
 
 $('.custom-file-input').on('change',function(e){
     if (e.target.files && e.target.files[0]) {
-    	var fileName = e.target.files[0].name;
+      var fileName = e.target.files[0].name;
       lastUpload = e.target.files[0];
-    	$(this).next('.custom-file-label').html(fileName);
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('.img-preview').attr('src', e.target.result);
+      $(this).next('.custom-file-label').html(fileName);
+      if ($(this).attr('id')=='font-input'){
+        var fontName = fileName.split(".")[0];
+        $('#font-name').val(fontName)
+      } else {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('.img-preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(lastUpload);
       }
-      reader.readAsDataURL(lastUpload);
     }
 })
 
