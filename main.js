@@ -7,14 +7,14 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
-    width: 640,
-    height: 480,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       nodeIntegration: true
     }
   });
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   mainWindow.on("close", () => {
     mainWindow.webContents.send("stop-server");
   });
@@ -33,7 +33,6 @@ app.on("window-all-closed", function() {
     app.quit();
   }
 });
-
 app.on("activate", function() {
   if (mainWindow === null) {
     createWindow();

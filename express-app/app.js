@@ -1,4 +1,5 @@
 const express = require("express"),
+  
   path = require("path"),
   //favicon = require('serve-favicon'),
   logger = require("morgan"),
@@ -11,6 +12,8 @@ const express = require("express"),
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+
+
 //uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger("dev"));
@@ -18,6 +21,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/umd/'));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
+app.use('/bootswatch', express.static(__dirname + '/node_modules/bootswatch/dist/minty/'));
+app.use('/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css/'));
+app.use('/webfonts', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/webfonts/'));
+
+
+app.use('/assets', express.static(__dirname + '/../guis/'));
+
 
 app.use("/", routes);
 
@@ -34,7 +48,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {title: "Error"});
 });
 
 module.exports = app;

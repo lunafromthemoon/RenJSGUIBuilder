@@ -1,0 +1,275 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-secondary fixed-left">
+    <a class="navbar-brand" href="">RenJS GUI Builder</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toolbox" aria-controls="toolbox" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="toolbox">
+        <ul class="navbar-nav">
+            <br>
+            <li class="nav-item">
+                <a class="nav-link active menu-title" data-class="fixed-left">
+                    Loading Page
+                </a>
+            </li>
+            <li class="nav-item">
+                <div class="btn-group btn-block" role="group">
+                  <button type="button" class="btn btn-outline-light">Add...</button>
+                  <div class="btn-group" role="group">
+                    <button id="addDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="addDrop">
+                      <a class="dropdown-item asset-add asset-loader asset-main asset-settings asset-saveload" href="#" data-toggle="modal" data-target="#bg-modal">Background</a>
+                      <a class="dropdown-item asset-add asset-loader" href="#" data-toggle="modal" data-target="#loading-bar-modal">Loading Bar</a>
+                      <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#image-modal">Image</a>
+                      <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#label-modal">Label</a>
+                      <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#animation-modal">Animation</a>
+                      <a class="dropdown-item asset-add asset-main asset-settings asset-hud asset-saveload" href="#" data-toggle="modal" data-target="#button-modal">Button</a>
+                      <a class="dropdown-item asset-add asset-main asset-settings asset-hud asset-saveload" href="#" data-toggle="modal" data-target="#slider-modal">Slider</a>
+                      
+                    </div>
+                  </div>
+                </div>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item collapse background-tools tools">
+                <div class="card text-white bg-secondary">
+                  <div class="card-header">Background</div>
+                  <div class="card-body">
+                    <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse image-tools tools">
+                <div class="card text-white bg-secondary">
+                  <div class="card-header">Image</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse loading-bar-tools tools">
+                <div class="card text-white bg-secondary">
+                  <div class="card-header">Loading Bar</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>    
+                    <div class="form-group">                
+                      <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                          <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showFrame(0)"> Empty
+                        </label>
+                        <label class="btn btn-primary">
+                          <input type="radio" name="options" id="option2" autocomplete="off" onclick="showFrame(1)"> Full
+                        </label>
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse button-tools tools">
+                <div class="card text-white bg-secondary">
+                  <div class="card-header">Button</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>    
+                    <div class="form-group">
+                      <label for="button-binding">Button binding</label>
+                      <select class="form-control" id="button-binding">
+                        <option value='start'>Start Game</option>
+                        <option value='return'>Return to previous menu/game</option>
+                        <option value='main'>Open Main Menu</option>
+                        <option value='settings'>Open Settings Menu</option>
+                        <option value='saveload'>Open Save/Load Menu</option>
+                        <option disabled>_________</option>
+                        <option value='save'>Save in slot</option>
+                        <option value='load'>Save from slot</option>
+                        <option disabled>_________</option>
+                        <option value='auto'>Autoplay</option>
+                        <option value='skip'>Skip (autoplay really fast)</option>
+                        <option value='mute'>Mute sound</option>
+                        <option disabled>_________</option>
+                        <option value='other'>Other action</option>
+                      </select>
+                    </div>
+                    <div class="form-group collapse slot-value">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Slot</span>
+                        </div>
+                        <input type="number" class="form-control button-slot" value="0">
+                      </div>
+                    </div>    
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse slider-tools tools">
+                <div class="card text-white bg-secondary">
+                  <div class="card-header">Slider</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>    
+                    <div class="form-group">
+                      <label for="button-binding">Slider binding</label>
+                      <select class="form-control" id="slider-binding">
+                        <option value='music-volume'>Music Volume</option>
+                        <option value='sfx-volume'>SFX Volume</option>
+                        <option disabled>_________</option>
+                        <option value='text-speed'>Text Speed</option>
+                        <option value='auto-speed'>Autoplay Speed</option>
+                        <option disabled>_________</option>
+                        <option value='other'>Other property</option>
+                      </select>
+                    </div>
+                    <div class="form-group">                
+                      <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                          <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showFrame(0)"> Empty
+                        </label>
+                        <label class="btn btn-primary">
+                          <input type="radio" name="options" id="option2" autocomplete="off" onclick="showFrame(1)"> Full
+                        </label>
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <!-- <li class="nav-item">
+                <div class="form-group">
+                  <label for="loading-page-bar">Loading Bar</label>
+                  <input type="file" class="form-control-file" id="loading-page-bar" aria-describedby="fileHelp">
+
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">W</span>
+                    </div>
+                    <input type="number" class="form-control" id="loading-bar-width">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">H</span>
+                    </div>
+                    <input type="number" class="form-control" id="loading-bar-height">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">X</span>
+                    </div>
+                    <input type="number" class="form-control" id="loading-bar-x" value="0">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Y</span>
+                    </div>
+                    <input type="number" class="form-control" id="loading-bar-y" value="0">
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-secondary">Upload</button>
+
+            </li> -->
+           
+            
+        </ul>
+        <!-- <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link active" data-class="fixed-left">
+                    <i class="fa fa-arrow-left"></i>
+                    Fixed Left
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-class="fixed-top">
+                    <i class="fa fa-arrow-up"></i>
+                    Fixed Top
+                    <small>(original)</small>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-class="fixed-right">
+                    <i class="fa fa-arrow-right"></i>
+                    Fixed Right
+                </a>
+            </li>
+        </ul> -->
+    </div>
+</nav>

@@ -1,4 +1,5 @@
 node_modules/
+guis/
 node.exe
 node.lib
 yarn.lock

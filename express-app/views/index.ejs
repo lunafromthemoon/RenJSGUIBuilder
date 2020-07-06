@@ -2,16 +2,57 @@
 <%- include('include/head'); %>
 <html lang="en">
     <body>
-        <h1><%= title %></h1>
-        <p>Welcome to <%= title %></p>
-        <br/>
-        <p> Other Pages:
-        </p>
-        <a href="/pageTwo">Page Two</a>
-        <br/>
-        <a href="/pageThree">Page Three</a>
-        <br/>
-        <a href="/pageFour">Page Four</a>
+        <div class="container">
+          <h1>RenJS GUI Builder</h1>
+          <div class="bs-docs-section">
+            <div class="row">
+              <div class="card-columns">
+                <div class="card">
+                  <img class="card-img-top" src="img/index.svg" alt="Card image">
+                  <div class="card-body">
+                    <h5 class="card-title">The Quickstart</h5>
+                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <a type="button" href="/edit" class="btn btn-outline-primary"><i class="fas fa-download"></i></a>
+                    <button type="button" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="img/index.svg" alt="Card image">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <button type="button" class="btn btn-outline-primary">Edit</button>
+                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="img/index.svg" alt="Card image">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="img/index.svg" alt="Card image">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <script src="jquery/jquery.min.js"></script>
+        <script src="popper/popper.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
     </body>
 </html>
 

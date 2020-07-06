@@ -9,7 +9,7 @@
   "license": "GPL-3.0",
   "private": true,
   "scripts": {
-    "start": ".\\node_modules\\node\\bin\\node.exe start-electron.js"
+    "start": "electron ."
   },
   "dependencies": {
     "electron": "9.0.4",
