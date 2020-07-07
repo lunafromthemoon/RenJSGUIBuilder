@@ -10,40 +10,62 @@
                 <div class="card">
                   <img class="card-img-top" src="img/index.svg" alt="Card image">
                   <div class="card-body">
-                    <h5 class="card-title">The Quickstart</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    <a type="button" href="/edit" class="btn btn-outline-primary"><i class="fas fa-download"></i></a>
-                    <button type="button" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                    <h5 class="card-title">New GUI</h5>
+                    <p class="card-text">Create a new GUI from scratch!</p>
+                    <a type="button" class="btn btn-outline-secondary btn-block" href="#" data-toggle="modal" data-target="#new-gui-modal">New</a>
+                  </div>
+                </div>
+                <div class="card d-none gui-template">
+                  <img class="card-img-top" src="img/index.svg" alt="Card image">
+                  <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text resolution"></p>
+                    <a type="button" href="" class="btn btn-outline-primary btn-download"><i class="fas fa-download"></i></a>
+                    <a type="button" href=""class="btn btn-outline-secondary btn-edit"><i class="fas fa-edit"></i></a>
                     <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                   </div>
                 </div>
-                <div class="card">
-                  <img class="card-img-top" src="img/index.svg" alt="Card image">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    <button type="button" class="btn btn-outline-primary">Edit</button>
-                    <button type="button" class="btn btn-outline-danger">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" id="new-gui-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">New Gui!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <p>To create a new gui you need a key name (without spaces or symbols) and the resolution. These parameters can't be change later, so choose carefully!</p>
+                <fieldset>
+                  <legend>Gui Name:</legend>
+                  <div class="form-group">
+                    <input class="form-control" id="gui-name">
                   </div>
-                </div>
-                <div class="card">
-                  <img class="card-img-top" src="img/index.svg" alt="Card image">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                  </div>
-                </div>
-                <div class="card">
-                  <img class="card-img-top" src="img/index.svg" alt="Card image">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                  </div>
-                </div>
+                  <legend>Resolution:</legend>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">W</span>
+                        </div>
+                        <input type="number" class="form-control" id="gui-width">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">H</span>
+                        </div>
+                        <input type="number" class="form-control" id="gui-height">
+                      </div>
+                    </div>
+                </fieldset>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-new-gui" data-dismiss="modal">Create</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
@@ -53,6 +75,7 @@
         <script src="jquery/jquery.min.js"></script>
         <script src="popper/popper.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script>
+         <script src="js/gui-list.js"></script>
     </body>
 </html>
 

@@ -7,15 +7,12 @@ router.get("/", function(req, res) {
 });
 
 router.get("/edit", function(req, res) {
-  res.render("edit", { title: "RenJS - New GUI" });
-});
-
-router.get("/pageThree", function(req, res) {
-  res.render("pageThree", { title: "Page 3" });
-});
-
-router.get("/pageFour", function(req, res) {
-  res.render("pageFour", { title: "Page 4" });
+  var name = req.query.name;
+  var resolution = "none";
+  if (req.query.w && req.query.h){
+    resolution = [req.query.w,req.query.h]
+  }
+  res.render("edit", { title: "RenJS - "+name, name: name, resolution: resolution });
 });
 
 const multer = require('multer');
@@ -36,6 +33,7 @@ var storage = multer.diskStorage({
     cb(null, dir)
   },
   filename: function (req, file, cb) {
+    console.log("Changing name")
     cb(null, req.params.asset + path.extname(file.originalname))
   }
 })
@@ -43,8 +41,6 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, next) => {
-	console.log("")
-
   const file = req.file
   if (!file) {
   	console.log("No file")
@@ -54,7 +50,7 @@ router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, n
   }
   var ext = path.extname(file.originalname)
   var fileName = req.params.asset + ext
-  if (ext == '.ttf')
+  console.log(fileName)
   res.json({"fileName":fileName})
   
 });

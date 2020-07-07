@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-secondary fixed-left">
-    <a class="navbar-brand" href="">RenJS GUI Builder</a>
+    <a class="navbar-brand" href="/">RenJS GUI Builder</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toolbox" aria-controls="toolbox" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,7 +13,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <div class="btn-group btn-block" role="group">
+                <div class="btn-group btn-block mb-3" role="group">
                   <button type="button" class="btn btn-outline-light">Add...</button>
                   <div class="btn-group" role="group">
                     <button id="addDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
@@ -31,11 +31,14 @@
                   </div>
                 </div>
             </li>
+            <li>
+              <button type="button" class="btn btn-block btn-outline-light mb-3" id="btn-save-gui">Save</button>
+            </li>
           </ul>
           <ul class="navbar-nav">
             <li class="nav-item collapse background-tools tools">
-                <div class="card text-white bg-secondary">
-                  <div class="card-header">Background</div>
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Background</div>
                   <div class="card-body">
                     <div class="btn-group btn-block" role="group" aria-label="Basic example">
                         <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
@@ -44,8 +47,8 @@
                 </div>
             </li>
             <li class="nav-item collapse image-tools tools">
-                <div class="card text-white bg-secondary">
-                  <div class="card-header">Image</div>
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light border-light">Image</div>
                   <div class="card-body">
                     <div class="form-group">
                       <div class="input-group">
@@ -70,8 +73,8 @@
                 </div>
             </li>
             <li class="nav-item collapse loading-bar-tools tools">
-                <div class="card text-white bg-secondary">
-                  <div class="card-header">Loading Bar</div>
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light border-light">Loading Bar</div>
                   <div class="card-body">
                     <div class="form-group">
                       <div class="input-group">
@@ -106,8 +109,8 @@
                 </div>
             </li>
             <li class="nav-item collapse button-tools tools">
-                <div class="card text-white bg-secondary">
-                  <div class="card-header">Button</div>
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light border-light">Button</div>
                   <div class="card-body">
                     <div class="form-group">
                       <div class="input-group">
@@ -159,8 +162,8 @@
                 </div>
             </li>
             <li class="nav-item collapse slider-tools tools">
-                <div class="card text-white bg-secondary">
-                  <div class="card-header">Slider</div>
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Slider</div>
                   <div class="card-body">
                     <div class="form-group">
                       <div class="input-group">

@@ -1,48 +1,97 @@
-var width = 800;
-var height = 600;
-var game = new Phaser.Game(width, height, Phaser.AUTO, "preload-canvas");
+
+var preloader = {
+  preload: function() {
+    for (var menu in gui.assets ) {
+      if (menu=='fonts') continue;
+      if ('background' in gui.assets[menu]) {
+        var bg = gui.assets[menu].background;
+        game.load.image(menu+'background', `assets/${gui.name}/${bg.fileName}`);
+      }
+      if ('loading-bar' in gui.assets[menu]) {
+        var asset = gui.assets[menu]['loading-bar'];
+        game.load.spritesheet('loading-bar', `assets/${gui.name}/${asset.fileName}`,asset.w,asset.h);
+      }
+      if ('images' in gui.assets[menu]) {
+        for (var i = gui.assets[menu].images.length - 1; i >= 0; i--) {
+          var asset = gui.assets[menu].images[i];
+          game.load.image(asset.id,`assets/${gui.name}/${asset.fileName}`)
+        }
+      }
+      var spritesheets = ['animations','buttons','sliders']
+      for (var j = spritesheets.length - 1; j >= 0; j--) {
+        if (spritesheets[j] in gui.assets[menu]){
+          for (var i = gui.assets[menu][spritesheets[j]].length - 1; i >= 0; i--) {
+            var asset = gui.assets[menu][spritesheets[j]][i];
+            game.load.spritesheet(asset.id,`assets/${gui.name}/${asset.fileName}`,asset.w,asset.h)
+          }
+        }
+      }
+    }
+  },
+
+  create: function(argument) {
+    changeMenu('loader');
+  }
+}
 
 var gameLoader = {
 
-  preload: function(){
-    // game.load.spritesheet("button","assets/Quickstart2/mainbutton0.png",163,83);
+  create: function () {
+    if ('background' in gui.assets[currentMenu]) this.loadBackground();
+    if ('loading-bar' in gui.assets[currentMenu]) this.loadLoadingBar(gui.assets[menu]['loading-bar']);
+    var components = ['images','animations','buttons','labels']
+    for (var j = components.length - 1; j >= 0; j--) {
+      components[j]
+      if (components[j] in gui.assets[currentMenu]) {
+        for (var i = gui.assets[currentMenu][components[j]].length - 1; i >= 0; i--) {
+          var config = gui.assets[currentMenu][components[j]][i];
+          this.loadComponent(components[j],config)
+        }
+      }
+    }
+    
+    // if ('animations' in gui.assets[currentMenu]) {
+    //   for (var i = gui.assets[currentMenu].animations.length - 1; i >= 0; i--) {
+    //     var config = gui.assets[currentMenu].animations[i];
+    //     this.loadImage(config)
+    //   }
+    // }
+
+    // if ('buttons' in gui.assets[currentMenu]) {
+    //   for (var i = gui.assets[currentMenu].buttons.length - 1; i >= 0; i--) {
+    //     var config = gui.assets[currentMenu].buttons[i];
+    //     this.loadButton(config)
+    //   }
+    // }
+
+    // if ('labels' in gui.assets[currentMenu]) {
+    //   for (var i = gui.assets[currentMenu].labels.length - 1; i >= 0; i--) {
+    //     var config = gui.assets[currentMenu].labels[i];
+    //     this.loadLabel(config)
+    //   }
+    // }
+
   },
 
-  create: function () {
-    if ('background' in assets[currentMenu]) this.loadBackground();
-    if ('loading-bar' in assets[currentMenu]) this.loadLoadingBar();
-    if ('images' in assets[currentMenu]) {
-      for (var i = assets[currentMenu].images.length - 1; i >= 0; i--) {
-        var img = assets[currentMenu].images[i];
-        this.loadImage(img)
-      }
+  loadComponent: function(component,config) {
+    switch (component) {
+      case 'images' : this.loadImage(config); break;
+      case 'animations' : this.loadImage(config); break;
+      case 'buttons' : this.loadButton(config); break;
+      case 'labels' : this.loadLabel(config); break;
     }
-    if ('animations' in assets[currentMenu]) {
-      for (var i = assets[currentMenu].animations.length - 1; i >= 0; i--) {
-        var img = assets[currentMenu].animations[i];
-        this.loadImage(img)
-      }
-    }
-
-    if ('buttons' in assets[currentMenu]) {
-      for (var i = assets[currentMenu].buttons.length - 1; i >= 0; i--) {
-        var img = assets[currentMenu].buttons[i];
-        this.loadButton(img.id,img.x,img.y,img.binding)
-      }
-    }
-
   },
 
   // preload assets
 
   preloadImage: function(id,fileName,callback){
-    game.load.image(id, `assets/${guiName}/${fileName}`);
+    game.load.image(id, `assets/${gui.name}/${fileName}`);
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
   },
 
   preloadSpritesheet: function(id,fileName,w,h,callback){
-    game.load.spritesheet(id, `assets/${guiName}/${fileName}`,parseInt(w),parseInt(h));
+    game.load.spritesheet(id, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
   },
@@ -84,6 +133,12 @@ var gameLoader = {
     this.makeDraggable(image,'button',['button-binding'])
   },
 
+  loadLabel: function(config) {
+    var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: "#ffffff"});
+    text.config = config;
+    this.makeDraggable(text,'label')
+  },
+
   makeDraggable: function(sprite,name,otherProps){
     sprite.inputEnabled = true;
     sprite.input.dragDistanceThreshold = 3;
@@ -114,94 +169,71 @@ var gameLoader = {
   // Add new asset to GUI
 
   addBackground: function(fileName){
-    assets[currentMenu].background = {fileName:fileName,x:0,y:0};
+    gui.assets[currentMenu].background = {fileName:fileName,x:0,y:0};
    	this.preloadImage(currentMenu+'background',fileName,this.loadBackground);
   },
 
   addLoadingBar: function(x,y,w,h,fileName){
     var config = {fileName:fileName,x:x,y:y,w:w,h:h};
-    assets[currentMenu]['loading-bar'] = config;
+    gui.assets[currentMenu]['loading-bar'] = config;
     this.preloadSpritesheet('loading-bar',fileName,w,h,function(){
       this.loadLoadingBar(config)
     })
   },
 
   addStaticImage: function(x,y,imgId,fileName){
-    if (!('images' in assets[currentMenu])){
-      assets[currentMenu].images = []
+    if (!('images' in gui.assets[currentMenu])){
+      gui.assets[currentMenu].images = []
     }
     var config = {fileName:fileName,x:x,y:y,id:imgId};
-    assets[currentMenu].images.push(config)
+    gui.assets[currentMenu].images.push(config)
     this.preloadImage(imgId,fileName,function(){
       this.loadImage(config);
     })
   },
 
   addAnimation: function(x,y,w,h,imgId,fileName){
-    if (!('animations' in assets[currentMenu])){
-      assets[currentMenu].animations = []
+    if (!('animations' in gui.assets[currentMenu])){
+      gui.assets[currentMenu].animations = []
     }
     var config = {fileName:fileName,x:x,y:y,w:w,h:h,id:imgId,isAnimation:true};
-    assets[currentMenu].animations.push(config);
+    gui.assets[currentMenu].animations.push(config);
     this.preloadSpritesheet(imgId,fileName,w,h,function(){
       this.loadImage(config)
     })
   },
 
   addButton: function(x,y,w,h,binding,imgId,fileName){
-    if ( !('buttons' in assets[currentMenu])){
-      assets[currentMenu].buttons = []
+    if ( !('buttons' in gui.assets[currentMenu])){
+      gui.assets[currentMenu].buttons = []
     }
     var config = {fileName:fileName,x:x,y:y,w:w,h:h,id:imgId,binding:binding};
-    assets[currentMenu].buttons.push(config);
+    gui.assets[currentMenu].buttons.push(config);
     this.preloadSpritesheet(imgId,fileName,w,h,function(){
       this.loadButton(config)
     })
   },
 
   // addSpritesheet: function(x,y,w,h,sprId,fileName){
-  //   assets[currentMenu][sprId] = {fileName:fileName,x:x,y:y,w:w,h:h,type:'spritesheet'};
-  //   game.load.spritesheet(sprId, `assets/${guiName}/${fileName}`,parseInt(w),parseInt(h));
+  //   gui.assets[currentMenu][sprId] = {fileName:fileName,x:x,y:y,w:w,h:h,type:'spritesheet'};
+  //   game.load.spritesheet(sprId, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
   //   game.load.onLoadComplete.addOnce(function(){
       
   //   }, this);
   //   game.load.start();
   // }
   addFont: function (name, fileName) {
-    assets[currentMenu].push({fileName:fileName,name:name});
-    $("<style>")
-    .prop("type", "text/css")
-    .html(`\
-      @font-face {\
-          font-family: '${name}';\
-          src: url('/assets/${guiName}/${fileName}');\
-          src: url('/assets/${guiName}/${fileName}').format('truetype');\
-      }`)
-    .appendTo("head");
-    var temp = $(".font-template").clone();
-
-    temp.removeClass('font-template');
-    temp.find('h4').css('font-family',name);
-    temp.find('.card-header').html(name);
-    $("#fonts-container").append(temp)
-    temp.find('.font-text').on('input',function(e){
-      var val = $(this).val();
-      $(this).siblings('h4').html(val);
-    })
-    temp.show();
-    $(".font-select").append(`<option>${name}</option>`);
-    game.add.text(width, height, name, {font: '42px '+name, fill: "#ffffff"});
+    gui.assets[currentMenu].push({fileName:fileName,name:name});
+    game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
   addLabel: function(x,y,size,text,font) {
-    if ( !('labels' in assets[currentMenu])){
-      assets[currentMenu].labels = []
+    if ( !('labels' in gui.assets[currentMenu])){
+      gui.assets[currentMenu].labels = []
     }
     var config = {x:x,y:y,size:size,text:text,font:font};
-    assets[currentMenu].labels.push(config);
-    var text = game.add.text(x, y, text, {font: size+'px '+font, fill: "#ffffff"});
-    text.config = config;
-    this.makeDraggable(text,'label')
+    gui.assets[currentMenu].labels.push(config);
+    this.loadLabel(config)
   }
 }
 
@@ -231,9 +263,7 @@ function changeMenu(menu){
   }
 }
 
-game.state.add('gameLoader', gameLoader);
 
-game.state.start('gameLoader');
 
 $('.modal').on('shown.bs.modal', function (e) {
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
@@ -244,28 +274,13 @@ $('.modal').on('shown.bs.modal', function (e) {
   // }
 });
 
-var guiName = "Quickstart2"
 
-var lastUpload = null;
-var selected = null;
-var assetCounter = 0;
-var currentMenu = null;
-var assets = {
-  loader: {},
-  main: {},
-  settings: {},
-  hud: {},
-  saveload: {},
-  fonts: []
-}
-
-changeMenu('loader');
 
 function uploadAsset(file, asset, callback){
   var data = new FormData();
   data.append('file', file);
   $.ajax({
-        url: `/upload_asset/${guiName}/${currentMenu}${asset}` ,
+        url: `/upload_asset/${gui.name}/${currentMenu}${asset}` ,
         data: data,
         dataType: 'json',
         type: 'POST',
@@ -281,7 +296,9 @@ function uploadAsset(file, asset, callback){
 }
 
 $('.upload-bg').click(function(e){
+  console.log("uploading bg")
   uploadAsset(lastUpload,'background',function(fileName){
+    console.log("adding bg")
     gameLoader.addBackground(fileName)
   });
 })
@@ -296,7 +313,7 @@ $('.add-label').click(function(e){
 })
 
 $('.remove-selected').click(function(e){
-  delete assets[currentMenu][selected.assetId]
+  delete gui.assets[currentMenu][selected.assetId]
   selected.destroy();
   $('.tools').hide()
 })
@@ -304,8 +321,7 @@ $('.remove-selected').click(function(e){
 $('.upload-image').click(function(e){
   var x = $("#image-start-x").val();
   var y = $("#image-start-y").val();
-  var imgId = 'img'+assetCounter;
-  assetCounter++;
+  var imgId = genAssetId('img');
   uploadAsset(lastUpload,imgId,function(fileName){
     gameLoader.addStaticImage(x,y,imgId,fileName)
   });
@@ -327,8 +343,7 @@ $('.upload-animation').click(function(e){
   var y = $("#animation-start-y").val();
   var w = $("#animation-width").val();
   var h = $("#animation-height").val();
-  var imgId = 'animation'+assetCounter;
-  assetCounter++;
+  var imgId = genAssetId('animation');
   uploadAsset(lastUpload,imgId,function(fileName){
     gameLoader.addAnimation(x,y,w,h,imgId,fileName)
   });
@@ -340,8 +355,7 @@ $('.upload-button').click(function(e){
   var w = $("#button-width").val();
   var h = $("#button-height").val();
   var binding = $("#button-start-binding").val();
-  var imgId = 'button'+assetCounter;
-  assetCounter++;
+  var imgId = genAssetId('button');
   uploadAsset(lastUpload,imgId,function(fileName){
     gameLoader.addButton(x,y,w,h,binding,imgId,fileName)
   });
@@ -350,9 +364,34 @@ $('.upload-button').click(function(e){
 $('.upload-font').click(function(e){
   var name = $("#font-name").val();
   uploadAsset(lastUpload,name,function(fileName){
+    loadFont(name,fileName)
     gameLoader.addFont(name,fileName)
   });
 })
+
+function loadFont(name,fileName) {
+  $("<style>")
+    .prop("type", "text/css")
+    .html(`\
+      @font-face {\
+          font-family: '${name}';\
+          src: url('/assets/${gui.name}/${fileName}');\
+          src: url('/assets/${gui.name}/${fileName}').format('truetype');\
+      }`)
+    .appendTo("head");
+  var temp = $(".font-template").clone();
+
+  temp.removeClass('font-template');
+  temp.find('h4').css('font-family',name);
+  temp.find('.card-header').html(name);
+  $("#fonts-container").append(temp)
+  temp.find('.font-text').on('input',function(e){
+    var val = $(this).val();
+    $(this).siblings('h4').html(val);
+  })
+  temp.show();
+  $(".font-select").append(`<option>${name}</option>`);
+}
 
 
 $('#button-start-binding').on('change',function(e){
@@ -415,7 +454,76 @@ $('#button-binding').on('change',function(e){
   selected.config.binding = binding;
 })
 
+$('#btn-save-gui').on('click',function(e){
+  var str = JSON.stringify(gui);
+  window.localStorage.setItem(gui.name,str)
+  var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
+  if (!guiList.includes(gui.name)){
+    guiList.push(gui.name);
+    window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
+  }
+})
+
 function showTools(tool){
   $('.tools').hide()
   $(`.${tool}-tools`).show()
 }
+
+function genAssetId(asset) {
+    gui.assetCounter++;
+    return asset+gui.assetCounter;
+  }
+
+function init(guiName,resolution) {
+  gui = window.localStorage.getItem(guiName)
+  var loaded = false;
+  if (!gui){
+    gui = {
+      resolution : resolution.split(",");
+      name: guiName,
+      assetCounter: 0
+    };
+    gui.assets = {
+      loader: {},
+      main: {},
+      settings: {},
+      hud: {},
+      saveload: {},
+      fonts: []
+    }
+  } else {
+    gui = JSON.parse(gui)
+    loaded = true;
+  }
+  game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
+  game.state.add('gameLoader', gameLoader);
+  
+  if (loaded){
+    game.state.add('preloader', preloader);
+    for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
+      loadFont(gui.assets.fonts[i].name,gui.assets.fonts[i].fileName);
+    }
+    game.state.start('preloader')
+  } else {
+    changeMenu('loader');
+  }
+  
+
+  // add fonts
+  
+
+  
+  
+}
+
+// current state
+var lastUpload = null;
+var selected = null;
+var currentMenu = null;
+// gui info
+var gui = {};
+// phaser game object
+var game = null;
+console.log(guiName)
+console.log(resolution)
+init(guiName,resolution);
