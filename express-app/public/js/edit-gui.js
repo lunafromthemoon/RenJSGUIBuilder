@@ -49,36 +49,45 @@ var gameLoader = {
         }
       }
     }
-    
-    // if ('animations' in gui.assets[currentMenu]) {
-    //   for (var i = gui.assets[currentMenu].animations.length - 1; i >= 0; i--) {
-    //     var config = gui.assets[currentMenu].animations[i];
-    //     this.loadImage(config)
-    //   }
-    // }
-
-    // if ('buttons' in gui.assets[currentMenu]) {
-    //   for (var i = gui.assets[currentMenu].buttons.length - 1; i >= 0; i--) {
-    //     var config = gui.assets[currentMenu].buttons[i];
-    //     this.loadButton(config)
-    //   }
-    // }
-
-    // if ('labels' in gui.assets[currentMenu]) {
-    //   for (var i = gui.assets[currentMenu].labels.length - 1; i >= 0; i--) {
-    //     var config = gui.assets[currentMenu].labels[i];
-    //     this.loadLabel(config)
-    //   }
-    // }
 
   },
 
   loadComponent: function(component,config) {
     switch (component) {
+      case 'background' : this.loadBackground(); break;
+      case 'loading-bar' : this.loadLoadingBar(config); break;
       case 'images' : this.loadImage(config); break;
       case 'animations' : this.loadImage(config); break;
       case 'buttons' : this.loadButton(config); break;
       case 'labels' : this.loadLabel(config); break;
+      case 'sliders' : this.loadSlider(config); break;
+    }
+  },
+
+  addComponent: function(component,config) {
+    console.log("Adding component")
+    console.log(component)
+    console.log(config)
+    var listComponent = ['slider','image','button','animations'];
+    var componentName = component;
+    if (listComponent.includes(component)){
+      componentName+='s';
+      if (!(componentName in gui.assets[currentMenu])){
+        gui.assets[currentMenu][componentName] = []
+      }
+      gui.assets[currentMenu][componentName].push(config)
+    } else {
+      gui.assets[currentMenu][component] = config;
+    }
+    var preloadImage = ['image','background'];
+    if (preloadImage.includes(component)){
+      this.preloadImage(config.id,config.fileName,function(){
+        this.loadComponent(componentName,config);
+      })
+    } else {
+      this.preloadSpritesheet(config.id,config.fileName,config.w,config.h,function(){
+        this.loadComponent(componentName,config);
+      })
     }
   },
 
@@ -115,6 +124,13 @@ var gameLoader = {
     this.makeDraggable(sprite,'loading-bar')
   },
 
+  loadSlider: function(config){
+    var sprite = game.add.sprite(config.x,config.y,config.id);
+    sprite.config = config;
+    sprite.assetId = config.id;
+    this.makeDraggable(sprite,'slider',['binding'])
+  },
+
   loadImage: function(config){
     var image = game.add.sprite(config.x,config.y,config.id);
     image.assetId = config.id;
@@ -130,13 +146,13 @@ var gameLoader = {
       console.log('click on button')
     },0,1,2,0);
     image.config = config;
-    this.makeDraggable(image,'button',['button-binding'])
+    this.makeDraggable(image,'button',['binding'])
   },
 
   loadLabel: function(config) {
     var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: "#ffffff"});
     text.config = config;
-    this.makeDraggable(text,'label')
+    this.makeDraggable(text,'label',['text'])
   },
 
   makeDraggable: function(sprite,name,otherProps){
@@ -149,7 +165,7 @@ var gameLoader = {
       if (otherProps) {
         for (var i = 0; i < otherProps.length; i++) {
           var prop = otherProps[i];
-          $(`#${prop}`).val(selected.config[prop]);
+          $(`#${name}-${prop}`).val(selected.config[prop]);
         }
       }
       showTools(name);
@@ -166,62 +182,6 @@ var gameLoader = {
     sprite.input.enableDrag(true);
   },
 
-  // Add new asset to GUI
-
-  addBackground: function(fileName){
-    gui.assets[currentMenu].background = {fileName:fileName,x:0,y:0};
-   	this.preloadImage(currentMenu+'background',fileName,this.loadBackground);
-  },
-
-  addLoadingBar: function(x,y,w,h,fileName){
-    var config = {fileName:fileName,x:x,y:y,w:w,h:h};
-    gui.assets[currentMenu]['loading-bar'] = config;
-    this.preloadSpritesheet('loading-bar',fileName,w,h,function(){
-      this.loadLoadingBar(config)
-    })
-  },
-
-  addStaticImage: function(x,y,imgId,fileName){
-    if (!('images' in gui.assets[currentMenu])){
-      gui.assets[currentMenu].images = []
-    }
-    var config = {fileName:fileName,x:x,y:y,id:imgId};
-    gui.assets[currentMenu].images.push(config)
-    this.preloadImage(imgId,fileName,function(){
-      this.loadImage(config);
-    })
-  },
-
-  addAnimation: function(x,y,w,h,imgId,fileName){
-    if (!('animations' in gui.assets[currentMenu])){
-      gui.assets[currentMenu].animations = []
-    }
-    var config = {fileName:fileName,x:x,y:y,w:w,h:h,id:imgId,isAnimation:true};
-    gui.assets[currentMenu].animations.push(config);
-    this.preloadSpritesheet(imgId,fileName,w,h,function(){
-      this.loadImage(config)
-    })
-  },
-
-  addButton: function(x,y,w,h,binding,imgId,fileName){
-    if ( !('buttons' in gui.assets[currentMenu])){
-      gui.assets[currentMenu].buttons = []
-    }
-    var config = {fileName:fileName,x:x,y:y,w:w,h:h,id:imgId,binding:binding};
-    gui.assets[currentMenu].buttons.push(config);
-    this.preloadSpritesheet(imgId,fileName,w,h,function(){
-      this.loadButton(config)
-    })
-  },
-
-  // addSpritesheet: function(x,y,w,h,sprId,fileName){
-  //   gui.assets[currentMenu][sprId] = {fileName:fileName,x:x,y:y,w:w,h:h,type:'spritesheet'};
-  //   game.load.spritesheet(sprId, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
-  //   game.load.onLoadComplete.addOnce(function(){
-      
-  //   }, this);
-  //   game.load.start();
-  // }
   addFont: function (name, fileName) {
     gui.assets[currentMenu].push({fileName:fileName,name:name});
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
@@ -234,7 +194,9 @@ var gameLoader = {
     var config = {x:x,y:y,size:size,text:text,font:font};
     gui.assets[currentMenu].labels.push(config);
     this.loadLabel(config)
-  }
+  },
+
+
 }
 
 function showFrame(frame){
@@ -250,6 +212,7 @@ function changeMenu(menu){
     $(`.menu-${menu}`).addClass('active');
     $(".asset-add").hide();
     $(`.asset-${menu}`).show();
+    $('.tools').hide()
     currentMenu = menu;
     if(menu == "fonts"){
       $("#canvas-container").hide();
@@ -263,15 +226,10 @@ function changeMenu(menu){
   }
 }
 
-
-
 $('.modal').on('shown.bs.modal', function (e) {
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
 	$(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
-  // if ($(this).attr('id') == "button-modal"){
-
-  // }
 });
 
 
@@ -295,14 +253,6 @@ function uploadAsset(file, asset, callback){
     });
 }
 
-$('.upload-bg').click(function(e){
-  console.log("uploading bg")
-  uploadAsset(lastUpload,'background',function(fileName){
-    console.log("adding bg")
-    gameLoader.addBackground(fileName)
-  });
-})
-
 $('.add-label').click(function(e){
   var text = $("#label-start-text").val();
   var size = $("#label-start-size").val();
@@ -318,47 +268,42 @@ $('.remove-selected').click(function(e){
   $('.tools').hide()
 })
 
-$('.upload-image').click(function(e){
-  var x = $("#image-start-x").val();
-  var y = $("#image-start-y").val();
-  var imgId = genAssetId('img');
-  uploadAsset(lastUpload,imgId,function(fileName){
-    gameLoader.addStaticImage(x,y,imgId,fileName)
+function addComponent(id,name,propNames) {
+  var props = { id: id }
+  if (id == 'gen'){
+    props.id = genAssetId('img');
+  }
+  for (var i = propNames.length - 1; i >= 0; i--) {
+    var val = $(`#${name}-start-${propNames[i]}`).val();
+    props[propNames[i]] = val;
+  }
+  if (name=='animation'){
+    props.isAnimation = true;
+  }
+  uploadAsset(lastUpload,props.id,function(fileName){
+    props.fileName = fileName;
+    gameLoader.addComponent(name,props)
   });
+}
+
+$('.upload-bg').click(function(e){
+  addComponent(currentMenu+'background','background',[])
+})
+
+$('.upload-image').click(function(e){
+  addComponent('gen','image',['x','y'])
 })
 
 $('.upload-loading-bar').click(function(e){
-  var x = $("#loading-bar-start-x").val();
-  var y = $("#loading-bar-start-y").val();
-  var w = $("#loading-bar-width").val();
-  var h = $("#loading-bar-height").val();
-  uploadAsset(lastUpload,'loading-bar',function(fileName){
-    gameLoader.addLoadingBar(x,y,w,h,fileName)
-  });
-  
+  addComponent('loading-bar','loading-bar',['x','y','width','height'])
 })
 
 $('.upload-animation').click(function(e){
-  var x = $("#animation-start-x").val();
-  var y = $("#animation-start-y").val();
-  var w = $("#animation-width").val();
-  var h = $("#animation-height").val();
-  var imgId = genAssetId('animation');
-  uploadAsset(lastUpload,imgId,function(fileName){
-    gameLoader.addAnimation(x,y,w,h,imgId,fileName)
-  });
+  addComponent('gen','animation',['x','y','width','height'])
 })
 
 $('.upload-button').click(function(e){
-  var x = $("#button-start-x").val();
-  var y = $("#button-start-y").val();
-  var w = $("#button-width").val();
-  var h = $("#button-height").val();
-  var binding = $("#button-start-binding").val();
-  var imgId = genAssetId('button');
-  uploadAsset(lastUpload,imgId,function(fileName){
-    gameLoader.addButton(x,y,w,h,binding,imgId,fileName)
-  });
+  addComponent('gen','button',['x','y','width','height','binding'])
 })
 
 $('.upload-font').click(function(e){
@@ -393,6 +338,10 @@ function loadFont(name,fileName) {
   $(".font-select").append(`<option>${name}</option>`);
 }
 
+$("#label-text").on('input',function (argument) {
+  selected.text = $("#label-text").val();
+  selected.config.text = $("#label-text").val();
+})
 
 $('#button-start-binding').on('change',function(e){
   var val = $("#button-start-binding").val();
@@ -412,11 +361,12 @@ $('#button-binding').on('change',function(e){
   }
 })
 
-
+$('.binding').on('change',function(e){
+  selected.config.binding = $(this).val();
+})
 
 $('.button-slot').on('change',function(e){
-  var val = $(".button-slot").val();
-  selected.config.slot = val;
+  selected.config.slot = $(".button-slot").val();
 })
 
 $('.custom-file-input').on('change',function(e){
@@ -449,11 +399,6 @@ $('.asset-y').on('change',function(e){
   selected.config.y = y;
 })
 
-$('#button-binding').on('change',function(e){
-  var binding = $("#button-binding").val();
-  selected.config.binding = binding;
-})
-
 $('#btn-save-gui').on('click',function(e){
   var str = JSON.stringify(gui);
   window.localStorage.setItem(gui.name,str)
@@ -462,6 +407,10 @@ $('#btn-save-gui').on('click',function(e){
     guiList.push(gui.name);
     window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
   }
+  $('#btn-save-gui').html('Saved!');
+  setTimeout(function() {
+    $('#btn-save-gui').html('Save');
+  }, 2000);
 })
 
 function showTools(tool){
@@ -474,12 +423,16 @@ function genAssetId(asset) {
     return asset+gui.assetCounter;
   }
 
+// -------------------------------------------------------------------------
+// Init
+// -------------------------------------------------------------------------
+
 function init(guiName,resolution) {
   gui = window.localStorage.getItem(guiName)
   var loaded = false;
   if (!gui){
     gui = {
-      resolution : resolution.split(",");
+      resolution : resolution.split(","),
       name: guiName,
       assetCounter: 0
     };
@@ -507,12 +460,6 @@ function init(guiName,resolution) {
   } else {
     changeMenu('loader');
   }
-  
-
-  // add fonts
-  
-
-  
   
 }
 

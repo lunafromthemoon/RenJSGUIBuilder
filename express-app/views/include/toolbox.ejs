@@ -19,6 +19,11 @@
                     <button id="addDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="addDrop">
                       <a class="dropdown-item asset-add asset-loader asset-main asset-settings asset-saveload" href="#" data-toggle="modal" data-target="#bg-modal">Background</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#text-box-modal">Text Box</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#name-box-modal">Name Box</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#choice-modal">Choice Box</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#interrupt-modal">Interrupt Box</a>
+                      
                       <a class="dropdown-item asset-add asset-loader" href="#" data-toggle="modal" data-target="#loading-bar-modal">Loading Bar</a>
                       <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#image-modal">Image</a>
                       <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#label-modal">Label</a>
@@ -130,7 +135,7 @@
                     </div>    
                     <div class="form-group">
                       <label for="button-binding">Button binding</label>
-                      <select class="form-control" id="button-binding">
+                      <select class="form-control binding" id="button-binding">
                         <option value='start'>Start Game</option>
                         <option value='return'>Return to previous menu/game</option>
                         <option value='main'>Open Main Menu</option>
@@ -182,8 +187,8 @@
                       </div>
                     </div>    
                     <div class="form-group">
-                      <label for="button-binding">Slider binding</label>
-                      <select class="form-control" id="slider-binding">
+                      <label for="slider-binding">Slider binding</label>
+                      <select class="form-control binding" id="slider-binding">
                         <option value='music-volume'>Music Volume</option>
                         <option value='sfx-volume'>SFX Volume</option>
                         <option disabled>_________</option>
@@ -209,7 +214,36 @@
                   </div>
                 </div>
             </li>
-            
+            <li class="nav-item collapse label-tools tools">
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Label</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="label-text">Text</label>
+                      <input class="form-control" id="label-text">
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>    
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
         </ul>
 
     </div>
