@@ -6,11 +6,14 @@
 
     <div class="collapse navbar-collapse" id="toolbox">
         <ul class="navbar-nav">
-            <br>
             <li class="nav-item">
-                <a class="nav-link active menu-title" data-class="fixed-left">
-                    Loading Page
-                </a>
+              <hr class="border-light">   
+                <button type="button" class="btn btn-outline-light disabled btn-block"><%= name %></button>
+                <button type="button" class="btn btn-block btn-outline-light mb-3" id="btn-save-gui">Save</button>
+                <hr class="border-light">  
+            </li>
+            <li class="nav-item mb-3">
+              <button type="button" class="btn btn-outline-light menu-title disabled btn-block">Loading Page</button>
             </li>
             <li class="nav-item">
                 <div class="btn-group btn-block mb-3" role="group">
@@ -21,9 +24,8 @@
                       <a class="dropdown-item asset-add asset-loader asset-main asset-settings asset-saveload" href="#" data-toggle="modal" data-target="#bg-modal">Background</a>
                       <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#text-box-modal">Text Box</a>
                       <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#name-box-modal">Name Box</a>
-                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#choice-modal">Choice Box</a>
-                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#interrupt-modal">Interrupt Box</a>
-                      
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#ctc-modal">Click To Continue</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#choice-modal">Choice/Interrupt Box</a>
                       <a class="dropdown-item asset-add asset-loader" href="#" data-toggle="modal" data-target="#loading-bar-modal">Loading Bar</a>
                       <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#image-modal">Image</a>
                       <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#label-modal">Label</a>
@@ -36,9 +38,7 @@
                   </div>
                 </div>
             </li>
-            <li>
-              <button type="button" class="btn btn-block btn-outline-light mb-3" id="btn-save-gui">Save</button>
-            </li>
+            
           </ul>
           <ul class="navbar-nav">
             <li class="nav-item collapse background-tools tools">
@@ -46,7 +46,7 @@
                   <div class="card-header border-light">Background</div>
                   <div class="card-body">
                     <div class="btn-group btn-block" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
                     </div>
                   </div>
                 </div>
@@ -56,6 +56,7 @@
                   <div class="card-header border-light border-light">Image</div>
                   <div class="card-body">
                     <div class="form-group">
+                      <label for="asset-x">Position</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text">X</span>
@@ -82,6 +83,7 @@
                   <div class="card-header border-light border-light">Loading Bar</div>
                   <div class="card-body">
                     <div class="form-group">
+                      <label for="asset-x">Position</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text">X</span>
@@ -108,7 +110,7 @@
                       </div>
                     </div>
                     <div class="btn-group btn-block" role="group">
-                        <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
                     </div>
                   </div>
                 </div>
@@ -118,6 +120,7 @@
                   <div class="card-header border-light border-light">Button</div>
                   <div class="card-body">
                     <div class="form-group">
+                      <label for="asset-x">Position</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text">X</span>
@@ -143,7 +146,7 @@
                         <option value='saveload'>Open Save/Load Menu</option>
                         <option disabled>_________</option>
                         <option value='save'>Save in slot</option>
-                        <option value='load'>Save from slot</option>
+                        <option value='load'>Load from slot</option>
                         <option disabled>_________</option>
                         <option value='auto'>Autoplay</option>
                         <option value='skip'>Skip (autoplay really fast)</option>
@@ -152,12 +155,10 @@
                         <option value='other'>Other action</option>
                       </select>
                     </div>
-                    <div class="form-group collapse slot-value">
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">Slot</span>
-                        </div>
-                        <input type="number" class="form-control button-slot" value="0">
+                    <div class="form-group collapse" id='slot-value'>
+                      <div class="form-group">
+                        <label for="button-slot">Slot</label>
+                        <input class="form-control slot" type="number" id="button-slot" value="0">
                       </div>
                     </div>    
                     <div class="btn-group btn-block" role="group">
@@ -171,6 +172,7 @@
                   <div class="card-header border-light">Slider</div>
                   <div class="card-body">
                     <div class="form-group">
+                      <label for="asset-x">Position</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
                           <span class="input-group-text">X</span>
@@ -223,7 +225,9 @@
                       <input class="form-control" id="label-text">
                     </div>
                     <div class="form-group">
+                      <label for="asset-x">Position</label>
                       <div class="input-group">
+
                         <div class="input-group-prepend">
                           <span class="input-group-text">X</span>
                         </div>
@@ -238,6 +242,15 @@
                         <input type="number" class="form-control asset-y" value="0">
                       </div>
                     </div>    
+                    <div class="form-group">
+                      <label for="label-color">Color</label>
+                      <div class="input-group colorpicker-component">
+                        <input type="text" class="form-control" id="label-color" value="#FFFFFF"/>
+                        <span class="input-group-append">
+                          <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                      </div>
+                    </div>
                     <div class="btn-group btn-block" role="group">
                         <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
                     </div>

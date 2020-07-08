@@ -9,7 +9,7 @@ var preloader = {
       }
       if ('loading-bar' in gui.assets[menu]) {
         var asset = gui.assets[menu]['loading-bar'];
-        game.load.spritesheet('loading-bar', `assets/${gui.name}/${asset.fileName}`,asset.w,asset.h);
+        game.load.spritesheet('loading-bar', `assets/${gui.name}/${asset.fileName}`,asset.width,asset.height);
       }
       if ('images' in gui.assets[menu]) {
         for (var i = gui.assets[menu].images.length - 1; i >= 0; i--) {
@@ -22,7 +22,9 @@ var preloader = {
         if (spritesheets[j] in gui.assets[menu]){
           for (var i = gui.assets[menu][spritesheets[j]].length - 1; i >= 0; i--) {
             var asset = gui.assets[menu][spritesheets[j]][i];
-            game.load.spritesheet(asset.id,`assets/${gui.name}/${asset.fileName}`,asset.w,asset.h)
+            var w = parseInt(asset.width)
+            var h = parseInt(asset.height)
+            game.load.spritesheet(asset.id,`assets/${gui.name}/${asset.fileName}`,w,h)
           }
         }
       }
@@ -38,7 +40,7 @@ var gameLoader = {
 
   create: function () {
     if ('background' in gui.assets[currentMenu]) this.loadBackground();
-    if ('loading-bar' in gui.assets[currentMenu]) this.loadLoadingBar(gui.assets[menu]['loading-bar']);
+    if ('loading-bar' in gui.assets[currentMenu]) this.loadLoadingBar(gui.assets[currentMenu]['loading-bar']);
     var components = ['images','animations','buttons','labels']
     for (var j = components.length - 1; j >= 0; j--) {
       components[j]
@@ -61,13 +63,12 @@ var gameLoader = {
       case 'buttons' : this.loadButton(config); break;
       case 'labels' : this.loadLabel(config); break;
       case 'sliders' : this.loadSlider(config); break;
+      case 'choice' : this.loadChoice(config); break;
+      case 'interrupt' : this.loadChoice(config); break;
     }
   },
 
   addComponent: function(component,config) {
-    console.log("Adding component")
-    console.log(component)
-    console.log(config)
     var listComponent = ['slider','image','button','animations'];
     var componentName = component;
     if (listComponent.includes(component)){
@@ -77,6 +78,9 @@ var gameLoader = {
       }
       gui.assets[currentMenu][componentName].push(config)
     } else {
+      if (gui.assets[currentMenu][component]){
+        // remove previous
+      }
       gui.assets[currentMenu][component] = config;
     }
     var preloadImage = ['image','background'];
@@ -85,7 +89,7 @@ var gameLoader = {
         this.loadComponent(componentName,config);
       })
     } else {
-      this.preloadSpritesheet(config.id,config.fileName,config.w,config.h,function(){
+      this.preloadSpritesheet(config.id,config.fileName,config.width,config.height,function(){
         this.loadComponent(componentName,config);
       })
     }
@@ -110,7 +114,7 @@ var gameLoader = {
   loadBackground: function(){
     var bg = game.add.sprite(0,0,currentMenu+'background');
     bg.inputEnabled = true;
-    bg.assetId = currentMenu+'background';
+    bg.config = {id: 'background'};
     bg.events.onInputDown.add(function(){
       showTools('background');
       selected = bg;
@@ -120,20 +124,18 @@ var gameLoader = {
   loadLoadingBar: function(config){
     var sprite = game.add.sprite(config.x,config.y,'loading-bar');
     sprite.config = config;
-    sprite.assetId = 'loading-bar';
+    sprite.config.id = 'loading-bar'
     this.makeDraggable(sprite,'loading-bar')
   },
 
   loadSlider: function(config){
     var sprite = game.add.sprite(config.x,config.y,config.id);
     sprite.config = config;
-    sprite.assetId = config.id;
     this.makeDraggable(sprite,'slider',['binding'])
   },
 
   loadImage: function(config){
     var image = game.add.sprite(config.x,config.y,config.id);
-    image.assetId = config.id;
     image.config = config;
     this.makeDraggable(image,'image')
     if (config.isAnimation){
@@ -146,18 +148,27 @@ var gameLoader = {
       console.log('click on button')
     },0,1,2,0);
     image.config = config;
-    this.makeDraggable(image,'button',['binding'])
+    this.makeDraggable(image,'button',['binding','slot'])
   },
 
   loadLabel: function(config) {
-    var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: "#ffffff"});
+    var color = config.color ? config.color : "#ffffff"
+    var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: color});
     text.config = config;
-    this.makeDraggable(text,'label',['text'])
+    this.makeDraggable(text,'label',['text','color'])
+  },
+
+  loadChoice: function(config) {
+    var image = game.add.sprite(config.x,config.y,'choice');
+    image.config = config;
+    // add text
+    this.makeDraggable(image,'choice')
   },
 
   makeDraggable: function(sprite,name,otherProps){
     sprite.inputEnabled = true;
     sprite.input.dragDistanceThreshold = 3;
+    sprite.listComponent = name+'s';
     function selectImage(){
       selected = sprite;
       $(`.asset-x`).val(selected.x);
@@ -187,11 +198,11 @@ var gameLoader = {
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
-  addLabel: function(x,y,size,text,font) {
+  addLabel: function(x,y,size,text,font,color) {
     if ( !('labels' in gui.assets[currentMenu])){
       gui.assets[currentMenu].labels = []
     }
-    var config = {x:x,y:y,size:size,text:text,font:font};
+    var config = {x:x,y:y,size:size,text:text,font:font,color:color};
     gui.assets[currentMenu].labels.push(config);
     this.loadLabel(config)
   },
@@ -259,16 +270,26 @@ $('.add-label').click(function(e){
   var x = $("#label-start-x").val();
   var y = $("#label-start-y").val();
   var font = $("#label-start-font").val();
-  gameLoader.addLabel(x,y,size,text,font)
+  var color = $("#label-start-color").val();
+  gameLoader.addLabel(x,y,size,text,font,color)
 })
 
-$('.remove-selected').click(function(e){
-  delete gui.assets[currentMenu][selected.assetId]
+$('.remove-single-selected').click(function(e){
+  console.log(selected.config.id)
+  delete gui.assets[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
 })
 
-function addComponent(id,name,propNames) {
+$('.remove-selected').click(function(e){
+  console.log(selected.listComponent)
+  var list = gui.assets[currentMenu][selected.listComponent];
+  list.splice(list.findIndex(item => item.id === selected.config.id), 1)
+  selected.destroy();
+  $('.tools').hide()
+})
+
+function addComponent(id,name,propNames,extra) {
   var props = { id: id }
   if (id == 'gen'){
     props.id = genAssetId('img');
@@ -280,30 +301,43 @@ function addComponent(id,name,propNames) {
   if (name=='animation'){
     props.isAnimation = true;
   }
+  if(extra){
+    for(key in extra){
+      props[key] = extra[key];
+    }
+  }
   uploadAsset(lastUpload,props.id,function(fileName){
     props.fileName = fileName;
     gameLoader.addComponent(name,props)
   });
 }
 
-$('.upload-bg').click(function(e){
-  addComponent(currentMenu+'background','background',[])
+var listComponents = {
+  slider: ['x','y','width','height','binding'],
+  image: ['x','y'],
+  animation: ['x','y','width','height'],
+  button: ['x','y','width','height','binding','slot'],
+  saveslot: ['x','y','slot']
+}
+
+$('.upload-list-component').click(function(e){
+  var component = $(this).attr('component');
+  addComponent('gen',component,listComponents[component])
 })
 
-$('.upload-image').click(function(e){
-  addComponent('gen','image',['x','y'])
+$('.upload-bg').click(function(e){
+  addComponent(currentMenu+'background','background',[])
 })
 
 $('.upload-loading-bar').click(function(e){
   addComponent('loading-bar','loading-bar',['x','y','width','height'])
 })
 
-$('.upload-animation').click(function(e){
-  addComponent('gen','animation',['x','y','width','height'])
-})
-
-$('.upload-button').click(function(e){
-  addComponent('gen','button',['x','y','width','height','binding'])
+$('.upload-choice').click(function(e){
+  var choiceType = $('#choice-start-type input:checked').val();
+  var isCentered = $('#choice-start-centered').is(':checked');
+  var isTextCentered = $('#choice-text-start-centered').is(':checked');
+  addComponent(choiceType,choiceType,[],{isCentered:isCentered,isTextCentered:isTextCentered})
 })
 
 $('.upload-font').click(function(e){
@@ -313,6 +347,8 @@ $('.upload-font').click(function(e){
     gameLoader.addFont(name,fileName)
   });
 })
+
+$('.colorpicker-component').colorpicker();
 
 function loadFont(name,fileName) {
   $("<style>")
@@ -345,6 +381,7 @@ $("#label-text").on('input',function (argument) {
 
 $('#button-start-binding').on('change',function(e){
   var val = $("#button-start-binding").val();
+  console.log(val)
   if (val =="save" || val == "load"){
     $("#slot-start-value").show();
   } else {
@@ -365,8 +402,8 @@ $('.binding').on('change',function(e){
   selected.config.binding = $(this).val();
 })
 
-$('.button-slot').on('change',function(e){
-  selected.config.slot = $(".button-slot").val();
+$('.slot').on('change',function(e){
+  selected.config.slot = $(this).val();
 })
 
 $('.custom-file-input').on('change',function(e){
@@ -378,9 +415,20 @@ $('.custom-file-input').on('change',function(e){
         var fontName = fileName.split(".")[0];
         $('#font-name').val(fontName)
       } else {
+        var widthComponent = $(this).closest('fieldset').find('.asset-width');
+        var heightComponent = $(this).closest('fieldset').find('.asset-height');
         var reader = new FileReader();
-        reader.onload = function (e) {
-          $('.img-preview').attr('src', e.target.result);
+        reader.onload = function (file) {
+          var image = new Image();
+          image.src = file.target.result;
+          image.onload = function() {
+            if (widthComponent){
+              widthComponent.val(this.width)
+              heightComponent.val(this.height)
+            }
+            $('.img-preview').attr('src', this.src);
+          };
+          
         }
         reader.readAsDataURL(lastUpload);
       }
@@ -388,16 +436,31 @@ $('.custom-file-input').on('change',function(e){
 })
 
 $('.asset-x').on('change',function(e){
-  var x = $("#asset-x").val();
+  var x = parseInt($(this).val());
   selected.x = x;
   selected.config.x = x;
 })
 
 $('.asset-y').on('change',function(e){
-  var y = $("#asset-y").val();
+  var y = parseInt($(this).val());
   selected.y = y;
   selected.config.y = y;
 })
+
+$('#label-color').on('change',function(e){
+  var color = $('#label-color').val();
+  selected.fill = color;
+  selected.config.color = color;
+});
+
+$('.show-more-when-off').on('change',function(e){
+  var target = $(this).attr('target')
+  $(`#${target}`).toggle(!($(this).is(':checked')))
+});
+
+$('#ctc-start-style input:radio').on('click',function(e){
+  $("#ctc-spritesheet-options").toggle($(this).attr('opt') == 'spritesheet')
+});
 
 $('#btn-save-gui').on('click',function(e){
   var str = JSON.stringify(gui);
@@ -416,6 +479,9 @@ $('#btn-save-gui').on('click',function(e){
 function showTools(tool){
   $('.tools').hide()
   $(`.${tool}-tools`).show()
+  if (tool == 'button'){
+    $(`#slot-value`).toggle((selected.config.binding == 'save' || selected.config.binding == 'load'))
+  }
 }
 
 function genAssetId(asset) {
@@ -431,8 +497,9 @@ function init(guiName,resolution) {
   gui = window.localStorage.getItem(guiName)
   var loaded = false;
   if (!gui){
+    var res = resolution.split(",")
     gui = {
-      resolution : resolution.split(","),
+      resolution : [parseInt(res[0]),parseInt(res[1])],
       name: guiName,
       assetCounter: 0
     };

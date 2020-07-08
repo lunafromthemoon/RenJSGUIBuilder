@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/umd/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
+app.use('/bootstrap-colorpicker', express.static(__dirname + '/node_modules/bootstrap-colorpicker/dist/'));
 app.use('/bootswatch', express.static(__dirname + '/node_modules/bootswatch/dist/minty/'));
 app.use('/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/css/'));
 app.use('/webfonts', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/webfonts/'));
