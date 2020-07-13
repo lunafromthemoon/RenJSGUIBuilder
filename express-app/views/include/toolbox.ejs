@@ -1,28 +1,20 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-secondary fixed-left">
-    <a class="navbar-brand" href="/">RenJS GUI Builder</a>
+    <span class="navbar-brand"><%= name %></span>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toolbox" aria-controls="toolbox" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="toolbox">
         <ul class="navbar-nav">
-            <li class="nav-item">
-              <hr class="border-light">   
-                <button type="button" class="btn btn-outline-light disabled btn-block"><%= name %></button>
-                <button type="button" class="btn btn-block btn-outline-light mb-3" id="btn-save-gui">Save</button>
-                <hr class="border-light">  
-            </li>
-            <li class="nav-item mb-3">
-              <button type="button" class="btn btn-outline-light menu-title disabled btn-block">Loading Page</button>
-            </li>
-            <li class="nav-item">
+            <li class="nav-item mt-4">
+              <!-- <hr class="border-light">   -->
                 <div class="btn-group btn-block mb-3" role="group">
                   <button type="button" class="btn btn-outline-light">Add...</button>
                   <div class="btn-group" role="group">
                     <button id="addDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="addDrop">
                       <a class="dropdown-item asset-add asset-loader asset-main asset-settings asset-saveload" href="#" data-toggle="modal" data-target="#bg-modal">Background</a>
-                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#text-box-modal">Text Box</a>
+                      <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#message-box-modal">Message Box</a>
                       <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#name-box-modal">Name Box</a>
                       <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#ctc-modal">Click To Continue</a>
                       <a class="dropdown-item asset-add asset-hud" href="#" data-toggle="modal" data-target="#choice-modal">Choice/Interrupt Box</a>
@@ -243,9 +235,18 @@
                       </div>
                     </div>    
                     <div class="form-group">
-                      <label for="label-color">Color</label>
+                      <label for="label-size">Text Size</label>
+                      <input type="number" class="form-control text-size" id="label-size"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="label-font">Text Font</label>
+                      <select class="form-control font-select text-font" id="label-font">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="label-color">Text Color</label>
                       <div class="input-group colorpicker-component">
-                        <input type="text" class="form-control" id="label-color" value="#FFFFFF"/>
+                        <input type="text" class="form-control text-color" id="label-color" value="#FFFFFF"/>
                         <span class="input-group-append">
                           <span class="input-group-text colorpicker-input-addon"><i></i></span>
                         </span>
@@ -253,6 +254,269 @@
                     </div>
                     <div class="btn-group btn-block" role="group">
                         <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse ctc-tools tools">
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light border-light">Click to Continue</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="asset-x">Position</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse name-box-tools tools">
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Name Box</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="asset-x">Position</label>
+                      <div class="input-group">
+
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>    
+                    <div class="form-group">
+                      <label for="name-box-size">Text Size</label>
+                      <input type="number" class="form-control text-size" target="name" id="name-box-size"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="name-box-font">Text Font</label>
+                      <select class="form-control font-select text-font" target="name" id="name-box-font">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="name-box-color">Text Color</label>
+                      <div class="input-group colorpicker-component">
+                        <input type="text" class="form-control text-color" target="name" id="name-box-color" value="#FFFFFF"/>
+                        <span class="input-group-append">
+                          <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="label-color">Text Position</label>
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input show-more-when-off" target='name-box-not-centered-options' id="name-box-centered" checked="">
+                        <label class="custom-control-label" for="name-box-centered">Centered</label>
+                      </div>
+                    </div>
+                    <div id="name-box-not-centered-options" class='collapse'>
+                      <div class="form-group">
+                        <label for="name-box-align">Text Align</label>
+                        <select class="form-control" id="name-box-align">
+                          <option value='left'>Left</option>
+                          <option value='center'>Center</option>
+                          <option value='right'>Right</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="name-box-align">Offset X</label>
+                        <input type="number" class="form-control" id="name-box-offset-x" value="0">
+                      </div>
+                      <div class="form-group">
+                        <label for="name-box-align">Offset Y</label>
+                        <input type="number" class="form-control" id="name-box-offset-y" value="0">
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse message-box-tools tools">
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Message Box</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="asset-x">Position</label>
+                      <div class="input-group">
+
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">X</span>
+                        </div>
+                        <input type="number" class="form-control asset-x" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Y</span>
+                        </div>
+                        <input type="number" class="form-control asset-y" value="0">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-size">Text Sample</label>
+                      <input type="text" class="form-control text" id="message-box-sample"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-size">Text Size</label>
+                      <input type="number" class="form-control text-size" target="message" id="message-box-size"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-font">Text Font</label>
+                      <select class="form-control font-select text-font" target="message" id="message-box-font">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-color">Text Color</label>
+                      <div class="input-group colorpicker-component">
+                        <input type="text" class="form-control text-color" target="message" id="message-box-color" value="#FFFFFF"/>
+                        <span class="input-group-append">
+                          <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-align">Text Align</label>
+                      <select class="form-control" id="message-box-align">
+                        <option value='left'>Left</option>
+                        <option value='center'>Center</option>
+                        <option value='right'>Right</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-align">Offset X</label>
+                      <input type="number" class="form-control" id="message-box-offset-x" value="0">
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-align">Offset Y</label>
+                      <input type="number" class="form-control" id="message-box-offset-y" value="0">
+                    </div>
+                    <div class="form-group">
+                      <label for="message-box-align">Text Width</label>
+                      <input type="number" class="form-control" id="message-box-text-width" value="0">
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item collapse choice-tools tools">
+                <div class="card text-white bg-secondary border-light">
+                  <div class="card-header border-light">Choices</div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="label-color">Box Position</label>
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-box-not-centered-options' id="choice-box-centered" checked="">
+                        <label class="custom-control-label" for="choice-box-centered">Centered</label>
+                      </div>
+                    </div>
+                    <div id='choice-box-not-centered-options'>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">X</span>
+                          </div>
+                          <input type="number" class="form-control asset-x" id="choice-box-x" value="0">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">Y</span>
+                          </div>
+                          <input type="number" class="form-control asset-y" id="choice-box-y" value="0">
+                        </div>
+                      </div>  
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-separation">Separation</label>
+                      <input type="number" class="form-control" id="choice-separation"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-sample">Sample Choices</label>
+                      <input type="number" class="form-control" id="choice-sample"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-size">Text Size</label>
+                      <input type="number" class="form-control text-size" target="text" id="choice-size"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-font">Text Font</label>
+                      <select class="form-control font-select text-font" target="text" id="choice-font">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-color">Text Color</label>
+                      <div class="input-group colorpicker-component">
+                        <input type="text" class="form-control text-color" target="text" id="choice-color" />
+                        <span class="input-group-append">
+                          <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="choice-chosen-color">Text Previously Selected Color</label>
+                      <div class="input-group colorpicker-component">
+                        <input type="text" class="form-control" id="choice-chosen-color" />
+                        <span class="input-group-append">
+                          <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="label-color">Text Position</label>
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-text-not-centered-options' id="choice-text-centered" checked="">
+                        <label class="custom-control-label" for="choice-text-centered">Centered</label>
+                      </div>
+                    </div>
+                    <div id="choice-text-not-centered-options" class='collapse'>
+                      <div class="form-group">
+                        <label for="name-box-align">Text Align</label>
+                        <select class="form-control" id="choice-align">
+                          <option value='left'>Left</option>
+                          <option value='center'>Center</option>
+                          <option value='right'>Right</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="name-box-align">Offset X</label>
+                        <input type="number" class="form-control" id="choice-offset-x" value="0">
+                      </div>
+                      <div class="form-group">
+                        <label for="name-box-align">Offset Y</label>
+                        <input type="number" class="form-control" id="choice-offset-y" value="0">
+                      </div>
+                    </div>
+                    <div class="btn-group btn-block" role="group">
+                        <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
                     </div>
                   </div>
                 </div>

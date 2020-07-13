@@ -156,14 +156,24 @@
             <select class="form-control font-select" id="name-box-start-font">
             </select>
           </div>
+          <legend>Color:</legend>
+          <small class="form-text text-muted">The color for the name will be taken from each character setup. This color will be use as a sample in the name box, and it should be similar to the color range of the characters.</small>
+          <div class="form-group">
+            <div class="input-group colorpicker-component">
+              <input type="text" class="form-control" id="name-box-start-color" value="#FFFFFF"/>
+              <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+              </span>
+            </div>
+          </div>
           <legend>Text Position:</legend>
           <div class="form-group">
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input show-more-when-off" target='name-box-not-centered-options' id="name-box-start-centered" checked="">
+              <input type="checkbox" class="custom-control-input show-more-when-off" target='name-box-start-not-centered-options' id="name-box-start-centered" checked="">
               <label class="custom-control-label" for="name-box-start-centered">Centered</label>
             </div>
           </div>
-          <div id="name-box-not-centered-options" class='collapse'>
+          <div id="name-box-start-not-centered-options" class='collapse'>
             <legend>Text Align:</legend>
             <small class="form-text text-muted">You can change the alignment later.</small>
             <div class="form-group">
@@ -173,22 +183,22 @@
                 <option value='right'>Right</option>
               </select>
             </div>
-            <legend>Margin X:</legend>
-            <small class="form-text text-muted">The margin will be at both sides of the box. You can change the value later.</small>
+            <legend>Offset X:</legend>
+            <small class="form-text text-muted">The offset from the side of the box, according to the text alignment. You can change the value later.</small>
             <div class="form-group">
-              <input type="number" class="form-control" id="name-box-margin-x" value="0">
+              <input type="number" class="form-control" id="name-box-start-offset-x" value="0">
             </div>
             <legend>Offset Y:</legend>
-            <small class="form-text text-muted">The offset will from the top of the box. You can change the value later.</small>
+            <small class="form-text text-muted">The offset from the top of the box. You can change the value later.</small>
             <div class="form-group">
-              <input type="number" class="form-control" id="name-box-offset-y" value="0">
+              <input type="number" class="form-control" id="name-box-start-offset-y" value="0">
             </div>
           </div>
           
         </fieldset>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-name-box" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-primary upload-name-box" data-dismiss="modal">Add</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
 
@@ -341,8 +351,8 @@
           <small class="form-text text-muted">The choices can be automatically centered in the middle of the screen. If you don't want them to be centered, the position will indicate the position of the uppermost choice box. Further choice boxes will be added under the first one.</small>
           <div class="form-group">
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-not-centered-options' id="choice-start-centered" checked="">
-              <label class="custom-control-label" for="choice-start-centered">Centered</label>
+              <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-not-centered-options' id="choice-start-box-centered" checked="">
+              <label class="custom-control-label" for="choice-start-box-centered">Centered</label>
             </div>
           </div>
           <div id="choice-not-centered-options" class='collapse'>
@@ -380,12 +390,32 @@
             <select class="form-control font-select" id="choice-start-font">
             </select>
           </div>
+          <legend>Color:</legend>
+          <small class="form-text text-muted">You can change the color later.</small>
+          <div class="form-group">
+            <div class="input-group colorpicker-component">
+              <input type="text" class="form-control" id="choice-start-color" value="#FFFFFF"/>
+              <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+              </span>
+            </div>
+          </div>
+          <legend>Previously Selected Color:</legend>
+          <small class="form-text text-muted">The choices the player makes during the game will be recorded as they play. When they replay the game, the previously chosen options can be displayed in a different color. </small>
+          <div class="form-group">
+            <div class="input-group colorpicker-component">
+              <input type="text" class="form-control" id="choice-start-chosen-color" value="#FFFFFF"/>
+              <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+              </span>
+            </div>
+          </div>
           <legend>Text Position:</legend>
           <small class="form-text text-muted">Center the text on the box.</small>
           <div class="form-group">
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-text-not-centered-options' id="choice-text-start-centered" checked="">
-              <label class="custom-control-label" for="choice-text-start-centered">Centered</label>
+              <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-text-not-centered-options' id="choice-start-centered" checked="">
+              <label class="custom-control-label" for="choice-start-centered">Centered</label>
             </div>
           </div>
           <div id="choice-text-not-centered-options" class='collapse'>
@@ -398,13 +428,13 @@
                 <option value='right'>Right</option>
               </select>
             </div>
-            <legend>Margin X:</legend>
-            <small class="form-text text-muted">The margin will be at both sides of the box. You can change the value later.</small>
+            <legend>Offset X:</legend>
+            <small class="form-text text-muted">The offset from the side of the box, according to the text alignment. You can change the value later.</small>
             <div class="form-group">
-              <input type="number" class="form-control" id="choice-margin-x" value="0">
+              <input type="number" class="form-control" id="choice-offset-x" value="0">
             </div>
             <legend>Offset Y:</legend>
-            <small class="form-text text-muted">The offset will from the top of the box. You can change the value later.</small>
+            <small class="form-text text-muted">The offset from the top of the box. You can change the value later.</small>
             <div class="form-group">
               <input type="number" class="form-control" id="choice-offset-y" value="0">
             </div>
@@ -421,15 +451,15 @@
   </div>
 </div>
 
-<div class="modal" id="text-box-modal">
+<div class="modal" id="message-box-modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Text Box</h4>
+        <h4 class="modal-title">Add Message Box</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-        <p>The text box is the main element for diplaying text during the game. Text and dialog will be displayed over an image, letter by letter. </p>
+        <p>The message box is the main element for diplaying text during the game. Text and dialog will be displayed over an image, letter by letter. </p>
         <fieldset>
           <legend>Image file:</legend>
           <div class="form-group">
@@ -448,7 +478,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">X</span>
               </div>
-              <input type="number" class="form-control" id="text-box-start-x" value=0>
+              <input type="number" class="form-control" id="message-box-start-x" value=0>
             </div>
           </div>
           <div class="form-group">
@@ -456,25 +486,25 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Y</span>
               </div>
-              <input type="number" class="form-control" id="text-box-start-y" value=0>
+              <input type="number" class="form-control" id="message-box-start-y" value=0>
             </div>
           </div>
           <legend>Text Size:</legend>
           <small class="form-text text-muted">You can change the size later.</small>
           <div class="form-group">
-            <input class="form-control" type="number" id="text-box-start-size">
+            <input class="form-control" type="number" id="message-box-start-size">
           </div>
           <legend>Text Font:</legend>
           <small class="form-text text-muted">You can change the font later.</small>
           <div class="form-group">
-            <select class="form-control font-select" id="text-box-start-font">
+            <select class="form-control font-select" id="message-box-start-font">
             </select>
           </div>
           <legend>Color:</legend>
           <small class="form-text text-muted">You can change the color later.</small>
           <div class="form-group">
             <div class="input-group colorpicker-component">
-              <input type="text" class="form-control" id="text-box-start-color" value="#FFFFFF"/>
+              <input type="text" class="form-control" id="message-box-start-color" value="#FFFFFF"/>
               <span class="input-group-append">
                 <span class="input-group-text colorpicker-input-addon"><i></i></span>
               </span>
@@ -483,27 +513,31 @@
           <legend>Text Align:</legend>
           <small class="form-text text-muted">You can change the alignment later.</small>
           <div class="form-group">
-            <select class="form-control" id="text-box-start-align">
+            <select class="form-control" id="message-box-start-align">
               <option value='left'>Left</option>
               <option value='center'>Center</option>
               <option value='right'>Right</option>
             </select>
           </div>
-          <legend>Margin X:</legend>
-          <small class="form-text text-muted">The margin will be at both sides (left and right) of the box. The text will wrap inside the box by this margin. You can change the value later.</small>
+          <legend>Offset X:</legend>
+          <small class="form-text text-muted">The horizontal offset of the text with respect to the side of the box, either left of right depending on the alignment. You can change the value later.</small>
           <div class="form-group">
-            <input type="number" class="form-control" id="text-box-margin-x" value="0">
+            <input type="number" class="form-control" id="message-box-start-offset-x" value="0">
           </div>
           <legend>Offset Y:</legend>
-          <small class="form-text text-muted">The margin will be from the top of the box. You can change the value later.</small>
+          <small class="form-text text-muted">The vertical offset of the text with respect to the the top of the box. You can change the value later.</small>
           <div class="form-group">
-            <input type="number" class="form-control" id="text-box-offset-y" value="0">
+            <input type="number" class="form-control" id="message-box-start-offset-y" value="0">
           </div>
-          
+          <legend>Text Width:</legend>
+          <small class="form-text text-muted">The width of the text bounds to wrap the text around. You can change the value later.</small>
+          <div class="form-group">
+            <input type="number" class="form-control" id="message-box-start-text-width" value="0">
+          </div>
         </fieldset>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-name-box" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-primary upload-message-box" data-dismiss="modal">Add</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
 

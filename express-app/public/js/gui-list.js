@@ -1,4 +1,18 @@
 
+$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+     
+	$('.btn-new-gui').click(function () {
+		var name = $('#gui-name').val();
+		if (name.length < 1 || name.includes(' ')){
+			alert("Name problem")
+		}
+		var w = $('#gui-width').val();
+		var h = $('#gui-height').val();
+		window.location.href = `/edit?name=${name}&w=${w}&h=${h}`;
+	})
+});
+
 var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
 console.log(guiList)
 
@@ -21,13 +35,3 @@ for (var i = guiList.length - 1; i >= 0; i--) {
 	card.removeClass('gui-template');
 	card.removeClass('d-none');
 }
-
-$('.btn-new-gui').click(function () {
-	var name = $('#gui-name').val();
-	if (name.length < 1 || name.includes(' ')){
-		alert("Name problem")
-	}
-	var w = $('#gui-width').val();
-	var h = $('#gui-height').val();
-	window.location.href = `/edit?name=${name}&w=${w}&h=${h}`;
-})
