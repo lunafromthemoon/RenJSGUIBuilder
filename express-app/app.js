@@ -31,7 +31,7 @@ app.use('/fontawesome', express.static(__dirname + '/node_modules/@fortawesome/f
 app.use('/webfonts', express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/webfonts/'));
 
 
-app.use('/assets', express.static(__dirname + '/../guis/'));
+
 
 
 app.use("/", routes);

@@ -1,0 +1,33 @@
+<li class="nav-item collapse loading-bar-tools tools">
+  <div class="accordion mb-3" id="loading-bar-accordion">
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header border-light"><h3 class="mb-0">Loading Bar</h3></div>
+    </div>
+    <%- include('partials/position', {id:"loading-bar"}); %>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="loadingBarHeader4">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#loading-bar-state-tool" aria-expanded="false" aria-controls="loading-bar-state-tool">
+          State
+        </a>
+      </div>
+      <div id="loading-bar-state-tool" class="collapse" aria-labelledby="loadingBarHeader4" data-parent="#loading-bar-accordion">
+        <div class="card-body">
+          <div class="form-group">                
+            <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showFrame(0)"> Empty
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off" onclick="showFrame(1)"> Full
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-group btn-block" role="group">
+    <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
+  </div>
+</li>
+

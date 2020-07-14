@@ -1,0 +1,27 @@
+<div class="card text-white bg-secondary border-light">
+  <div class="card-header" id="<%= id %>PositionHeader">
+    <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-position-tool" aria-expanded="false" aria-controls="<%= id %>-position-tool">
+      Position
+    </a>
+  </div>
+  <div id="<%= id %>-position-tool" class="collapse" aria-labelledby="<%= id %>PositionHeader" data-parent="#<%= id %>-accordion">
+    <div class="card-body">
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">X</span>
+          </div>
+          <input type="number" class="form-control asset-x" value="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Y</span>
+          </div>
+          <input type="number" class="form-control asset-y" value="0">
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>

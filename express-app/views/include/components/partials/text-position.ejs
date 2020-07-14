@@ -1,0 +1,45 @@
+<div class="card text-white bg-secondary border-light">
+  <div class="card-header" id="<%= id %>TextPositionHeader">
+    <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-text-position-tool" aria-expanded="false" aria-controls="<%= id %>-text-position-tool">
+      Text Position
+    </a>
+  </div>
+  <div id="<%= id %>-text-position-tool" class="collapse" aria-labelledby="<%= id %>TextPositionHeader" data-parent="#<%= id %>-accordion">
+    <div class="card-body">
+      <div class="form-group">
+        <label for="label-color">Text Position</label>
+        <%if (id!='message-box') {%>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-text-not-centered-options' id="<%= id %>-text-centered" checked="">
+            <label class="custom-control-label" for="<%= id %>-text-centered">Centered</label>
+          </div>
+        <%}%>
+      </div>
+      <div id="<%= id %>-text-not-centered-options" class='<%if (id!="message-box") {%>collapse<%}%>'>
+        <div class="form-group">
+          <label for="<%= id %>-align">Text Align</label>
+          <select class="form-control" id="<%= id %>-align">
+            <option value='left'>Left</option>
+            <option value='center'>Center</option>
+            <option value='right'>Right</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="<%= id %>-offset-y">Offset X</label>
+          <input type="number" class="form-control" id="<%= id %>-offset-x" value="0">
+        </div>
+        <div class="form-group">
+          <label for="<%= id %>-offset-y">Offset Y</label>
+          <input type="number" class="form-control" id="<%= id %>-offset-y" value="0">
+        </div>
+        <%if (id=='message-box') {%>
+          <div class="form-group">
+            <label for="<%= id %>-text-width">Text Width</label>
+            <input type="number" class="form-control" id="<%= id %>-text-width" value="0">
+          </div>
+        <%}%>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -226,8 +226,8 @@ function showTools(tool){
     $(`#slot-value`).toggle((selected.config.binding == 'save' || selected.config.binding == 'load'))
   }
   if (tool == 'name-box'){
-    $('#name-box-centered').prop('checked',selected.config.isCentered);
-    $(`#name-box-not-centered-options`).toggle(!selected.config.isCentered)
+    $('#name-box-text-centered').prop('checked',selected.config.isCentered);
+    $(`#name-box-text-not-centered-options`).toggle(!selected.config.isCentered)
   }
   if (tool == 'choice') {
     $('#choice-box-centered').prop('checked',selected.config.isBoxCentered);

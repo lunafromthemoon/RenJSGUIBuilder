@@ -1,5 +1,16 @@
 const express = require("express"),
   router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+const guisDir = '../guis/';
+
+if (!fs.existsSync(guisDir)){
+  fs.mkdirSync(guisDir);
+}
+
+router.use('/assets', express.static(__dirname + '/' + guisDir));
 
 //GET home page.
 router.get("/", function(req, res) {
@@ -15,14 +26,6 @@ router.get("/edit", function(req, res) {
   res.render("edit", { title: "RenJS - "+name, name: name, resolution: resolution });
 });
 
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
-const guisDir = '../guis/';
-if (!fs.existsSync(guisDir)){
-  fs.mkdirSync(guisDir);
-}
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {

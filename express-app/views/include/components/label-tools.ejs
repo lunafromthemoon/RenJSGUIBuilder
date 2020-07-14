@@ -1,0 +1,27 @@
+<li class="nav-item collapse label-tools tools">
+  <div class="accordion mb-3" id="label-accordion">
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header border-light"><h3 class="mb-0">Label</h3></div>
+    </div>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="labelHeader1">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#label-text-tool" aria-expanded="false" aria-controls="label-text-tool">
+          Text
+        </a>
+      </div>
+      <div id="label-text-tool" class="collapse" aria-labelledby="labelHeader1" data-parent="#label-accordion">
+        <div class="card-body">
+          <div class="form-group">
+            <input class="form-control" id="label-text">
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('partials/position', {id:"label"}); %>
+    <%- include('partials/text-style', {id:"label"}); %>
+  </div>
+  <div class="btn-group btn-block" role="group">
+    <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+  </div>
+</li>
+

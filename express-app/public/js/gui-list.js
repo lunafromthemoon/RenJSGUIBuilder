@@ -17,7 +17,7 @@ var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
 console.log(guiList)
 
 if (!guiList) {
-	guiList = ['Quickstart2'];
+	guiList = [];
 	window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
 }
 

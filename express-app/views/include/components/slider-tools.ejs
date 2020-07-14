@@ -1,0 +1,56 @@
+<li class="nav-item collapse slider-tools tools">
+  <div class="accordion mb-3" id="slider-accordion">
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header border-light"><h3 class="mb-0">Slider</h3></div>
+    </div>
+    <%- include('partials/position', {id:"slider"}); %>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="sliderHeader3">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#slider-binding-tool" aria-expanded="false" aria-controls="slider-binding-tool">
+          Binding
+        </a>
+      </div>
+      <div id="slider-binding-tool" class="collapse" aria-labelledby="sliderHeader3" data-parent="#slider-accordion">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="slider-binding">Slider binding</label>
+            <select class="form-control binding" id="slider-binding">
+              <option value='music-volume'>Music Volume</option>
+              <option value='sfx-volume'>SFX Volume</option>
+              <option disabled>_________</option>
+              <option value='text-speed'>Text Speed</option>
+              <option value='auto-speed'>Autoplay Speed</option>
+              <option disabled>_________</option>
+              <option value='other'>Other property</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="sliderHeader4">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#slider-state-tool" aria-expanded="false" aria-controls="slider-state-tool">
+          State
+        </a>
+      </div>
+      <div id="slider-state-tool" class="collapse" aria-labelledby="sliderHeader4" data-parent="#slider-accordion">
+        <div class="card-body">
+          <div class="form-group">                
+            <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showFrame(0)"> Empty
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off" onclick="showFrame(1)"> Full
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-group btn-block" role="group">
+    <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
+  </div>
+</li>
+
