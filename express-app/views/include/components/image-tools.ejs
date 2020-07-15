@@ -1,12 +1,10 @@
-<li class="nav-item collapse image-tools tools">
-  <div class="accordion mb-3" id="image-accordion">
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header border-light"><h3 class="mb-0">Image</h3></div>
-    </div>
-    <%- include('partials/position', {id:"image"}); %>
-  </div>
-  <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
-  </div>
-</li>
-
+<% id=(includeTitle) ? "image" : "image-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+	<%if (includeTitle) {%>
+		<div class="card text-white bg-secondary border-light">
+		  <div class="card-header border-light"><h3 class="mb-0">Image</h3></div>
+		</div>
+	<%}%>
+	<%- include('partials/position', {id: id}); %>
+</div>
+  

@@ -1,301 +1,33 @@
-<div class="modal" id="image-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
+<%- include('components/partials/modal-header', {id:"image",title:"Image"}); %>
+  <%- include('components/partials/upload-image', {id:"image"}); %>
+  <%- include('components/image-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"image",type:"list"}); %>
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Add Image</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
+<%- include('components/partials/modal-header', {id:"animation",title:"Animation"}); %>
+  <p>The animation is a spritesheet that will loop repeteadly. A spritesheet is a single image that contains many frames, read from the top-left frame to the bottom right.</p>
+  <%- include('components/partials/upload-image', {id:"animation"}); %>
+  <%- include('components/partials/frame-size', {id:"animation"}); %>
+  <%- include('components/animation-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"animation",type:"list"}); %>
 
-      <!-- Modal body -->
-      <div class="modal-body">
-        <fieldset>
-          <legend>Image file:</legend>
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="image-input">
-                <label class="custom-file-label" for="image-input">Choose file</label>
-              </div>
-            </div>
-            <img class="card-img-top img-preview" thumbnail="img/thumbnail-image.svg" src="index.svg" alt="Card image">
-          </div>
-          <legend>Position:</legend>
-          <small id="imageHelp" class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="image-start-x" default="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="image-start-y" default="0">
-            </div>
-          </div>
-        </fieldset>
-      </div>
+<%- include('components/partials/modal-header', {id:"button",title:"Button"}); %>
+  <p>A button is a spritesheet with 3 frames: normal view, hover view and pressed view. The button has a binding to an action, e.g. start the game.</p>
+  <%- include('components/partials/upload-image', {id:"button"}); %>
+  <%- include('components/partials/frame-size', {id:"button"}); %>
+  <%- include('components/button-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"button",type:"list"}); %>
 
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary upload-list-component" component='image' data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+<%- include('components/partials/modal-header', {id:"slider",title:"Slider"}); %>
+  <p>A slider is a handy element to set a numeric option between two (min and max)values. E.g. the music volume or the speed at which the text will appear. The element is composed of an image with two frames, empty and full, and it's assumed the minimum value will be at the left side and the maximum at the right side.</p>
+  <%- include('components/partials/upload-image', {id:"slider"}); %>
+  <%- include('components/partials/frame-size', {id:"slider"}); %>
+  <%- include('components/slider-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"slider",type:"list"}); %>
 
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="animation-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Animation</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>The animation is a spritesheet that will loop repeteadly.</p>
-        <fieldset>
-          <legend>Image file:</legend>
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="image-input">
-                <label class="custom-file-label" for="image-input">Choose file</label>
-              </div>
-            </div>
-            <img class="card-img-top img-preview" thumbnail="img/index.svg" src="index.svg" alt="Card image">
-          </div>
-          <legend>Frame size:</legend>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">W</span>
-              </div>
-              <input type="number" class="form-control asset-width" id="animation-start-width">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">H</span>
-              </div>
-              <input type="number" class="form-control asset-height" id="animation-start-height">
-            </div>
-          </div>
-          <legend>Position:</legend>
-          <small class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="animation-start-x" value="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="animation-start-y" value="0">
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary upload-list-component" component='animation' data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="button-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Add Button</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <p>A button is a spritesheet with 3 frames: normal view, hover view and pressed view. The button has a binding to an action, e.g. start the game.</p>
-        <fieldset>
-          <legend>Image file:</legend>
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="image-input">
-                <label class="custom-file-label" for="image-input">Choose file</label>
-              </div>
-            </div>
-            <img class="card-img-top img-preview" thumbnail="img/thumbnail-button.svg" src="index.svg" alt="Card image">
-          </div>
-          <legend>Frame size:</legend>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">W</span>
-              </div>
-              <input type="number" class="form-control asset-width" id="button-start-width">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">H</span>
-              </div>
-              <input type="number" class="form-control asset-height" id="button-start-height">
-            </div>
-          </div>
-          <legend>Position:</legend>
-          <small id="imageHelp" class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="button-start-x" value="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="button-start-y" value="0">
-            </div>
-          </div>
-          <legend>Button binding:</legend>
-          <small id="imageHelp" class="form-text text-muted">You can change the binding later.</small>
-          <div class="form-group">
-            <select class="form-control" id="button-start-binding">
-              <option value='start'>Start Game</option>
-              <option value='main'>Open Main Menu</option>
-              <option value='settings'>Open Settings Menu</option>
-              <option value='saveload'>Open Save/Load Menu</option>
-              <option disabled>_________</option>
-              <option value='save'>Save in slot</option>
-              <option value='load'>Load from slot</option>
-              <option disabled>_________</option>
-              <option value='auto'>Autoplay</option>
-              <option value='skip'>Skip (autoplay really fast)</option>
-              <option value='mute'>Mute sound</option>
-              <option disabled>_________</option>
-              <option value='other'>Other action</option>
-            </select>
-          </div>
-          <div class="form-group collapse" id='slot-start-value'>
-            <legend>Slot:</legend>
-            <small class="form-text text-muted">The slot is a number that will be used as index for a save game. You can have as many save slots as you want. You can change the value later.</small>
-            <div class="form-group">
-              <input class="form-control" type="number" id="button-start-slot" value="0">
-            </div>
-          </div>    
-        </fieldset>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary upload-list-component" component='button' data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="slider-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Slider</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>A slider is a handy element to set a numeric option between two (min and max)values. E.g. the music volume or the speed at which the text will appear. The element is composed of an image with two frames, empty and full, and it's assumed the minimum value will be at the left side and the maximum at the right side.</p>
-        <fieldset>
-          <legend>Image file:</legend>
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="image-input">
-                <label class="custom-file-label" for="image-input">Choose file</label>
-              </div>
-            </div>
-            <img class="card-img-top img-preview" thumbnail="img/thumbnail-lb.svg" src="index.svg" alt="Card image">
-          </div>
-          <legend>Frame size:</legend>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">W</span>
-              </div>
-              <input type="number" class="form-control asset-width" id="slider-start-width">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">H</span>
-              </div>
-              <input type="number" class="form-control asset-height" id="slider-start-height">
-            </div>
-          </div>
-          <legend>Position:</legend>
-          <small class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="slider-start-x" value="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="slider-start-y" value="0">
-            </div>
-          </div>
-          <legend>Slider binding:</legend>
-          <small class="form-text text-muted">You can change the binding later.</small>
-          <div class="form-group">
-            <select class="form-control" id="slider-start-binding">
-              <option value='music-volume'>Music Volume</option>
-              <option value='sfx-volume'>SFX Volume</option>
-              <option disabled>_________</option>
-              <option value='text-speed'>Text Speed</option>
-              <option value='auto-speed'>Autoplay Speed</option>
-              <option disabled>_________</option>
-              <option value='other'>Other property</option>
-            </select>
-          </div>
-        </fieldset>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary upload-list-component" component='slider' data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
+<%- include('components/partials/modal-header', {id:"label",title:"Label"}); %>
+  <p>A label is just a text, with no particular purpose or behaviour.</p>
+  <%- include('components/label-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"label",type:"label"}); %>
 
 <div class="modal" id="fonts-modal">
   <div class="modal-dialog">
@@ -332,70 +64,7 @@
   </div>
 </div>
 
-<div class="modal" id="label-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Label</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>A label is just a text, with no particular purpose or behaviour.</p>
-        <fieldset>
-          <legend>Text:</legend>
-          <small class="form-text text-muted">You can change the text later.</small>
-          <div class="form-group">
-            <input class="form-control" id="label-start-text">
-          </div>
-          <legend>Size:</legend>
-          <small class="form-text text-muted">You can change the size later.</small>
-          <div class="form-group">
-            <input class="form-control" type="number" id="label-start-size">
-          </div>
-          <legend>Font:</legend>
-          <small class="form-text text-muted">You can change the font later.</small>
-          <div class="form-group">
-            <select class="form-control font-select" id="label-start-font">
-            </select>
-          </div>
-          <legend>Color:</legend>
-          <small class="form-text text-muted">You can change the color later.</small>
-          <div class="form-group">
-            <div class="input-group colorpicker-component">
-              <input type="text" class="form-control" id="label-start-color" value="#FFFFFF"/>
-              <span class="input-group-append">
-                <span class="input-group-text colorpicker-input-addon"><i></i></span>
-              </span>
-            </div>
-          </div>
-          <legend>Position:</legend>
-          <small class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="label-start-x" value="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="label-start-y" value="0">
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary add-label" data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
 
-    </div>
-  </div>
-</div>
 
 <div class="modal" id="saveslot-modal">
   <div class="modal-dialog">

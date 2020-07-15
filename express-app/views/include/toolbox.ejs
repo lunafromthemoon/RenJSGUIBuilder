@@ -34,24 +34,64 @@
           </ul>
           <ul class="navbar-nav">
             <li class="nav-item collapse background-tools tools">
-              <div class="accordion mb-3" id="image-accordion">
+              <div class="accordion mb-3" id="background-accordion">
                 <div class="card text-white bg-secondary border-light">
-                  <div class="card-header border-light"><h3 class="mb-0">Image</h3></div>
+                  <div class="card-header border-light"><h3 class="mb-0">Background</h3></div>
                 </div>
               </div>
-              <div class="btn-group btn-block" role="group">
-                <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
-              </div>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
-            <%- include('components/loading-bar-tools'); %>
-            <%- include('components/image-tools'); %>
-            <%- include('components/button-tools'); %>
-            <%- include('components/slider-tools'); %>
-            <%- include('components/label-tools'); %>
-            <%- include('components/ctc-tools'); %>
-            <%- include('components/name-box-tools'); %>
-            <%- include('components/message-box-tools'); %>
-            <%- include('components/choice-tools'); %>
+
+            <li class="nav-item collapse loading-bar-tools tools">
+              <%- include('components/loading-bar-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+
+            <li class="nav-item collapse name-box-tools tools">
+              <%- include('components/name-box-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+
+            <li class="nav-item collapse ctc-tools tools">
+              <%- include('components/ctc-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+
+            <li class="nav-item collapse message-box-tools tools">
+              <%- include('components/message-box-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+
+            <li class="nav-item collapse choice-tools tools">
+              <%- include('components/choice-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+            
+            <li class="nav-item collapse interrupt-tools tools">
+              <%- include('components/interrupt-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'single'}); %>
+            </li>
+            
+            <li class="nav-item collapse image-tools tools">
+              <%- include('components/image-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'list'}); %>
+              
+            </li>
+            <li class="nav-item collapse button-tools tools">
+              <%- include('components/button-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'list'}); %>
+            </li>
+            <li class="nav-item collapse slider-tools tools">
+              <%- include('components/slider-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'list'}); %>
+            </li>
+            <li class="nav-item collapse label-tools tools">
+              <%- include('components/label-tools', {includeTitle:true}); %>
+              <%- include('components/partials/remove-button', {type:'list'}); %>
+            </li>
+
+
+            
             
         </ul>
 

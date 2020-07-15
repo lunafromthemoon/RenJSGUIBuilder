@@ -1,29 +1,27 @@
-<li class="nav-item collapse message-box-tools tools">
-  <div class="accordion mb-3" id="message-box-accordion">
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header border-light"><h3 class="mb-0">Message Box</h3></div>
+<% id=(includeTitle) ? "message-box" : "message-box-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+  <%if (includeTitle) {%>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header border-light"><h3 class="mb-0">Message Box</h3></div>
+  </div>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="messageBoxHeader4">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#message-box-sample-tool" aria-expanded="false" aria-controls="message-box-sample-tool">
+        Sample Text
+      </a>
     </div>
-    <%- include('partials/position', {id:"message-box"}); %>
-    <%- include('partials/text-style', {id:"message-box"}); %>
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header" id="messageBoxHeader4">
-        <a class="collapsed" type="button" data-toggle="collapse" data-target="#message-box-sample-tool" aria-expanded="false" aria-controls="message-box-sample-tool">
-          Sample Text
-        </a>
-      </div>
-      <div id="message-box-sample-tool" class="collapse" aria-labelledby="messageBoxHeader4" data-parent="#message-box-accordion">
-        <div class="card-body">
-          <div class="form-group">
-            <!-- <input type="text" class="form-control text" id="message-box-sample"/> -->
-            <textarea class="form-control" id="message-box-sample" rows="3"></textarea>
-          </div>
+    <div id="message-box-sample-tool" class="collapse" aria-labelledby="messageBoxHeader4" data-parent="#message-box-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <textarea class="form-control" id="message-box-sample" rows="3"></textarea>
         </div>
       </div>
     </div>
-    <%- include('partials/text-position', {id:"message-box"}); %>
   </div>
-  <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
-  </div>
-</li>
+  <%}%>
+  <%- include('partials/position', {id:id}); %>
+  <%- include('partials/text-style', {id:id}); %>
+  
+  <%- include('partials/text-position', {id:id}); %>
+</div>
 

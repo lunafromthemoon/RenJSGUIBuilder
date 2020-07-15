@@ -1,9 +1,10 @@
-<% id=(includeTitle) ? "ctc" : "ctc-start" %>
+<% id=(includeTitle) ? "animation" : "animation-start" %>
 <div class="accordion mb-3" id="<%= id %>-accordion">
 	<%if (includeTitle) {%>
 		<div class="card text-white bg-secondary border-light">
-		  <div class="card-header border-light"><h3 class="mb-0">Click to continue</h3></div>
+		  <div class="card-header border-light"><h3 class="mb-0">Animation</h3></div>
 		</div>
 	<%}%>
 	<%- include('partials/position', {id: id}); %>
 </div>
+  

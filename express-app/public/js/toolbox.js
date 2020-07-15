@@ -1,18 +1,17 @@
 function showFrame(frame){
-  if (selected){
-    selected.frame = frame;
-  }
+  if (!selected) return;
+  selected.frame = frame;
 }
 
 $('.remove-single-selected').click(function(e){
-  console.log(selected.config.id)
+  if (!selected) return;
   delete gui.assets[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
 })
 
-$('.remove-selected').click(function(e){
-  console.log(selected.listComponent)
+$('.remove-list-selected').click(function(e){
+  if (!selected) return;
   var list = gui.assets[currentMenu][selected.listComponent];
   list.splice(list.findIndex(item => item.id === selected.config.id), 1)
   selected.destroy();
@@ -20,38 +19,37 @@ $('.remove-selected').click(function(e){
 })
 
 $("#label-text").on('input',function (argument) {
+  if (!selected) return;
   selected.text = $("#label-text").val();
   selected.config.text = $("#label-text").val();
 })
 
-
-
-$('#button-binding').on('change',function(e){
-  var val = $("#button-binding").val();
-  $("#slot-value").toggle((val =="save" || val == "load"));
-})
-
 $('.binding').on('change',function(e){
+  if (!selected) return;
   selected.config.binding = $(this).val();
 })
 
 $('.slot').on('input',function(e){
+  if (!selected) return;
   selected.config.slot = $(this).val();
 })
 
 $('.asset-x').on('input',function(e){
+  if (!selected) return;
   var x = parseInt($(this).val());
   selected.x = x;
   selected.config.x = x;
 })
 
 $('.asset-y').on('input',function(e){
+  if (!selected) return;
   var y = parseInt($(this).val());
   selected.y = y;
   selected.config.y = y;
 })
 
 $(".text-size").on('input',function (argument) {
+  if (!selected) return;
   var targetName = $(this).attr('target');
   var target = (targetName) ? selected[targetName] : selected;
   var size = parseInt($(this).val()) 
@@ -66,6 +64,7 @@ $(".text-size").on('input',function (argument) {
 })
 
 $('.text-font').on('change',function(e){
+  if (!selected) return;
   var targetName = $(this).attr('target');
   var target = (targetName) ? selected[targetName] : selected;
   target.font = $(this).val();
@@ -78,6 +77,7 @@ $('.text-font').on('change',function(e){
 })
 
 $('.text-color').on('change',function(e){
+  if (!selected) return;
   var targetName = $(this).attr('target');
   var target = (targetName) ? selected[targetName] : selected;
   target.fill = $(this).val();
@@ -90,6 +90,7 @@ $('.text-color').on('change',function(e){
 });
 
 $('#choice-chosen-color').on('change',function(e){
+  if (!selected) return;
   selected.config['chosen-color'] = $(this).val();
   if (selected.nextChoices.length>0){
     selected.nextChoices[selected.nextChoices.length-1].text.fill = $(this).val();
@@ -98,13 +99,8 @@ $('#choice-chosen-color').on('change',function(e){
 
 
 
-
-$('.show-more-when-off').on('change',function(e){
-  var target = $(this).attr('target')
-  $(`#${target}`).toggle(!($(this).is(':checked')))
-});
-
-$('#name-box-centered').on('change',function() {
+$('#name-box-text-centered').on('change',function() {
+  if (!selected) return;
   selected.config.isCentered = $(this).is(':checked');
   if(!selected.config.isCentered){
     $('#name-box-offset-x').val(0)
@@ -116,45 +112,54 @@ $('#name-box-centered').on('change',function() {
 })
 
 $('#name-box-align').on('change',function () {
+  if (!selected) return;
   selected.config.align = $(this).val();
   changeTextPosition(selected,selected.name,selected.config)
 })
 
 $('#name-box-offset-x').on('input',function () {
+  if (!selected) return;
   selected.config['offset-x'] = $(this).val();
   changeTextPosition(selected,selected.name,selected.config)
 })
 
 $('#name-box-offset-y').on('input',function () {
+  if (!selected) return;
   selected.config['offset-y'] = $(this).val();
   changeTextPosition(selected,selected.name,selected.config)
 })
 
 $('#message-box-sample').on('input',function () {
+  if (!selected) return;
   selected.message.text = $(this).val();
 })
 
 $('#message-box-offset-x').on('input',function () {
+  if (!selected) return;
   selected.config['offset-x'] = $(this).val();
   selected.message.x = $(this).val();
 })
 
 $('#message-box-offset-y').on('input',function () {
+  if (!selected) return;
   selected.config['offset-y'] = $(this).val();
   selected.message.y = $(this).val();
 })
 
 $('#message-box-align').on('change',function () {
+  if (!selected) return;
   selected.config.align = $(this).val();
   selected.message.align = $(this).val();
 })
 
 $('#message-box-text-width').on('input',function () {
+  if (!selected) return;
   selected.config['text-width'] = $(this).val();
   selected.message.wordWrapWidth = $(this).val();
 })
 
 $('#choice-sample').on('input',function () {
+  if (!selected) return;
   var samples = $(this).val();
   if (samples<1){
     samples = 1;
@@ -184,11 +189,13 @@ $('#choice-sample').on('input',function () {
 })
 
 $('#choice-separation').on('input',function () {
+  if (!selected) return;
   selected.config.separation = $(this).val();
   arrangeChoices();
 })
 
 $('#choice-box-centered').on('change',function() {
+  if (!selected) return;
   selected.config.isBoxCentered = $(this).is(':checked');
   if(!selected.config.isBoxCentered){
     selected.config.x = selected.x;
@@ -242,3 +249,13 @@ function showTools(tool){
   // $('#choice-color').trigger('change');
   $(`.${tool}-tools`).find('.colorpicker-component > input').trigger('change');
 }
+
+$('#button-binding').on('change',function(e){
+  var val = $("#button-binding").val();
+  $("#slot-value").toggle((val =="save" || val == "load"));
+})
+
+$('.show-more-when-off').on('change',function(e){
+  var target = $(this).attr('target')
+  $(`#${target}`).toggle(!($(this).is(':checked')))
+});

@@ -1,48 +1,48 @@
-<li class="nav-item collapse button-tools tools">
-  <div class="accordion mb-3" id="button-accordion">
+<% id=(includeTitle) ? "button" : "button-start" %>
+
+<div class="accordion mb-3" id="<%= id %>-accordion">
+  <%if (includeTitle) {%>
     <div class="card text-white bg-secondary border-light">
       <div class="card-header border-light"><h3 class="mb-0">Button</h3></div>
     </div>
-    <%- include('partials/position', {id:"button"}); %>
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header" id="buttonHeader3">
-        <a class="collapsed" type="button" data-toggle="collapse" data-target="#button-binding-tool" aria-expanded="false" aria-controls="button-binding-tool">
-          Binding
-        </a>
-      </div>
-      <div id="button-binding-tool" class="collapse" aria-labelledby="buttonHeader3" data-parent="#button-accordion">
-        <div class="card-body">
-          <div class="form-group">
-            <label for="button-binding">Button binding</label>
-            <select class="form-control binding" id="button-binding">
-              <option value='start'>Start Game</option>
-              <option value='return'>Return to previous menu/game</option>
-              <option value='main'>Open Main Menu</option>
-              <option value='settings'>Open Settings Menu</option>
-              <option value='saveload'>Open Save/Load Menu</option>
-              <option disabled>_________</option>
-              <option value='save'>Save in slot</option>
-              <option value='load'>Load from slot</option>
-              <option disabled>_________</option>
-              <option value='auto'>Autoplay</option>
-              <option value='skip'>Skip (autoplay really fast)</option>
-              <option value='mute'>Mute sound</option>
-              <option disabled>_________</option>
-              <option value='other'>Other action</option>
-            </select>
-          </div>
-          <div class="form-group collapse" id='slot-value'>
-            <div class="form-group">
-              <label for="button-slot">Slot</label>
-              <input class="form-control slot" type="number" id="button-slot" value="0">
-            </div>
-          </div>  
+  <%}%>
+  <%- include('partials/position', {id:id}); %>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>Header3">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-binding-tool" aria-expanded="false" aria-controls="<%= id %>-binding-tool">
+        Binding
+      </a>
+    </div>
+    <div id="<%= id %>-binding-tool" class="collapse" aria-labelledby="<%= id %>Header3" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <label for="<%= id %>-binding">Button binding</label>
+          <select class="form-control binding" id="<%= id %>-binding">
+            <option value='start'>Start Game</option>
+            <option value='return'>Return to previous menu/game</option>
+            <option value='main'>Open Main Menu</option>
+            <option value='settings'>Open Settings Menu</option>
+            <option value='saveload'>Open Save/Load Menu</option>
+            <option disabled>_________</option>
+            <option value='save'>Save in slot</option>
+            <option value='load'>Load from slot</option>
+            <option disabled>_________</option>
+            <option value='auto'>Autoplay</option>
+            <option value='skip'>Skip (autoplay really fast)</option>
+            <option value='mute'>Mute sound</option>
+            <option disabled>_________</option>
+            <option value='other'>Other action</option>
+          </select>
         </div>
+        <div class="form-group collapse" id='<%= id %>-slot-value'>
+          <div class="form-group">
+            <label for="<%= id %>-slot">Slot</label>
+            <input class="form-control slot" type="number" id="<%= id %>-slot" value="0">
+          </div>
+        </div>  
       </div>
     </div>
   </div>
-  <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-outline-light remove-selected"><i class="fas fa-trash-alt" ></i></button>
-  </div>
-</li>
+</div>
+
 

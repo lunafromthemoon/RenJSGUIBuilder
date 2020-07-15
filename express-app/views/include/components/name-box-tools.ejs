@@ -1,14 +1,13 @@
-<li class="nav-item collapse name-box-tools tools">
-  <div class="accordion mb-3" id="name-box-accordion">
+<% id=(includeTitle) ? "name-box" : "name-box-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+  <%if (includeTitle) {%>
     <div class="card text-white bg-secondary border-light">
       <div class="card-header border-light"><h3 class="mb-0">Name Box</h3></div>
     </div>
-    <%- include('partials/position', {id:"name-box"}); %>
-    <%- include('partials/text-style', {id:"name-box"}); %>
-    <%- include('partials/text-position', {id:"name-box"}); %>
-  </div>
-  <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
-  </div>
-</li>
+  <%}%>
+  <%- include('partials/position', {id:id}); %>
+  <%- include('partials/text-style', {id:id}); %>
+  <%- include('partials/text-position', {id:id}); %>
+</div>
+
 

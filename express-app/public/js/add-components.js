@@ -7,8 +7,8 @@ $('.custom-file-input').on('change',function(e){
         var fontName = fileName.split(".")[0];
         $('#font-name').val(fontName)
       } else {
-        var widthComponent = $(this).closest('fieldset').find('.asset-width');
-        var heightComponent = $(this).closest('fieldset').find('.asset-height');
+        var widthComponent = $(this).closest('.modal-body').find('.asset-width');
+        var heightComponent = $(this).closest('.modal-body').find('.asset-height');
         var reader = new FileReader();
         reader.onload = function (file) {
           var image = new Image();
@@ -64,32 +64,32 @@ $('.upload-list-component').click(function(e){
   addComponent('gen',component,listComponents[component])
 })
 
-$('.upload-bg').click(function(e){
+$('.upload-bg-component').click(function(e){
   addComponent(currentMenu+'background','background',[])
 })
 
-$('.upload-loading-bar').click(function(e){
+$('.upload-loading-bar-component').click(function(e){
   addComponent('loading-bar','loading-bar',['x','y','width','height'])
 })
 
-$('.upload-choice').click(function(e){
+$('.upload-choice-component').click(function(e){
   var choiceType = $('#choice-start-type input:checked').val();
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
   var isCentered = $('#choice-start-centered').is(':checked');
   addComponent(choiceType,choiceType,['x','y','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isCentered:isCentered,isBoxCentered:isBoxCentered,choiceType:choiceType})
 })
 
-$('.upload-ctc').click(function(e){
+$('.upload-ctc-component').click(function(e){
   var ctcStyle = $('#ctc-start-style input:checked').val();
   addComponent('ctc','ctc',['x','y','width','height'],{animationStyle:ctcStyle})
 })
 
-$('.upload-name-box').click(function(e){
+$('.upload-name-box-component').click(function(e){
   var isCentered = $('#name-box-start-centered').is(':checked');
   addComponent('name-box','name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isCentered:isCentered})
 })
 
-$('.upload-message-box').click(function(e){
+$('.upload-message-box-component').click(function(e){
   addComponent('message-box','message-box',['x','y','size','font','color','align','offset-x','offset-y','text-width'])
 })
 
@@ -103,10 +103,10 @@ $('.upload-font').click(function(e){
 
 $('#button-start-binding').on('change',function(e){
   var val = $("#button-start-binding").val();
-  $("#slot-start-value").toggle((val =="save" || val == "load"));
+  $("#button-start-slot-value").toggle((val =="save" || val == "load"));
 })
 
-$('.add-label').click(function(e){
+$('.upload-label-component').click(function(e){
   var text = $("#label-start-text").val();
   var size = $("#label-start-size").val();
   var x = $("#label-start-x").val();
@@ -117,6 +117,8 @@ $('.add-label').click(function(e){
 })
 
 $('.modal').on('shown.bs.modal', function (e) {
+  $('.tools').hide()
+  selected = null;
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");

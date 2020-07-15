@@ -1,0 +1,86 @@
+<% id=(includeTitle) ? "interrupt" : "interrupt-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+  <%if (includeTitle) {%>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header border-light"><h3 class="mb-0">Interrupts</h3></div>
+    </div>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="interruptBoxHeader4">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#interrupt-sample-tool" aria-expanded="false" aria-controls="interrupt-sample-tool">
+          Display #
+        </a>
+      </div>
+      <div id="interrupt-sample-tool" class="collapse" aria-labelledby="interruptBoxHeader4" data-parent="#interrupt-accordion">
+        <div class="card-body">
+          <div class="form-group">
+            <input type="number" class="form-control" id="interrupt-sample"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="interruptBoxHeader5">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#interrupt-state-tool" aria-expanded="false" aria-controls="interrupt-state-tool">
+          State
+        </a>
+      </div>
+      <div id="interrupt-state-tool" class="collapse" aria-labelledby="interruptBoxHeader5" data-parent="#interrupt-accordion">
+        <div class="card-body">
+          <div class="form-group">                
+            <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showFrame(0)"> Normal
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off" onclick="showFrame(1)"> Urgent
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <%}%>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>LayoutHeader">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-layout-tool" aria-expanded="false" aria-controls="<%= id %>-layout-tool">
+        Layout
+      </a>
+    </div>
+    <div id="<%= id %>-layout-tool" class="collapse" aria-labelledby="<%= id %>LayoutHeader" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <small class="form-text text-muted">The interrupt can be place inline with the choices. This means it will have the same layout as the choices, and it will appear along with them. Otherwise, the interrupts will form their own list, separated from the choices</small>
+        <div class="form-group">
+          <label for="label-color">Box Position</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-box-not-inline-options' id="<%= id %>-box-inline" checked="">
+            <label class="custom-control-label" for="<%= id %>-box-inline">Inline with choices</label>
+          </div>
+        </div>
+        <div id='<%= id %>-box-not-inline-options'>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">X</span>
+              </div>
+              <input type="number" class="form-control asset-x" id="<%= id %>-box-x" value="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Y</span>
+              </div>
+              <input type="number" class="form-control asset-y" id="<%= id %>-box-y" value="0">
+            </div>
+          </div>  
+          <div class="form-group">
+            <label for="<%= id %>-separation">Separation</label>
+            <input type="number" class="form-control" id="<%= id %>-separation"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/text-style', {id:id}); %>
+  <%- include('partials/text-position', {id:id}); %>
+</div>

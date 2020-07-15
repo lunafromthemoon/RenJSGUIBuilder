@@ -1,5 +1,6 @@
-<li class="nav-item collapse choice-tools tools">
-  <div class="accordion mb-3" id="choice-accordion">
+<% id=(includeTitle) ? "choice" : "choice-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+  <%if (includeTitle) {%>
     <div class="card text-white bg-secondary border-light">
       <div class="card-header border-light"><h3 class="mb-0">Choices</h3></div>
     </div>
@@ -18,70 +19,69 @@
         </div>
       </div>
     </div>
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header" id="choiceLayoutHeader">
-        <a class="collapsed" type="button" data-toggle="collapse" data-target="#choice-layout-tool" aria-expanded="false" aria-controls="choice-layout-tool">
-          Layout
-        </a>
-      </div>
-      <div id="choice-layout-tool" class="collapse" aria-labelledby="choiceLayoutHeader" data-parent="#choice-accordion">
-        <div class="card-body">
+  <%}%>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>LayoutHeader">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-layout-tool" aria-expanded="false" aria-controls="<%= id %>-layout-tool">
+        Layout
+      </a>
+    </div>
+    <div id="<%= id %>-layout-tool" class="collapse" aria-labelledby="<%= id %>LayoutHeader" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <small class="form-text text-muted">The choices can be automatically centered in the middle of the screen. If you don't want them to be centered, the position will indicate the position of the uppermost choice box. Further choice boxes will be added under the first one.</small>
+        <div class="form-group">
+          <label for="label-color">Box Position</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-box-not-centered-options' id="<%= id %>-box-centered" checked="">
+            <label class="custom-control-label" for="<%= id %>-box-centered">Centered</label>
+          </div>
+        </div>
+        <div id='<%= id %>-box-not-centered-options'>
           <div class="form-group">
-            <label for="label-color">Box Position</label>
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input show-more-when-off" target='choice-box-not-centered-options' id="choice-box-centered" checked="">
-              <label class="custom-control-label" for="choice-box-centered">Centered</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">X</span>
+              </div>
+              <input type="number" class="form-control asset-x" id="<%= id %>-box-x" value="0">
             </div>
           </div>
-          <div id='choice-box-not-centered-options'>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">X</span>
-                </div>
-                <input type="number" class="form-control asset-x" id="choice-box-x" value="0">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Y</span>
-                </div>
-                <input type="number" class="form-control asset-y" id="choice-box-y" value="0">
-              </div>
-            </div>  
-          </div>
           <div class="form-group">
-            <label for="choice-separation">Separation</label>
-            <input type="number" class="form-control" id="choice-separation"/>
-          </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Y</span>
+              </div>
+              <input type="number" class="form-control asset-y" id="<%= id %>-box-y" value="0">
+            </div>
+          </div>  
+        </div>
+        <div class="form-group">
+          <label for="<%= id %>-separation">Separation</label>
+          <input type="number" class="form-control" id="<%= id %>-separation"/>
         </div>
       </div>
     </div>
-    <%- include('partials/text-style', {id:"choice"}); %>
-    <div class="card text-white bg-secondary border-light">
-      <div class="card-header" id="messageBoxHeader5">
-        <a class="collapsed" type="button" data-toggle="collapse" data-target="#choice-chosen-tool" aria-expanded="false" aria-controls="choice-chosen-tool">
-          Previously chosen options
-        </a>
-      </div>
-      <div id="choice-chosen-tool" class="collapse" aria-labelledby="messageBoxHeader5" data-parent="#choice-accordion">
-        <div class="card-body">
-          <div class="form-group">
-            <label for="choice-chosen-color">Text Color</label>
-            <div class="input-group colorpicker-component">
-              <input type="text" class="form-control" id="choice-chosen-color" />
-              <span class="input-group-append">
-                <span class="input-group-text colorpicker-input-addon"><i></i></span>
-              </span>
-            </div>
+  </div>
+  <%- include('partials/text-style', {id:id}); %>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>Header5">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-chosen-tool" aria-expanded="false" aria-controls="<%= id %>-chosen-tool">
+        Previously chosen options
+      </a>
+    </div>
+    <div id="<%= id %>-chosen-tool" class="collapse" aria-labelledby="<%= id %>Header5" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <label for="<%= id %>-chosen-color">Text Color</label>
+          <div class="input-group colorpicker-component">
+            <input type="text" class="form-control" id="<%= id %>-chosen-color" />
+            <span class="input-group-append">
+              <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
           </div>
         </div>
+        <small class="form-text text-muted">The choices the player makes during the game will be recorded as they play. When they replay the game, the previously chosen options can be displayed in a different color.</small>
       </div>
     </div>
-    <%- include('partials/text-position', {id:"choice"}); %>
   </div>
-  <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-outline-light remove-single-selected"><i class="fas fa-trash-alt" ></i></button>
-  </div>
-</li>
+  <%- include('partials/text-position', {id:id}); %>
+</div>
