@@ -112,16 +112,9 @@ var gameLoader = {
       delete config.width
       delete config.height
     }
-    // var preloadImage = ['image','background','name-box','message-box'];
-    // if (preloadImage.includes(component)){
-    //   this.preloadImage(config.id,config.fileName,function(){
-    //     this.loadComponent(componentName,config);
-    //   })
-    // } else {
-      this.preloadSpritesheet(config.id,config.fileName,config.width,config.height,function(){
-        this.loadComponent(componentName,config);
-      })
-    // }
+    this.preloadSpritesheet(config.id,config.fileName,config.width,config.height,function(){
+      this.loadComponent(componentName,config);
+    })
   },
 
   // preload assets
@@ -223,13 +216,6 @@ var gameLoader = {
     } else {
       this.makeDraggable(chBox,'choice',['sample','separation','font','color','chosen-color','size','align','offset-x','offset-y'],true)
     }
-
-    
-    
-
-    
-    // add text
-    // this.makeDraggable(sprite,chBox.choiceType)
   },
 
   loadNameBox: function(config) {
@@ -317,7 +303,7 @@ function createChoiceBox(start_x,start_y,index,config) {
 }
 
 function changeTextPosition(sprite,text, config) {
-  if (config.isCentered) {
+  if (config.isTextCentered) {
       text.setTextBounds(0,0, sprite.width, sprite.height);
       text.boundsAlignH = 'center';
       text.boundsAlignV = 'middle';

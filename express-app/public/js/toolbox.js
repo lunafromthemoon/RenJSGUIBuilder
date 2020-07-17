@@ -97,12 +97,65 @@ $('#choice-chosen-color').on('change',function(e){
   }
 });
 
+$('#choice-text-centered').on('change',function() {
+  if (!selected) return;
+  selected.config.isTextCentered = $(this).is(':checked');
+  if(!selected.config.isTextCentered){
+    $('#choice-offset-x').val(0)
+    $('#choice-offset-y').val(0)
+    selected.config['offset-x'] = 0;
+    selected.config['offset-y'] = 0;
+  }
+  changeTextPosition(selected,selected.text,selected.config)
+  if (selected.nextChoices){
+    console.log("Has next choices "+selected.nextChoices.length)
+    console.log("Has next choices")
+    for (var i = 0; i < selected.nextChoices.length; i++) {
+      console.log("Next choice "+i)
+      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
+    }
+  }
+})
+
+$('#choice-align').on('change',function () {
+  if (!selected) return;
+  selected.config.align = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+  if (selected.nextChoices){
+    for (var i = 0; i < selected.nextChoices.length; i++) {
+      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
+    }
+  }
+})
+
+$('#choice-offset-x').on('input',function () {
+  if (!selected) return;
+  selected.config['offset-x'] = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+  if (selected.nextChoices){
+    for (var i = 0; i < selected.nextChoices.length; i++) {
+      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
+    }
+  }
+})
+
+$('#choice-offset-y').on('input',function () {
+  if (!selected) return;
+  selected.config['offset-y'] = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+  if (selected.nextChoices){
+    for (var i = 0; i < selected.nextChoices.length; i++) {
+      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
+    }
+  }
+})
+
 
 
 $('#name-box-text-centered').on('change',function() {
   if (!selected) return;
-  selected.config.isCentered = $(this).is(':checked');
-  if(!selected.config.isCentered){
+  selected.config.isTextCentered = $(this).is(':checked');
+  if(!selected.config.isTextCentered){
     $('#name-box-offset-x').val(0)
     $('#name-box-offset-y').val(0)
     selected.config['offset-x'] = 0;
@@ -230,17 +283,28 @@ function showTools(tool){
   $('.tools').hide()
   $(`.${tool}-tools`).show()
   if (tool == 'button'){
-    $(`#slot-value`).toggle((selected.config.binding == 'save' || selected.config.binding == 'load'))
+    $(`#button-slot-value`).toggle((selected.config.binding == 'save' || selected.config.binding == 'load'))
   }
   if (tool == 'name-box'){
-    $('#name-box-text-centered').prop('checked',selected.config.isCentered);
-    $(`#name-box-text-not-centered-options`).toggle(!selected.config.isCentered)
+    $('#name-box-text-centered').prop('checked',selected.config.isTextCentered);
+    $(`#name-box-text-not-centered-options`).toggle(!selected.config.isTextCentered)
   }
   if (tool == 'choice') {
     $('#choice-box-centered').prop('checked',selected.config.isBoxCentered);
     $(`#choice-box-not-centered-options`).toggle(!selected.config.isBoxCentered);
-    $('#choice-text-centered').prop('checked',selected.config.isCentered);
-    $(`#choice-text-not-centered-options`).toggle(!selected.config.isCentered);
+    $('#choice-text-centered').prop('checked',selected.config.isTextCentered);
+    $(`#choice-text-not-centered-options`).toggle(!selected.config.isTextCentered);
+  }
+  if (tool == 'interrupt') {
+    $('#interrupt-text-position-same-as-choices').prop('checked',selected.config.textPositionAsChoice);
+    $(`#interrupt-text-position-not-same-as-choices-options`).toggle(!selected.config.textPositionAsChoice);
+    $('#interrupt-text-style-same-as-choices').prop('checked',selected.config.textStyleAsChoice);
+    $(`#interrupt-text-style-not-same-as-choices-options`).toggle(!selected.config.textStyleAsChoice);
+    $('#interrupt-box-centered').prop('checked',selected.config.isBoxCentered);
+    $(`#interrupt-box-not-centered-options`).toggle(!selected.config.isBoxCentered);
+
+    $('#interrupt-text-centered').prop('checked',selected.config.isTextCentered);
+    $(`#interrupt-text-not-centered-options`).toggle(!selected.config.isTextCentered);
   }
   if (tool == 'message-box'){
     $('#message-box-sample').val(selected.message.text)
@@ -252,10 +316,14 @@ function showTools(tool){
 
 $('#button-binding').on('change',function(e){
   var val = $("#button-binding").val();
-  $("#slot-value").toggle((val =="save" || val == "load"));
+  $("#button-slot-value").toggle((val =="save" || val == "load"));
 })
 
 $('.show-more-when-off').on('change',function(e){
+  if ($(this).hasClass('disabled')){
+    $(this).prop('checked',!$(this).is(":checked"));
+    return;
+  } 
   var target = $(this).attr('target')
   $(`#${target}`).toggle(!($(this).is(':checked')))
 });

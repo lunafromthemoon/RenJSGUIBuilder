@@ -6,7 +6,7 @@
   </div>
   <div id="<%= id %>-style-tool" class="collapse" aria-labelledby="<%= id %>TextStyleHeader" data-parent="#<%= id %>-accordion">
     <div class="card-body">
-      <%if (id=='interrupt') {%>
+      <%if (id.includes('interrupt')) {%>
         <div class="form-group">
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-text-style-not-same-as-choices-options' id="<%= id %>-text-style-same-as-choices" checked="">
@@ -14,20 +14,20 @@
           </div>
         </div>
       <%}%>
-      <div id="<%= id %>-text-style-not-same-as-choices-options" class='<%if (id=="interrupt") {%>collapse<%}%>'>
+      <div id="<%= id %>-text-style-not-same-as-choices-options" class='<%if (id.includes("interrupt")) {%>collapse<%}%>'>
         <div class="form-group">
           <label for="<%= id %>-size">Size</label>
-          <input type="number" class="form-control text-size" id="<%= id %>-size"/>
+          <input type="number" class="form-control text-size" target="<%= text %>" id="<%= id %>-size"/>
         </div>
         <div class="form-group">
           <label for="<%= id %>-font">Font</label>
-          <select class="form-control font-select text-font" id="<%= id %>-font">
+          <select class="form-control font-select text-font" target="<%= text %>" id="<%= id %>-font">
           </select>
         </div>
         <div class="form-group">
           <label for="<%= id %>-color">Color</label>
           <div class="input-group colorpicker-component">
-            <input type="text" class="form-control text-color" id="<%= id %>-color" value="#FFFFFF"/>
+            <input type="text" class="form-control text-color" target="<%= text %>" id="<%= id %>-color" value="#FFFFFF"/>
             <span class="input-group-append">
               <span class="input-group-text colorpicker-input-addon"><i></i></span>
             </span>

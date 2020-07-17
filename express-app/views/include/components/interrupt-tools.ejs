@@ -48,15 +48,15 @@
     </div>
     <div id="<%= id %>-layout-tool" class="collapse" aria-labelledby="<%= id %>LayoutHeader" data-parent="#<%= id %>-accordion">
       <div class="card-body">
-        <small class="form-text text-muted">The interrupt can be place inline with the choices. This means it will have the same layout as the choices, and it will appear along with them. Otherwise, the interrupts will form their own list, separated from the choices</small>
+        
         <div class="form-group">
-          <label for="label-color">Box Position</label>
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-box-not-inline-options' id="<%= id %>-box-inline" checked="">
             <label class="custom-control-label" for="<%= id %>-box-inline">Inline with choices</label>
+            <small class="form-text text-white">The interrupt can be place inline with the choices. This means it will have the same layout as the choices, and it will appear along with them. Otherwise, the interrupts will form their own list, separated from the choices</small>
           </div>
         </div>
-        <div id='<%= id %>-box-not-inline-options'>
+        <div id='<%= id %>-box-not-inline-options' class="collapse">
           <div class="form-group">
             <div class="input-group">
               <div class="input-group-prepend">
@@ -81,6 +81,6 @@
       </div>
     </div>
   </div>
-  <%- include('partials/text-style', {id:id}); %>
+  <%- include('partials/text-style', {id:id, text:"text"}); %>
   <%- include('partials/text-position', {id:id}); %>
 </div>

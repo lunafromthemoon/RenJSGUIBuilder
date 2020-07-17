@@ -73,10 +73,18 @@ $('.upload-loading-bar-component').click(function(e){
 })
 
 $('.upload-choice-component').click(function(e){
-  var choiceType = $('#choice-start-type input:checked').val();
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
-  var isCentered = $('#choice-start-centered').is(':checked');
-  addComponent(choiceType,choiceType,['x','y','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isCentered:isCentered,isBoxCentered:isBoxCentered,choiceType:choiceType})
+  var isTextCentered = $('#choice-start-text-centered').is(':checked');
+  addComponent("choice","choice",['x','y','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
+})
+
+$('.upload-interrupt-component').click(function(e){
+  var inlineWithChoice = $('#interrupt-start-box-inline').is(':checked');
+  var textStyleAsChoice = $('#interrupt-start-text-style-same-as-choices').is(':checked');
+  var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
+  var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
+  var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
+  addComponent("interrupt","interrupt",['x','y','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textLayoutAsChoice:textLayoutAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){
@@ -85,8 +93,8 @@ $('.upload-ctc-component').click(function(e){
 })
 
 $('.upload-name-box-component').click(function(e){
-  var isCentered = $('#name-box-start-centered').is(':checked');
-  addComponent('name-box','name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isCentered:isCentered})
+  var isTextCentered = $('#name-box-start-centered').is(':checked');
+  addComponent('name-box','name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
 })
 
 $('.upload-message-box-component').click(function(e){
@@ -123,6 +131,19 @@ $('.modal').on('shown.bs.modal', function (e) {
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
 });
+
+$('#interrupt-modal').on('shown.bs.modal', function (e) {
+  var choicesNotSet = (!gui.assets.hud.choice)
+  setOptions("interrupt-start","text-position-same-as-choices","text-position-not-same-as-choices-options",!choicesNotSet)
+  setOptions("interrupt-start","text-style-same-as-choices","text-style-not-same-as-choices-options",!choicesNotSet)
+  setOptions("interrupt-start","box-inline","box-not-inline-options",!choicesNotSet)
+});
+
+function setOptions(id,prop,options,set){
+  $(`#${id}-${prop}`).prop('checked',set);
+  $(`#${id}-${prop}`).toggleClass('disabled',!set);
+  $(`#${id}-${options}`).toggle(!set);
+}
 
 $('#ctc-start-style input:radio').on('click',function(e){
   $("#ctc-spritesheet-options").toggle($(this).attr('opt') == 'spritesheet')
