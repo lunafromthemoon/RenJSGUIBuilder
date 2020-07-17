@@ -84,7 +84,7 @@ $('.upload-interrupt-component').click(function(e){
   var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
   var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
   var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
-  addComponent("interrupt","interrupt",['x','y','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textLayoutAsChoice:textLayoutAsChoice,inlineWithChoice:inlineWithChoice})
+  addComponent("interrupt","interrupt",['x','y','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){

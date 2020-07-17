@@ -52,17 +52,12 @@ var gameLoader = {
   spriteRefs: {},
 
   create: function () {
-    var singleComponents = ['background','loading-bar','name-box','message-box','ctc','choice','interrupt']
+    var singleComponents = ['loading-bar','name-box','message-box','ctc','interrupt','choice','background']
     for (var i = singleComponents.length - 1; i >= 0; i--) {
       if (singleComponents[i] in gui.assets[currentMenu]){
         this.loadComponent(singleComponents[i],gui.assets[currentMenu][singleComponents[i]])
       }
     }
-    // if ('background' in gui.assets[currentMenu]) this.loadBackground();
-    // if ('loading-bar' in gui.assets[currentMenu]) this.loadLoadingBar(gui.assets[currentMenu]['loading-bar']);
-    // if ('name-box' in gui.assets[currentMenu]) this.loadNameBox(gui.assets[currentMenu]['name-box']);
-    // if ('message-box' in gui.assets[currentMenu]) this.loadMessageBox(gui.assets[currentMenu]['message-box']);
-    // if ('ctc' in gui.assets[currentMenu]) this.loadMessageBox(gui.assets[currentMenu]['ctc']);
     var components = ['images','animations','buttons','sliders','labels']
     for (var j = components.length - 1; j >= 0; j--) {
       if (components[j] in gui.assets[currentMenu]) {
@@ -85,7 +80,7 @@ var gameLoader = {
       case 'labels' : this.loadLabel(config); break;
       case 'sliders' : this.loadSlider(config); break;
       case 'choice' : this.loadChoice(config); break;
-      case 'interrupt' : this.loadChoice(config); break;
+      case 'interrupt' : this.loadInterrupt(config); break;
       case 'name-box' : this.loadNameBox(config); break;
       case 'message-box' : this.loadMessageBox(config); break;
       case 'ctc' : this.loadCtc(config); break;
@@ -135,6 +130,7 @@ var gameLoader = {
 
   loadBackground: function(){
     var bg = game.add.sprite(0,0,currentMenu+'background');
+    bg.sendToBack();
     this.spriteRefs[currentMenu+'background'] = bg;
     bg.config = {id: 'background'};
     bg.inputEnabled = true;
@@ -183,7 +179,7 @@ var gameLoader = {
   loadButton: function(config){
     var image = game.add.button(config.x,config.y,config.id,function(){
       console.log('click on button')
-    },0,1,2,0);
+    },1,0,2,0);
     image.config = config;
     this.makeDraggable(image,'button',['binding','slot'])
   },
@@ -199,23 +195,43 @@ var gameLoader = {
     config.sample = 2;
     var x = (config.isBoxCentered) ? gui.resolution[0]/2 - config.width/2 : config.x;
     var y = (config.isBoxCentered) ? gui.resolution[1]/2 - (config.height*config.sample + parseInt(config.separation)*(config.sample-1))/2 : config.y;
-    var chBox = createChoiceBox(x,y,0,config);
+    var chBox = createChoiceBox('choice',x,y,0,config);
     chBox.config = config;
     chBox.nextChoices = []
-    this.spriteRefs[currentMenu+config.choiceType] = chBox;
+    this.spriteRefs[currentMenu+'choice'] = chBox;
     for (var i = 1; i < config.sample; i++) {
       console.log("Adding 1 choice")
-      var nextChoice = createChoiceBox(0,0,i,config);
+      var nextChoice = createChoiceBox('choice',0,0,i,config);
       chBox.addChild(nextChoice);
       chBox.nextChoices.push(nextChoice)
       
     }
     chBox.nextChoices[config.sample-2].text.fill = config['chosen-color'];
-    if (!config.isBoxCentered){
-      this.makeDraggable(chBox,'choice',['sample','separation','font','color','chosen-color','size','align','offset-x','offset-y'])
-    } else {
-      this.makeDraggable(chBox,'choice',['sample','separation','font','color','chosen-color','size','align','offset-x','offset-y'],true)
+    this.makeDraggable(chBox,'choice',['sample','separation','font','color','chosen-color','size','align','offset-x','offset-y'],config.isBoxCentered)
+  },
+
+  loadInterrupt: function (config) {
+    if (config.textStyleAsChoice) {
+      config.size = gui.assets.hud.choice.size
+      config.color = gui.assets.hud.choice.color
+      config.font = gui.assets.hud.choice.font
     }
+    if (config.textPositionAsChoice) {
+      config.align = gui.assets.hud.choice.align
+      config['offset-x'] = gui.assets.hud.choice['offset-x']
+      config['offset-y'] = gui.assets.hud.choice['offset-y']
+    }
+    if (!config.x) config.x = 0;
+    if (!config.y) config.y = 0;
+    var intBox = createChoiceBox('interrupt',config.x,config.y,0,config);
+    this.spriteRefs[currentMenu+'interrupt'] = intBox;
+    intBox.config = config;
+    if (config.inlineWithChoice) {
+      this.spriteRefs[currentMenu+'choice'].interrupt = intBox;
+      this.spriteRefs[currentMenu+'choice'].addChild(intBox);
+      arrangeChoices(this.spriteRefs[currentMenu+'choice']);
+    } 
+    this.makeDraggable(intBox,'interrupt',['separation','font','color','size','align','offset-x','offset-y'],config.inlineWithChoice)
   },
 
   loadNameBox: function(config) {
@@ -289,13 +305,18 @@ var gameLoader = {
   },
 }
 
-function createChoiceBox(start_x,start_y,index,config) {
+function createChoiceBox(choiceType,start_x,start_y,index,config) {
   var separation = index*(parseInt(config.height)+parseInt(config.separation));
   console.log(separation)
-  var chBox = game.add.button(start_x, start_y+separation, config.choiceType,function(){
-      console.log(`click on ${config.choiceType} ${index}`)
-    },0,1,2,0);
-  var text = game.add.text(0,0, `Option ${index}`, {font: config.size+'px '+config.font, fill: config.color});
+  var chBox = game.add.button(start_x, start_y+separation, choiceType,function(){
+      console.log(`click on ${choiceType} ${index}`)
+    },1,0,2,0);
+  if (chBox.animations.frameTotal == 2 || chBox.animations.frameTotal == 4){
+    chBox.setFrames(1,0,1,0)
+  }
+  console.log("chBox.animations.frameTotal")
+  console.log(chBox.animations.frameTotal)
+  var text = game.add.text(0,0, `${choiceType} ${index}`, {font: config.size+'px '+config.font, fill: config.color});
   changeTextPosition(chBox,text, config)
   chBox.text = text;
   chBox.addChild(text);

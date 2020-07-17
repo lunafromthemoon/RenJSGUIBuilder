@@ -1,10 +1,30 @@
-function showFrame(frame){
-  if (!selected) return;
-  selected.frame = frame;
-}
+
 
 $('.remove-single-selected').click(function(e){
   if (!selected) return;
+  delete gui.assets[currentMenu][selected.config.id]
+  selected.destroy();
+  $('.tools').hide()
+})
+
+$('.remove-choice-selected').click(function(e){
+  if (!selected) return;
+  if (selected.interrupt){
+    delete gui.assets[currentMenu][selected.interrupt.config.id]
+  }
+  delete gui.assets[currentMenu][selected.config.id]
+  selected.destroy();
+  $('.tools').hide()
+});
+
+$('.remove-interrupt-selected').click(function(e){
+  if (!selected) return;
+  var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
+  if (choiceBox.interrupt){
+    delete choiceBox.interrupt;
+    choiceBox.removeChild(selected);
+    arrangeChoices(choiceBox);  
+  }
   delete gui.assets[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
@@ -60,7 +80,9 @@ $(".text-size").on('input',function (argument) {
       selected.nextChoices[i].text.fontSize = target.fontSize;
     }
   }
-  
+  if (selected.interrupt && selected.interrupt.config.textStyleAsChoice) {
+    selected.interrupt.text.fontSize = target.fontSize;
+  }
 })
 
 $('.text-font').on('change',function(e){
@@ -74,6 +96,9 @@ $('.text-font').on('change',function(e){
       selected.nextChoices[i].text.font = target.font;
     }
   }
+  if (selected.interrupt && selected.interrupt.config.textStyleAsChoice) {
+    selected.interrupt.text.font = target.font;
+  }
 })
 
 $('.text-color').on('change',function(e){
@@ -86,6 +111,9 @@ $('.text-color').on('change',function(e){
     for (var i = 0; i < selected.nextChoices.length-1; i++) {
       selected.nextChoices[i].text.fill = target.fill;
     }
+  }
+  if (selected.interrupt && selected.interrupt.config.textStyleAsChoice) {
+    selected.interrupt.text.fill = target.fill;
   }
 });
 
@@ -106,51 +134,119 @@ $('#choice-text-centered').on('change',function() {
     selected.config['offset-x'] = 0;
     selected.config['offset-y'] = 0;
   }
+  changeTextForAllBoxes();
+})
+
+function changeTextForAllBoxes() {
   changeTextPosition(selected,selected.text,selected.config)
   if (selected.nextChoices){
-    console.log("Has next choices "+selected.nextChoices.length)
-    console.log("Has next choices")
     for (var i = 0; i < selected.nextChoices.length; i++) {
-      console.log("Next choice "+i)
       changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
     }
   }
-})
+  if (selected.interrupt && selected.interrupt.config.textPositionAsChoice) {
+    changeTextPosition(selected.interrupt,selected.interrupt.text,selected.config)
+  }
+}
 
 $('#choice-align').on('change',function () {
   if (!selected) return;
   selected.config.align = $(this).val();
-  changeTextPosition(selected,selected.text,selected.config)
-  if (selected.nextChoices){
-    for (var i = 0; i < selected.nextChoices.length; i++) {
-      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
-    }
-  }
+  changeTextForAllBoxes();
 })
+
+
 
 $('#choice-offset-x').on('input',function () {
   if (!selected) return;
   selected.config['offset-x'] = $(this).val();
-  changeTextPosition(selected,selected.text,selected.config)
-  if (selected.nextChoices){
-    for (var i = 0; i < selected.nextChoices.length; i++) {
-      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
-    }
-  }
+  changeTextForAllBoxes();
 })
 
 $('#choice-offset-y').on('input',function () {
   if (!selected) return;
   selected.config['offset-y'] = $(this).val();
-  changeTextPosition(selected,selected.text,selected.config)
-  if (selected.nextChoices){
-    for (var i = 0; i < selected.nextChoices.length; i++) {
-      changeTextPosition(selected.nextChoices[i],selected.nextChoices[i].text,selected.config)
-    }
-  }
+  changeTextForAllBoxes();
 })
 
+$('#interrupt-text-centered').on('change',function() {
+  if (!selected) return;
+  selected.config.isTextCentered = $(this).is(':checked');
+  if(!selected.config.isTextCentered){
+    $('#interrupt-offset-x').val(0)
+    $('#interrupt-offset-y').val(0)
+    selected.config['offset-x'] = 0;
+    selected.config['offset-y'] = 0;
+  }
+  changeTextPosition(selected,selected.text,selected.config)
+})
 
+$('#interrupt-align').on('change',function () {
+  if (!selected) return;
+  selected.config.align = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+})
+
+$('#interrupt-offset-x').on('input',function () {
+  if (!selected) return;
+  selected.config['offset-x'] = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+})
+
+$('#interrupt-offset-y').on('input',function () {
+  if (!selected) return;
+  selected.config['offset-y'] = $(this).val();
+  changeTextPosition(selected,selected.text,selected.config)
+})
+
+$('#interrupt-text-style-same-as-choices').on('change',function() {
+  if (!selected) return;
+  selected.config.textStyleAsChoice = $(this).is(':checked');
+  if (selected.config.textStyleAsChoice) {
+      selected.config.size = gui.assets.hud.choice.size
+      selected.config.color = gui.assets.hud.choice.color
+      selected.config.font = gui.assets.hud.choice.font
+  }
+  selected.text.fontSize = selected.config.size + 'px';
+  selected.text.font = selected.config.font;
+  selected.text.fill = selected.config.color;
+})
+
+$('#interrupt-text-position-same-as-choices').on('change',function() {
+  if (!selected) return;
+  selected.config.textPositionAsChoice = $(this).is(':checked');
+  if (selected.config.textPositionAsChoice) {
+      selected.config.align = gui.assets.hud.choice.align
+      selected.config['offset-x'] = gui.assets.hud.choice['offset-x']
+      selected.config['offset-y'] = gui.assets.hud.choice['offset-y']
+  }
+  changeTextPosition(selected,selected.text,selected.config)
+})
+
+$('#interrupt-start-box-inline').on('change',function() {
+  if (!selected) return;
+  selected.config.inlineWithChoice = $(this).is(':checked');
+  var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
+  if (!choiceBox){
+    selected.config.inlineWithChoice = false;
+    $(this).prop('checked',false);
+    return;
+  }
+  if (selected.config.inlineWithChoice) {
+    choiceBox.interrupt = selected;
+    choiceBox.addChild(selected);
+    arrangeChoices(choiceBox);
+  } else {
+    delete choiceBox.interrupt;
+    choiceBox.removeChild(selected);
+    arrangeChoices(choiceBox)
+    selected.x = 0;
+    selected.y = 0;
+    selected.config.x = 0;
+    selected.config.y = 0;
+  }
+  selected.input.enableDrag(!selected.config.inlineWithChoice);
+})
 
 $('#name-box-text-centered').on('change',function() {
   if (!selected) return;
@@ -238,13 +334,13 @@ $('#choice-sample').on('input',function () {
   if (selected.nextChoices.length>0){
     selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['chosen-color']
   }
-  arrangeChoices();
+  arrangeChoices(selected);
 })
 
 $('#choice-separation').on('input',function () {
   if (!selected) return;
   selected.config.separation = $(this).val();
-  arrangeChoices();
+  arrangeChoices(selected);
 })
 
 $('#choice-box-centered').on('change',function() {
@@ -258,23 +354,30 @@ $('#choice-box-centered').on('change',function() {
     selected.input.enableDrag(true);
     
   } else {
-    arrangeChoices();
+    arrangeChoices(selected);
     selected.input.enableDrag(false);
   }
   
 })
 
-function arrangeChoices() {
-  var config = selected.config;
+function arrangeChoices(box) {
+  var config = box.config;
   if (config.isBoxCentered){
-    selected.x = gui.resolution[0]/2 - config.width/2;
-    selected.y = gui.resolution[1]/2 - (config.height*config.sample + parseInt(config.separation)*(config.sample-1))/2;
+    var s = config.sample;
+    if (box.interrupt) {
+      s++;
+    }
+    box.x = gui.resolution[0]/2 - config.width/2;
+    box.y = gui.resolution[1]/2 - (config.height*s + parseInt(config.separation)*(s-1))/2;
   } else {
-    selected.x = selected.config.x;
-    selected.y = selected.config.y;
+    box.x = box.config.x;
+    box.y = box.config.y;
   }
-  for (var i = 0; i < selected.nextChoices.length; i++) {
-    selected.nextChoices[i].y = (i+1)*(parseInt(config.height)+parseInt(config.separation));
+  for (var i = 0; i < box.nextChoices.length; i++) {
+    box.nextChoices[i].y = (i+1)*(parseInt(config.height)+parseInt(config.separation));
+  }
+  if (box.interrupt) {
+    box.interrupt.y = (box.nextChoices.length+1)*(parseInt(config.height)+parseInt(config.separation))
   }
 }
 
@@ -302,9 +405,9 @@ function showTools(tool){
     $(`#interrupt-text-style-not-same-as-choices-options`).toggle(!selected.config.textStyleAsChoice);
     $('#interrupt-box-centered').prop('checked',selected.config.isBoxCentered);
     $(`#interrupt-box-not-centered-options`).toggle(!selected.config.isBoxCentered);
-
     $('#interrupt-text-centered').prop('checked',selected.config.isTextCentered);
     $(`#interrupt-text-not-centered-options`).toggle(!selected.config.isTextCentered);
+    $('#interrupt-state').toggle(selected.animations.frameTotal >= 4);
   }
   if (tool == 'message-box'){
     $('#message-box-sample').val(selected.message.text)
@@ -327,3 +430,18 @@ $('.show-more-when-off').on('change',function(e){
   var target = $(this).attr('target')
   $(`#${target}`).toggle(!($(this).is(':checked')))
 });
+
+function showFrame(frame){
+  if (!selected) return;
+  selected.frame = frame;
+}
+
+function changeButtonFrames(frame){
+  if (!selected) return;
+  frame *= (selected.animations.frameTotal/2)
+  if (selected.animations.frameTotal == 4){
+    selected.setFrames(frame+1,frame,frame+1,frame)
+  } else {
+    selected.setFrames(frame+1,frame,frame+2,frame)
+  }
+}
