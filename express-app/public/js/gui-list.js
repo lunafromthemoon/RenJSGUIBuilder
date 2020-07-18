@@ -13,23 +13,23 @@ $(document).ready(function () {
 	})
 });
 
-var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
-console.log(guiList)
+// var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
+// console.log(guiList)
 
 if (!guiList) {
 	guiList = [];
-	window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
+	// window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
 }
 
 for (var i = guiList.length - 1; i >= 0; i--) {
-	var gui = JSON.parse(window.localStorage.getItem(guiList[i]));
+	console.log(guiList[i])
 	var card = $('.gui-template').clone();
-	card.find('.card-title').html(guiList[i]);
-	card.find('.btn-download').attr('href','/download/'+guiList[i]);
-	card.find('.btn-edit').attr('href','/edit?name='+guiList[i]);
-	card.find('.resolution').html(`resolution: ${gui.resolution[0]}x${gui.resolution[1]}`)
-	if (gui.assets.main.background){
-		card.find('.card-img-top').attr('src',`/assets/${guiList[i]}/mainbackground.png`)
+	card.find('.card-title').html(guiList[i].name);
+	card.find('.btn-download').attr('href','/download/'+guiList[i].name);
+	card.find('.btn-edit').attr('href','/edit?name='+guiList[i].name);
+	card.find('.resolution').html(`resolution: ${guiList[i].resolution[0]}x${guiList[i].resolution[1]}`)
+	if (guiList[i].preview){
+		card.find('.card-img-top').attr('src',guiList[i].preview)
 	}
 	$('.card-columns').append(card);
 	card.removeClass('gui-template');

@@ -381,17 +381,31 @@ function changeMenu(menu){
 }
 
 $('#btn-save-gui').on('click',function(e){
-  var str = JSON.stringify(gui);
-  window.localStorage.setItem(gui.name,str)
-  var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
-  if (!guiList.includes(gui.name)){
-    guiList.push(gui.name);
-    window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
+  try {
+    var preview = game.canvas.toDataURL();
+    gui.preview = preview;
+  } catch(e) {
+    console.log(e)
   }
-  $('#btn-save-gui').html('Saved!');
-  setTimeout(function() {
-    $('#btn-save-gui').html('Save');
+  
+  $('#btn-save-gui').html('Saving...');
+  $.ajax({
+        url: `/save_gui/${gui.name}` ,
+        data: {gui:JSON.stringify(gui)},
+        dataType: 'json',
+        type: 'POST',
+        // processData: false,
+        // contentType: false,
+        success: function (dataR) {
+          $('#btn-save-gui').html('Saved!');
+          setTimeout(function() {
+            $('#btn-save-gui').html('Save');
   }, 2000);
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
 })
 
 function genAssetId(asset) {
@@ -405,16 +419,10 @@ function genAssetId(asset) {
 
 $('.colorpicker-component').colorpicker();
 
-function init(guiName,resolution) {
-  gui = window.localStorage.getItem(guiName)
+function init() {
   var loaded = false;
-  if (!gui){
-    var res = resolution.split(",")
-    gui = {
-      resolution : [parseInt(res[0]),parseInt(res[1])],
-      name: guiName,
-      assetCounter: 0
-    };
+  if (gui.isNew){
+    gui.assetCounter = 0;
     gui.assets = {
       loader: {},
       main: {},
@@ -423,11 +431,13 @@ function init(guiName,resolution) {
       saveload: {},
       fonts: []
     }
+    delete gui.isNew;
   } else {
-    gui = JSON.parse(gui)
+    // gui = JSON.parse(gui)
     loaded = true;
   }
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
+  game.preserveDrawingBuffer = true;
   game.state.add('gameLoader', gameLoader);
   
   if (loaded){
@@ -446,10 +456,6 @@ function init(guiName,resolution) {
 var lastUpload = null;
 var selected = null;
 var currentMenu = null;
-// gui info
-var gui = {};
 // phaser game object
 var game = null;
-console.log(guiName)
-console.log(resolution)
-init(guiName,resolution);
+init();

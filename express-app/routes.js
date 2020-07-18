@@ -14,16 +14,27 @@ router.use('/assets', express.static(__dirname + '/' + guisDir));
 
 //GET home page.
 router.get("/", function(req, res) {
-  res.render("index", { title: "RenJS - Your GUIs" });
+  fs.readFile(guisDir+'guis.json', (err, data) => {
+      let guis = (err) ? []  : JSON.parse(data);
+      res.render("index", { title: "RenJS - Your GUIs", guis: JSON.stringify(guis) });
+  });
 });
 
 router.get("/edit", function(req, res) {
   var name = req.query.name;
-  var resolution = "none";
-  if (req.query.w && req.query.h){
-    resolution = [req.query.w,req.query.h]
-  }
-  res.render("edit", { title: "RenJS - "+name, name: name, resolution: resolution });
+  fs.readFile(guisDir+'guis.json', (err, data) => {
+      let guis = (err) ? []  : JSON.parse(data);
+      let gui = guis.find(x => x.name === name);
+      if (!gui) {
+        gui = {name:name, resolution: [parseInt(req.query.w),parseInt(req.query.h)], isNew:true};
+        res.render("edit", { title: "RenJS - "+name, name: name, gui: JSON.stringify(gui) });
+      } else {
+        fs.readFile(guisDir+`${name}/gui_config.json`, (err, data) => {
+          res.render("edit", { title: "RenJS - "+name, name: name, gui: data });
+        });
+      }
+      
+  });
 });
 
 // SET STORAGE
@@ -56,6 +67,26 @@ router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, n
   console.log(fileName)
   res.json({"fileName":fileName})
   
+});
+
+function updateGuiList(name,res,preview){
+  fs.readFile(guisDir+'guis.json', (err, data) => {
+    let guis = (err) ? []  : JSON.parse(data);
+    let gui = guis.find(x => x.name === name)
+    if (!gui){
+      guis.push({name:name,resolution:resolution,preview:preview});
+    } else {
+      gui.preview = preview;
+    }
+    fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
+  });
+}
+
+router.post('/save_gui/:guiName', (req, res, next) => {
+  var gui = JSON.parse(req.body.gui)
+  updateGuiList(gui.name,gui.res,gui.preview)
+  fs.writeFileSync(guisDir+`${gui.name}/gui_config.json`, req.body.gui);
+  res.json({"saved":true})
 });
 
 module.exports = router;
