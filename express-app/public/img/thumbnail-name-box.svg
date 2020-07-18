@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="121.40591"
+   height="35.168316"
+   viewBox="0 0 121.40591 35.168317"
+   preserveAspectRatio="none"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="thumbnail-name-box.svg"
+   inkscape:export-filename="/home/luna/dev/RenJSGUI/electron-quick-start/app/img/index.svg.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata17">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     id="namedview15"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="46.142917"
+     inkscape:cy="-13.817937"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs4">
+    <style
+       type="text/css"
+       id="style2">#holder_158bd1d28ef text { fill:rgba(255,255,255,.75);font-weight:normal;font-family:Helvetica, monospace;font-size:16pt } </style>
+  </defs>
+  <rect
+     style="opacity:0.92000002;fill:none;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.42621863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect8419-3"
+     width="119.97969"
+     height="33.742096"
+     x="0.71310931"
+     y="0.71310931"
+     ry="13.203429" />
+  <text
+     x="37.032345"
+     y="23.683363"
+     id="text8-6"
+     style="font-weight:normal;font-size:17.27820778px;font-family:Helvetica, monospace;fill:#ffd5d5;fill-opacity:1;stroke-width:0.80991596">Name</text>
+</svg>

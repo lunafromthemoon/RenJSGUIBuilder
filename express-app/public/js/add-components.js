@@ -43,12 +43,23 @@ function loadFont(name,fileName) {
   temp.find('h4').css('font-family',name);
   temp.find('.card-header').html(name);
   $("#fonts-container").append(temp)
+  temp.find('.remove-font').click(function (argument) {
+    var usedIn = findFont(name);
+    if (usedIn) {
+      var p = usedIn == 'label' ? "a" : "the";
+      $("#error-modal").find(".modal-body").html(`<p>The font can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
+      $("#error-modal").show();
+    } else {
+      $(this).closest('.card').remove();
+      removeFont(name);
+    }
+  })
   temp.find('.font-text').on('input',function(e){
     var val = $(this).val();
     $(this).siblings('h4').html(val);
   })
   temp.show();
-  $(".font-select").append(`<option>${name}</option>`);
+  $(".font-select").append(`<option class="font-${name}">${name}</option>`);
 }
 
 var listComponents = {
@@ -93,7 +104,7 @@ $('.upload-ctc-component').click(function(e){
 })
 
 $('.upload-name-box-component').click(function(e){
-  var isTextCentered = $('#name-box-start-centered').is(':checked');
+  var isTextCentered = $('#name-box-start-text-centered').is(':checked');
   addComponent('name-box','name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
 })
 
@@ -120,6 +131,7 @@ $('.upload-label-component').click(function(e){
   var x = $("#label-start-x").val();
   var y = $("#label-start-y").val();
   var font = $("#label-start-font").val();
+  console.log(font)
   var color = $("#label-start-color").val();
   gameLoader.addLabel(x,y,size,text,font,color)
 })
@@ -130,6 +142,13 @@ $('.modal').on('shown.bs.modal', function (e) {
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
+  if ($(this).find('.text-font').length){
+    if (gui.assets.fonts.length == 0){
+      $(this).hide();
+      $("#error-modal").find(".modal-body").html(`<p>This component has text associated with it, and therefore it requires a font, but there are no fonts loaded yet. You can load a font on the fonts section.</p>`);
+      $("#error-modal").show();
+    }
+  }
 });
 
 $('#interrupt-modal').on('shown.bs.modal', function (e) {

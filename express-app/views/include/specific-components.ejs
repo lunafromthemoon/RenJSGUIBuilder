@@ -4,7 +4,7 @@
 <%- include('components/partials/modal-footer', {id:"bg",type:"bg"}); %>
 
 <%- include('components/partials/modal-header', {id:"loading-bar",title:"Loading Bar"}); %>
-  <p>The slider bar is a spritesheet with two frames: First frame is the empty bar, second is the full bar.</p>
+  <p>The loading bar is a spritesheet with two frames: First frame is the empty bar, second is the full bar. When loading the component of the game, this bar will fill up from left to right. If only one frame is present, it will be considered the full state, and it will simply appear from left to right.</p>
   <%- include('components/partials/upload-image', {id:"loading-bar"}); %>
   <%- include('components/partials/frame-size', {id:"loading-bar"}); %>
   <%- include('components/loading-bar-tools', {includeTitle:false}); %>

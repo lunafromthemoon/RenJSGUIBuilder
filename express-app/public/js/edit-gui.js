@@ -58,7 +58,7 @@ var gameLoader = {
         this.loadComponent(singleComponents[i],gui.assets[currentMenu][singleComponents[i]])
       }
     }
-    var components = ['images','animations','buttons','sliders','labels']
+    var components = ['images','animations','buttons','sliders','labels','saveslot']
     for (var j = components.length - 1; j >= 0; j--) {
       if (components[j] in gui.assets[currentMenu]) {
         for (var i = gui.assets[currentMenu][components[j]].length - 1; i >= 0; i--) {
@@ -84,6 +84,7 @@ var gameLoader = {
       case 'name-box' : this.loadNameBox(config); break;
       case 'message-box' : this.loadMessageBox(config); break;
       case 'ctc' : this.loadCtc(config); break;
+      case 'saveslot' : this.loadSaveSlot(config); break;
     }
   },
 
@@ -163,6 +164,12 @@ var gameLoader = {
     }
   },
 
+  loadSaveSlot: function(config){
+    var sprite = game.add.sprite(config.x,config.y,config.id);
+    sprite.config = config;
+    this.makeDraggable(sprite,'saveslot',['slot'])
+  },
+
   loadCtc: function(config){
     var sprite = game.add.sprite(config.x,config.y,'ctc');
     this.spriteRefs[currentMenu+'ctc'] = sprite;
@@ -200,7 +207,6 @@ var gameLoader = {
     chBox.nextChoices = []
     this.spriteRefs[currentMenu+'choice'] = chBox;
     for (var i = 1; i < config.sample; i++) {
-      console.log("Adding 1 choice")
       var nextChoice = createChoiceBox('choice',0,0,i,config);
       chBox.addChild(nextChoice);
       chBox.nextChoices.push(nextChoice)
@@ -267,12 +273,9 @@ var gameLoader = {
       selected = sprite;
       $(`.asset-x`).val(selected.x);
       $(`.asset-y`).val(selected.y);
-
       if (otherProps) {
         for (var i = 0; i < otherProps.length; i++) {
           var prop = otherProps[i];
-          console.log(prop)
-          console.log(selected.config[prop])
           $(`#${name}-${prop}`).val(selected.config[prop]);
         }
       }
@@ -303,6 +306,25 @@ var gameLoader = {
     gui.assets[currentMenu].labels.push(config);
     this.loadLabel(config)
   },
+}
+
+function findFont(name) {
+  if (gui.assets.hud['name-box'] && gui.assets.hud['name-box'].font == name) return 'name-box';
+  if (gui.assets.hud['message-box'] && gui.assets.hud['message-box'].font == name) return 'message-box';
+  if (gui.assets.hud['choice'] && gui.assets.hud['choice'].font == name) return 'choice';
+  for (var menu in gui.assets ) {
+    if (menu=='fonts') continue;
+    if (gui.assets[menu].labels) {
+      for (var i = gui.assets[menu].labels.length - 1; i >= 0; i--) {
+        if (gui.assets[menu].labels[i].font == name) return 'label';
+      }
+    }
+  }
+}
+
+function removeFont(name) {
+  $(`.font-${name}`).remove();
+  gui.assets[currentMenu].splice(gui.assets[currentMenu].findIndex(item => item.name === name), 1)
 }
 
 function createChoiceBox(choiceType,start_x,start_y,index,config) {

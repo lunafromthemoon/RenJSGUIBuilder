@@ -18,7 +18,7 @@
 <%- include('components/partials/modal-footer', {id:"button",type:"list"}); %>
 
 <%- include('components/partials/modal-header', {id:"slider",title:"Slider"}); %>
-  <p>A slider is a handy element to set a numeric option between two (min and max)values. E.g. the music volume or the speed at which the text will appear. The element is composed of an image with two frames, empty and full, and it's assumed the minimum value will be at the left side and the maximum at the right side.</p>
+  <p>A slider is a handy element to set a numeric option between two (min and max)values. E.g. the music volume or the speed at which the text will appear. The element is composed of an image with two frames, empty and full, and it's assumed the minimum value will be at the left side and the maximum at the right side. If only one frame is present, it will be considered full.</p>
   <%- include('components/partials/upload-image', {id:"slider"}); %>
   <%- include('components/partials/frame-size', {id:"slider"}); %>
   <%- include('components/slider-tools', {includeTitle:false}); %>
@@ -28,6 +28,8 @@
   <p>A label is just a text, with no particular purpose or behaviour.</p>
   <%- include('components/label-tools', {includeTitle:false}); %>
 <%- include('components/partials/modal-footer', {id:"label",type:"label"}); %>
+
+
 
 <div class="modal" id="fonts-modal">
   <div class="modal-dialog">
@@ -64,60 +66,8 @@
   </div>
 </div>
 
-
-
-<div class="modal" id="saveslot-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Save Slot Thumbnail</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>The save slot thumbnail is a space representing a saved game. When the slot is used, an image taken from the game at the save point will be displayed. If the slot is free, the save slot thumbnail will be displayed. Save slot thumbnails are not mandatory to have many save slots, but they are good to help the player remember which slot is which. Combine the save slot thumbnail with save/load buttons to create the save/load menu.</p>
-        <fieldset>
-          <legend>Image file:</legend>
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="image-input">
-                <label class="custom-file-label" for="image-input">Choose file</label>
-              </div>
-            </div>
-            <img class="card-img-top img-preview" thumbnail="img/thumbnail-saveslot.svg" src="index.svg" alt="Card image">
-          </div>
-          <legend>Position:</legend>
-          <small id="imageHelp" class="form-text text-muted">You can change the position later.</small>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">X</span>
-              </div>
-              <input type="number" class="form-control" id="saveslot-start-x" default="0">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">Y</span>
-              </div>
-              <input type="number" class="form-control" id="saveslot-start-y" default="0">
-            </div>
-          </div>
-          <legend>Slot:</legend>
-          <small class="form-text text-muted">The slot is a number that will be used as index for a save game. You can have as many save slots as you want. You can change the value later.</small>
-          <div class="form-group">
-            <input class="form-control" type="number" id="saveslot-start-slot">
-          </div>
-        </fieldset>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary upload-list-component" component='saveslot' data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
+<%- include('components/partials/modal-header', {id:"saveslot",title:"Save Slot Image"}); %>
+  <p>The save slot image is a space representing a saved game. When the slot is used, an image taken from the game at the save point will be displayed. If the slot is free, this image will be displayed. Save slot images are not mandatory to have many save slots, but they are good to help the player remember which slot is which. Combine the save slot with save/load buttons to create the save/load menu.</p>
+  <%- include('components/partials/upload-image', {id:"saveslot"}); %>
+  <%- include('components/saveslot-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"saveslot",type:"list"}); %>

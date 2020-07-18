@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="155.09583"
+   height="95.179398"
+   viewBox="0 0 155.09583 95.179397"
+   preserveAspectRatio="none"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="thumbnail-interruptsvg.svg"
+   inkscape:export-filename="/home/luna/dev/RenJSGUI/electron-quick-start/app/img/index.svg.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata17">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     id="namedview15"
+     showgrid="false"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="63.693656"
+     inkscape:cy="33.824636"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs4">
+    <style
+       type="text/css"
+       id="style2">#holder_158bd1d28ef text { fill:rgba(255,255,255,.75);font-weight:normal;font-family:Helvetica, monospace;font-size:16pt } </style>
+  </defs>
+  <g
+     id="g4649"
+     transform="translate(9.3076105,7.4065018)">
+    <g
+       id="g4641">
+      <g
+         id="g4630">
+        <rect
+           ry="8.9299126"
+           y="0"
+           x="-8.2775164"
+           height="22.820889"
+           width="153.47046"
+           id="rect8419"
+           style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           transform="scale(1.2159613,0.82239459)"
+           style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.66607052"
+           id="text8"
+           y="17.505186"
+           x="1.4563293">Interrupt Normal</text>
+      </g>
+    </g>
+    <text
+       id="text3725"
+       y="19.206779"
+       x="129.04698"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffd5d5;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL';fill:#ffd5d5;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+         y="19.206779"
+         x="129.04698"
+         id="tspan3723"
+         sodipodi:role="line">!</tspan></text>
+  </g>
+  <g
+     id="g4626"
+     transform="translate(9.3076105,5.406498)">
+    <rect
+       ry="8.9299126"
+       y="34.215874"
+       x="-8.369174"
+       height="22.820889"
+       width="153.47046"
+       id="rect8419-3"
+       style="opacity:0.92000002;fill:#ffffff;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.37386239;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       id="text3725-6"
+       y="53.422653"
+       x="128.96065"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.33333337;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL';fill:#ffffff;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.33333337;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         y="53.422653"
+         x="128.96065"
+         id="tspan3723-0"
+         sodipodi:role="line">!</tspan></text>
+    <text
+       transform="scale(1.2159613,0.82239459)"
+       style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffd5d5;fill-opacity:1;stroke-width:0.66607052"
+       id="text8-8"
+       y="59.110367"
+       x="5.2786789">Interrupt Hover</text>
+  </g>
+  <g
+     id="g4636"
+     transform="translate(9.3076105,3.4065018)">
+    <rect
+       ry="8.9299126"
+       y="68.952011"
+       x="-9.3076105"
+       height="22.820889"
+       width="153.47046"
+       id="rect8419-4"
+       style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       id="text3725-8"
+       y="88.158791"
+       x="128.07678"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffd5d5;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL';fill:#ffd5d5;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+         y="88.158791"
+         x="128.07678"
+         id="tspan3723-9"
+         sodipodi:role="line">!</tspan></text>
+    <text
+       transform="scale(1.2159613,0.82239459)"
+       style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.66607052"
+       id="text8-88"
+       y="101.34817"
+       x="-1.669749">Interrupt Pressed</text>
+  </g>
+</svg>
