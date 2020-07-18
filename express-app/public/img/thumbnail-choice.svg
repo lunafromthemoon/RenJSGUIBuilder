@@ -26,7 +26,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -44,8 +44,8 @@
      id="namedview15"
      showgrid="false"
      inkscape:zoom="5.6568542"
-     inkscape:cx="64.675475"
-     inkscape:cy="18.975394"
+     inkscape:cx="33.209223"
+     inkscape:cy="18.268287"
      inkscape:window-x="72"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -60,58 +60,46 @@
        type="text/css"
        id="style2">#holder_158bd1d28ef text { fill:rgba(255,255,255,.75);font-weight:normal;font-family:Helvetica, monospace;font-size:16pt } </style>
   </defs>
-  <g
-     id="g4546"
-     transform="translate(8.4949265)">
-    <rect
-       ry="8.9299126"
-       y="0"
-       x="-8.4949265"
-       height="22.820889"
-       width="153.47046"
-       id="rect8419"
-       style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <text
-       transform="scale(1.2159613,0.82239459)"
-       style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.66607052"
-       id="text8"
-       y="17.505186"
-       x="9.2363062">Choice Normal</text>
-  </g>
-  <g
-     id="g4550"
-     transform="translate(8.4949265,0.08335876)">
-    <rect
-       ry="8.9299126"
-       y="25.321583"
-       x="-6.9039364"
-       height="22.820889"
-       width="153.47046"
-       id="rect8419-3"
-       style="opacity:0.92000002;fill:#ffffff;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.37386239;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <text
-       transform="scale(1.2159613,0.82239459)"
-       style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffd5d5;fill-opacity:1;stroke-width:0.66607052"
-       id="text8-8"
-       y="48.295254"
-       x="14.367073">Choice Hover</text>
-  </g>
-  <g
-     id="g4542"
-     transform="translate(8.8484798,-7.2478446)">
-    <rect
-       ry="8.9299126"
-       y="58.05772"
-       x="-6.9039364"
-       height="22.820889"
-       width="153.47046"
-       id="rect8419-4"
-       style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <text
-       transform="scale(1.2159613,0.82239459)"
-       style="font-weight:normal;font-size:14.20950413px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.66607052"
-       id="text8-88"
-       y="88.101128"
-       x="7.4186497">Choice Pressed</text>
-  </g>
+  <rect
+     style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect8419"
+     width="153.47046"
+     height="22.820889"
+     x="4.736328e-08"
+     y="0"
+     ry="8.9299126" />
+  <text
+     x="27.744255"
+     y="18.023779"
+     id="text8"
+     style="font-weight:normal;font-size:12.84584236px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.60214889"
+     transform="scale(1.0992676,0.90969662)">Choice Normal</text>
+  <rect
+     style="opacity:0.92000002;fill:#ffffff;fill-opacity:1;stroke:#ffd5d5;stroke-width:1.37386239;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect8419-3"
+     width="153.47046"
+     height="22.820889"
+     x="1.5909901"
+     y="25.404942"
+     ry="8.9299126" />
+  <text
+     x="32.382629"
+     y="45.950611"
+     id="text8-8"
+     style="font-weight:normal;font-size:12.84584236px;font-family:Helvetica, monospace;fill:#ffd5d5;fill-opacity:1;stroke-width:0.60214889"
+     transform="scale(1.0992676,0.90969662)">Choice Hover</text>
+  <rect
+     style="opacity:0.92000002;fill:#ffd5d5;fill-opacity:1;stroke:none;stroke-width:0.66327691;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect8419-4"
+     width="153.47046"
+     height="22.820889"
+     x="1.9445434"
+     y="50.809875"
+     ry="8.9299126" />
+  <text
+     x="26.363892"
+     y="73.877434"
+     id="text8-88"
+     style="font-weight:normal;font-size:12.84584236px;font-family:Helvetica, monospace;fill:#ffffff;stroke-width:0.60214889"
+     transform="scale(1.0992676,0.90969662)">Choice Pressed</text>
 </svg>
