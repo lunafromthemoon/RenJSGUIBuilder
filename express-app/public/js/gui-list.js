@@ -5,24 +5,53 @@ $(document).ready(function () {
 	$('.btn-new-gui').click(function () {
 		var name = $('#gui-name').val();
 		if (name.length < 1 || name.includes(' ')){
-			alert("Name problem")
+			$('#new-gui-error > p').html("The name can't be empty or contain whitespaces.")
+			$('#new-gui-error').show();
+			return;
 		}
-		var w = $('#gui-width').val();
-		var h = $('#gui-height').val();
+		if (guiList.find(x => x.name === name)){
+			$('#new-gui-error > p').html("The name is already used for another GUI.")
+			$('#new-gui-error').show();
+			return;
+		}
+		var w = parseInt($('#gui-width').val());
+		var h = parseInt($('#gui-height').val());
+		if (isNaN(w) || isNaN(h) || w<=0 || h <=0){
+			$('#new-gui-error > p').html("The width and height of the GUI have to be positive numbers.")
+			$('#new-gui-error').show();
+			return;
+		}
+
+		$('#new-gui-error').hide();
+		$('#new-gui-modal').hide();
+		
 		window.location.href = `/edit?name=${name}&w=${w}&h=${h}`;
+	})
+
+	$('.btn-clone-gui').click(function () {
+		var name = $('#gui-cloned-name').val();
+		if (name.length < 1 || name.includes(' ')){
+			$('#cloned-gui-error > p').html("The name can't be empty or contain whitespaces.")
+			$('#cloned-gui-error').show();
+			return;
+		}
+		if (guiList.find(x => x.name === name)){
+			$('#cloned-gui-error > p').html("The name is already used for another GUI.")
+			$('#cloned-gui-error').show();
+			return;
+		}
+		$('#cloned-gui-error').hide();
+		$('#clone-gui-modal').hide();
+		
+		// window.location.href = `/edit?name=${name}&w=${w}&h=${h}`;
 	})
 });
 
-// var guiList = JSON.parse(window.localStorage.getItem('RenJSGuiList'));
-// console.log(guiList)
-
 if (!guiList) {
 	guiList = [];
-	// window.localStorage.setItem('RenJSGuiList',JSON.stringify(guiList))
 }
 
 for (var i = guiList.length - 1; i >= 0; i--) {
-	console.log(guiList[i])
 	var card = $('.gui-template').clone();
 	card.find('.card-title').html(guiList[i].name);
 	card.find('.btn-download').attr('href','/download/'+guiList[i].name);

@@ -22,7 +22,10 @@
                     <p class="card-text resolution"></p>
                     <a type="button" href="" class="btn btn-outline-primary btn-download" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download"><i class="fas fa-download"></i></a>
                     <a type="button" href="" class="btn btn-outline-secondary btn-edit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fas fa-edit"></i></a>
-                    <button type="button" class="btn btn-outline-secondary btn-clone" data-toggle="tooltip" data-placement="top" title="" data-original-title="Clone"><i class="far fa-clone"></i></i></button>
+                    <span data-toggle="modal" data-target="#clone-gui-modal">
+                      <a type="button" class="btn btn-outline-secondary" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Clone" ><i class="far fa-clone"></i></i></a>
+                    </span>
+                    
                     <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete"><i class="fas fa-trash-alt"></i></button>
                   </div>
                 </div>
@@ -39,7 +42,11 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body">
-                <p>To create a new gui you need a key name (without spaces or symbols) and the resolution. These parameters can't be change later, so choose carefully!</p>
+                <div class="alert alert-dismissible alert-danger collapse" id="new-gui-error">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <p></p>
+                </div>
+                <p>To create a new gui you need a key name (without spaces or symbols) and the resolution, in width and height pixel values. These parameters can't be change later, so choose carefully!</p>
                 <fieldset>
                   <legend>Gui Name:</legend>
                   <div class="form-group">
@@ -65,7 +72,35 @@
                 </fieldset>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-new-gui" data-dismiss="modal">Create</button>
+                <button type="button" class="btn btn-primary btn-new-gui">Create</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" id="clone-gui-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Clone Gui!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-dismissible alert-danger collapse" id="cloned-gui-error">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <p></p>
+                </div>
+                <p>The GUI <strong id="gui-name-placeholder"></strong> will be cloned, including configuration and all of its assets. Choose a new name for the cloned GUI.</p>
+                <fieldset>
+                  <legend>New Name:</legend>
+                  <div class="form-group">
+                    <input class="form-control" id="gui-cloned-name">
+                  </div>
+                </fieldset>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-clone-gui">Clone</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
             </div>

@@ -5,25 +5,30 @@ $('.custom-file-input').on('change',function(e){
       $(this).next('.custom-file-label').html(fileName);
       if ($(this).attr('id')=='font-input'){
         var fontName = fileName.split(".")[0];
-        $('#font-name').val(fontName)
-      } else {
-        var widthComponent = $(this).closest('.modal-body').find('.asset-width');
-        var heightComponent = $(this).closest('.modal-body').find('.asset-height');
-        var reader = new FileReader();
-        reader.onload = function (file) {
+        $('#font-name').val(fontName);
+        return
+      } 
+      var modal = $(this).closest('.modal-body');
+      var reader = new FileReader();
+      reader.onload = function (file) {
+        if (modal.find('.img-preview').length){
           var image = new Image();
           image.src = file.target.result;
           image.onload = function() {
-            if (widthComponent){
-              widthComponent.val(this.width)
-              heightComponent.val(this.height)
+            if (modal.find('.asset-width').length){
+              modal.find('.asset-width').val(this.width)
+              modal.find('.asset-height').val(this.height)
             }
-            $('.img-preview').attr('src', this.src);
+            modal.find('.img-preview').attr('src', this.src);
           };
-          
+        } 
+        if (modal.find('.audio-preview').length){
+          modal.find('.audio-preview').attr('src',file.target.result);
+          modal.find('.audio-preview').show();
+          $("#audio-name").val(fileName.split(".")[0])
         }
-        reader.readAsDataURL(lastUpload);
       }
+      reader.readAsDataURL(lastUpload);
     }
 })
 
@@ -41,7 +46,7 @@ function loadFont(name,fileName) {
 
   temp.removeClass('font-template');
   temp.find('h4').css('font-family',name);
-  temp.find('.card-header').html(name);
+  temp.find('.card-header > .font-name').html(name);
   $("#fonts-container").append(temp)
   temp.find('.remove-font').click(function (argument) {
     var usedIn = findFont(name);
@@ -60,6 +65,29 @@ function loadFont(name,fileName) {
   })
   temp.show();
   $(".font-select").append(`<option class="font-${name}">${name}</option>`);
+}
+
+
+function loadAudio(name,type,fileName) {
+  var temp = $(".audio-template").clone();
+  temp.removeClass('audio-template');
+  temp.find('.card-header > .audio-name').html(name);
+  temp.find('.card-header > .badge').html(type);
+  temp.find('.audio-sample').attr('src',`/assets/${gui.name}/${fileName}`);
+  $("#audio-container").append(temp)
+  temp.find('.remove-audio').click(function (argument) {
+    var usedIn = findAudio(name);
+    if (usedIn) {
+      var p = usedIn == 'label' ? "a" : "the";
+      $("#error-modal").find(".modal-body").html(`<p>The audio can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
+      $("#error-modal").show();
+    } else {
+      $(this).closest('.card').remove();
+      removeAudio(name);
+    }
+  })
+  temp.show();
+  $(`.audio-${type}-select`).append(`<option class="audio-${name}">${name}</option>`);
 }
 
 var listComponents = {
@@ -99,7 +127,7 @@ $('.upload-interrupt-component').click(function(e){
 })
 
 $('.upload-ctc-component').click(function(e){
-  var ctcStyle = $('#ctc-start-style input:checked').val();
+  var ctcStyle = $('#ctc-start-style input:checked').attr('opt');
   addComponent('ctc','ctc',['x','y','width','height'],{animationStyle:ctcStyle})
 })
 
@@ -117,6 +145,15 @@ $('.upload-font').click(function(e){
   uploadAsset(lastUpload,name,function(fileName){
     loadFont(name,fileName)
     gameLoader.addFont(name,fileName)
+  });
+})
+
+$('.upload-audio').click(function(e){
+  var name = $("#audio-name").val();
+  var audioType = $('#audio-type input:checked').attr('opt');
+  uploadAsset(lastUpload,name,function(fileName){
+    loadAudio(name,audioType,fileName)
+    // gameLoader.addAudio(name,type,fileName)
   });
 })
 
@@ -138,15 +175,16 @@ $('.upload-label-component').click(function(e){
 
 $('.modal').on('shown.bs.modal', function (e) {
   $('.tools').hide()
+  $('.audio-preview').hide();
   selected = null;
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
   if ($(this).find('.text-font').length){
     if (gui.assets.fonts.length == 0){
-      $(this).hide();
+      $(this).modal('hide')
       $("#error-modal").find(".modal-body").html(`<p>This component has text associated with it, and therefore it requires a font, but there are no fonts loaded yet. You can load a font on the fonts section.</p>`);
-      $("#error-modal").show();
+      $("#error-modal").modal('show');
     }
   }
 });

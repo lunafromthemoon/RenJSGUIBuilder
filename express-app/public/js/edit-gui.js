@@ -367,13 +367,14 @@ function changeMenu(menu){
     $(".asset-add").hide();
     $(`.asset-${menu}`).show();
     $('.tools').hide()
+    $("#fonts-container").hide();
+    $("#canvas-container").hide();
+    $("#audio-container").hide();
     currentMenu = menu;
-    if(menu == "fonts"){
-      $("#canvas-container").hide();
-      $("#fonts-container").show();
-    } else{
+    if(menu == "fonts" || menu =='audio'){
+      $(`#${menu}-container`).show();
+    } else {
       $(".asset-all").show();
-      $("#fonts-container").hide();
       $("#canvas-container").show();
       game.state.start('gameLoader');
     }

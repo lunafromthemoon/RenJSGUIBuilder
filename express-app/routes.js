@@ -89,4 +89,11 @@ router.post('/save_gui/:guiName', (req, res, next) => {
   res.json({"saved":true})
 });
 
+
+function sameFile(f1,f2) {
+  var fileBuf1 = fs.readFileSync(f1);
+  var fileBuf2 = fs.readFileSync(f2);
+  return fileBuf1.equals(fileBuf2)
+}
+
 module.exports = router;
