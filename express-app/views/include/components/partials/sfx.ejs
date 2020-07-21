@@ -1,0 +1,17 @@
+<div class="card text-white bg-secondary border-light">
+  <div class="card-header" id="<%= id %>SFXHeader">
+    <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-sfx-tool" aria-expanded="false" aria-controls="<%= id %>-sfx-tool">
+      SFX
+    </a>
+  </div>
+  <div id="<%= id %>-sfx-tool" class="collapse" aria-labelledby="<%= id %>SFXHeader" data-parent="#<%= id %>-accordion">
+    <div class="card-body">
+      <div class="form-group">
+        <select class="form-control audio-sfx-select" id="<%= id %>-sfx">
+          <option value='none'>None</option>
+        </select>
+      </div>
+      <small class="form-text text-white">The sound effect will be played when the component is clicked.</small>  
+    </div>
+  </div>
+</div>

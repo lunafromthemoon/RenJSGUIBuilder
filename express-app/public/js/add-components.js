@@ -56,7 +56,8 @@ function loadFont(name,fileName) {
       $("#error-modal").show();
     } else {
       $(this).closest('.card').remove();
-      removeFont(name);
+      $(`.font-${name}`).remove();
+      gui.assets[currentMenu].splice(gui.assets[currentMenu].findIndex(item => item.name === name), 1)
     }
   })
   temp.find('.font-text').on('input',function(e){
@@ -83,18 +84,19 @@ function loadAudio(name,type,fileName) {
       $("#error-modal").show();
     } else {
       $(this).closest('.card').remove();
-      removeAudio(name);
+      $(`.audio-${type}-select`).remove();
+      delete gui.assets.audio[name];
     }
   })
   temp.show();
-  $(`.audio-${type}-select`).append(`<option class="audio-${name}">${name}</option>`);
+  $(`.audio-${type}-select`).append(`<option class="audio-${name}" value="${name}">${name}</option>`);
 }
 
 var listComponents = {
   slider: ['x','y','width','height','binding'],
   image: ['x','y'],
   animation: ['x','y','width','height'],
-  button: ['x','y','width','height','binding','slot'],
+  button: ['x','y','width','height','binding','slot','sfx'],
   saveslot: ['x','y','slot']
 }
 
@@ -114,7 +116,7 @@ $('.upload-loading-bar-component').click(function(e){
 $('.upload-choice-component').click(function(e){
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
   var isTextCentered = $('#choice-start-text-centered').is(':checked');
-  addComponent("choice","choice",['x','y','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
+  addComponent("choice","choice",['x','y','sfx','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
 })
 
 $('.upload-interrupt-component').click(function(e){
@@ -123,7 +125,7 @@ $('.upload-interrupt-component').click(function(e){
   var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
   var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
   var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
-  addComponent("interrupt","interrupt",['x','y','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
+  addComponent("interrupt","interrupt",['x','y','sfx','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){
@@ -137,7 +139,7 @@ $('.upload-name-box-component').click(function(e){
 })
 
 $('.upload-message-box-component').click(function(e){
-  addComponent('message-box','message-box',['x','y','size','font','color','align','offset-x','offset-y','text-width'])
+  addComponent('message-box','message-box',['x','y','sfx','size','font','color','align','offset-x','offset-y','text-width'])
 })
 
 $('.upload-font').click(function(e){
@@ -153,7 +155,7 @@ $('.upload-audio').click(function(e){
   var audioType = $('#audio-type input:checked').attr('opt');
   uploadAsset(lastUpload,name,function(fileName){
     loadAudio(name,audioType,fileName)
-    // gameLoader.addAudio(name,type,fileName)
+    gameLoader.addAudio(name,audioType,fileName)
   });
 })
 

@@ -3,6 +3,13 @@ var preloader = {
   preload: function() {
     for (var menu in gui.assets ) {
       if (menu=='fonts') continue;
+      if (menu=='audio') {
+        for (var key in gui.assets.audio){
+          var fileName = gui.assets.audio[key].fileName
+          game.load.audio(key,`assets/${gui.name}/${fileName}`);
+        }
+        continue;
+      }
       var singleImgs = ['name-box','message-box','background']
       for (var i = singleImgs.length - 1; i >= 0; i--) {
         if (singleImgs[i] in gui.assets[menu]) {
@@ -67,7 +74,9 @@ var gameLoader = {
         }
       }
     }
-
+    if (gui.assets[currentMenu].backgroundMusic){
+      this.loadBackgroundMusic(gui.assets[currentMenu].backgroundMusic);
+    }
   },
 
   loadComponent: function(component,config) {
@@ -86,6 +95,14 @@ var gameLoader = {
       case 'ctc' : this.loadCtc(config); break;
       case 'saveslot' : this.loadSaveSlot(config); break;
     }
+  },
+
+  addAudio: function(name,audioType,fileName) {
+    if(!gui.assets.audio) {
+      gui.assets.audio = {};
+    }
+    gui.assets.audio[name] = {fileName:fileName,name:name,type:audioType};
+    this.preloadAudio(name,fileName);
   },
 
   addComponent: function(component,config) {
@@ -115,6 +132,14 @@ var gameLoader = {
 
   // preload assets
 
+  preloadAudio: function(id, fileName, callback) {
+    game.load.audio(id, `assets/${gui.name}/${fileName}`);
+    if (callback){
+      game.load.onLoadComplete.addOnce(callback, this);
+    }
+    game.load.start();
+  },
+
   preloadImage: function(id,fileName,callback){
     game.load.image(id, `assets/${gui.name}/${fileName}`);
     game.load.onLoadComplete.addOnce(callback, this);
@@ -128,6 +153,23 @@ var gameLoader = {
   },
 
   // show assets
+
+  loadBackgroundMusic: function(name,play) {
+    if (this.spriteRefs[currentMenu+'backgroundMusic']){
+      this.spriteRefs[currentMenu+'backgroundMusic'].destroy();
+    }
+    if (name == 'none'){
+      delete this.spriteRefs[currentMenu+'backgroundMusic'];
+      delete gui.assets[currentMenu].backgroundMusic;
+      return;
+    }
+    var music = game.add.audio(name);
+    this.spriteRefs[currentMenu+'backgroundMusic'] = music;
+    gui.assets[currentMenu].backgroundMusic = name;
+    if (play){
+      music.play();  
+    }
+  },
 
   loadBackground: function(){
     var bg = game.add.sprite(0,0,currentMenu+'background');
@@ -186,9 +228,17 @@ var gameLoader = {
   loadButton: function(config){
     var image = game.add.button(config.x,config.y,config.id,function(){
       console.log('click on button')
+      if (config.sfx && config.sfx != 'none') {
+        var sfx = game.add.audio(config.sfx);
+        sfx.onStop.addOnce(sfx.destroy);
+        sfx.play()
+      }
     },1,0,2,0);
+    if (image.animations.frameTotal == 2){
+      image.setFrames(1,0,1,0)
+    }
     image.config = config;
-    this.makeDraggable(image,'button',['binding','slot'])
+    this.makeDraggable(image,'button',['binding','slot','sfx'])
   },
 
   loadLabel: function(config) {
@@ -213,7 +263,7 @@ var gameLoader = {
       
     }
     chBox.nextChoices[config.sample-2].text.fill = config['chosen-color'];
-    this.makeDraggable(chBox,'choice',['sample','separation','font','color','chosen-color','size','align','offset-x','offset-y'],config.isBoxCentered)
+    this.makeDraggable(chBox,'choice',['sample','separation','sfx','font','color','chosen-color','size','align','offset-x','offset-y'],config.isBoxCentered)
   },
 
   loadInterrupt: function (config) {
@@ -237,7 +287,7 @@ var gameLoader = {
       this.spriteRefs[currentMenu+'choice'].addChild(intBox);
       arrangeChoices(this.spriteRefs[currentMenu+'choice']);
     } 
-    this.makeDraggable(intBox,'interrupt',['separation','font','color','size','align','offset-x','offset-y'],config.inlineWithChoice)
+    this.makeDraggable(intBox,'interrupt',['separation','font','sfx','color','size','align','offset-x','offset-y'],config.inlineWithChoice)
   },
 
   loadNameBox: function(config) {
@@ -262,7 +312,7 @@ var gameLoader = {
     text.wordWrapWidth = config['text-width'];
     sprite.message = text;
     sprite.addChild(text);
-    this.makeDraggable(sprite,'message-box',['size','font','color','align','offset-x','offset-y','text-width'])
+    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width'])
   },
 
   makeDraggable: function(sprite,name,otherProps,notDraggable){
@@ -322,16 +372,16 @@ function findFont(name) {
   }
 }
 
-function removeFont(name) {
-  $(`.font-${name}`).remove();
-  gui.assets[currentMenu].splice(gui.assets[currentMenu].findIndex(item => item.name === name), 1)
-}
-
 function createChoiceBox(choiceType,start_x,start_y,index,config) {
   var separation = index*(parseInt(config.height)+parseInt(config.separation));
   console.log(separation)
   var chBox = game.add.button(start_x, start_y+separation, choiceType,function(){
-      console.log(`click on ${choiceType} ${index}`)
+      console.log(`click on ${choiceType} ${index}`);
+      if (config.sfx && config.sfx != 'none') {
+        var sfx = game.add.audio(config.sfx);
+        sfx.onStop.addOnce(sfx.destroy);
+        sfx.play();
+      }
     },1,0,2,0);
   if (chBox.animations.frameTotal == 2 || chBox.animations.frameTotal == 4){
     chBox.setFrames(1,0,1,0)
@@ -375,6 +425,7 @@ function changeMenu(menu){
       $(`#${menu}-container`).show();
     } else {
       $(".asset-all").show();
+      $(`.background-music-${menu}`).show();
       $("#canvas-container").show();
       game.state.start('gameLoader');
     }
@@ -445,6 +496,9 @@ function init() {
     game.state.add('preloader', preloader);
     for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
       loadFont(gui.assets.fonts[i].name,gui.assets.fonts[i].fileName);
+    }
+    for (var key in gui.assets.audio) {
+      loadAudio(gui.assets.audio[key].name,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
     }
     game.state.start('preloader')
   } else {

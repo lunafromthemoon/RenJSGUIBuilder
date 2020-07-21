@@ -5,3 +5,13 @@
     padding-top: 15px;
     padding-bottom: 15px;
 }
+
+.btn-playback {
+	color: #f8f9fa;
+	border-color: #f8f9fa;
+}
+
+.btn-playback.active {
+	color: #F3969A;
+	background-color: #f8f9fa;
+}

@@ -21,7 +21,35 @@
   <%}%>
   <%- include('partials/position', {id:id}); %>
   <%- include('partials/text-style', {id:id, text:"message"}); %>
-  
   <%- include('partials/text-position', {id:id}); %>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="messageBoxHeader5">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#message-box-sfx-tool" aria-expanded="false" aria-controls="message-box-sfx-tool">
+        SFX
+      </a>
+    </div>
+    <div id="message-box-sfx-tool" class="collapse" aria-labelledby="messageBoxHeader5" data-parent="#message-box-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <select class="form-control audio-sfx-select" id="<%= id %>-sfx">
+            <option value='none'>None</option>
+          </select>
+        </div>
+        <small class="form-text text-white">The sound effect should be a very short sound that will be played as each letter of the message appears in the box.</small>  
+        <%if (includeTitle) {%>
+          <div class="form-group">                
+            <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" autocomplete="off" checked="" onclick="playMessageBox()"><i class="fas fa-play"></i>
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" autocomplete="off" onclick="stopMessageBox()"><i class="fas fa-stop"></i>
+              </label>
+            </div>
+          </div>
+        <%}%>
+      </div>
+    </div>
+  </div>
 </div>
 

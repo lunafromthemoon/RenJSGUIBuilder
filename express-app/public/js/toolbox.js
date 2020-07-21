@@ -381,6 +381,60 @@ function arrangeChoices(box) {
   }
 }
 
+$('#background-music').on('change',function(e){
+  var bgMusic = $(this).val();
+  gameLoader.loadBackgroundMusic(bgMusic,true);
+})
+
+function stopMusic() {
+  if (gameLoader.spriteRefs[currentMenu+'backgroundMusic']){
+    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].stop();
+  }
+}
+function playMusic() {
+  if (gameLoader.spriteRefs[currentMenu+'backgroundMusic']){
+    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].play();
+  }
+}
+
+function playMessageBox() {
+  if (!selected) return;
+  if (selected.playback){
+    resetMessageBox();
+  }
+  selected.playing = true;
+  selected.message.text = ""
+  var textSample = $('#message-box-sample').val();
+  var position = 0;
+  selected.sfx =  (selected.config.sfx != 'none') ? game.add.audio(selected.config.sfx) : null;
+  selected.playback = setInterval(function(){
+    if (position >= textSample.length){
+      resetMessageBox();
+      return;
+    }
+    selected.message.text += textSample[position];
+    if (textSample[position] != " " && selected.sfx){
+      selected.sfx.play();
+    }
+    position++;
+  }, 150);
+}
+
+function stopMessageBox() {
+  if (!selected) return;
+  if (selected.playback){
+    resetMessageBox();
+  }
+}
+
+function resetMessageBox() {
+  clearInterval(selected.playback);
+  if (selected.sfx){
+    selected.sfx.destroy();
+  }
+  delete selected.playback;
+  selected.message.text = $('#message-box-sample').val();
+}
 
 function showTools(tool){
   $('.tools').hide()
@@ -420,6 +474,10 @@ function showTools(tool){
 $('#button-binding').on('change',function(e){
   var val = $("#button-binding").val();
   $("#button-slot-value").toggle((val =="save" || val == "load"));
+})
+
+$('.audio-sfx-select').on('change',function(e){
+  selected.config.sfx = $(this).val();
 })
 
 $('.show-more-when-off').on('change',function(e){

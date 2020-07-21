@@ -27,6 +27,7 @@
                       <a class="dropdown-item asset-add asset-main asset-settings asset-hud asset-saveload" href="#" data-toggle="modal" data-target="#slider-modal">Slider</a>
                       <a class="dropdown-item asset-add asset-fonts" href="#" data-toggle="modal" data-target="#fonts-modal">Font</a>
                       <a class="dropdown-item asset-add asset-audio" href="#" data-toggle="modal" data-target="#audio-modal">Audio</a>
+
                       
                     </div>
                   </div>
@@ -90,6 +91,29 @@
             <li class="nav-item collapse label-tools tools">
               <%- include('components/label-tools', {includeTitle:true}); %>
               <%- include('components/partials/remove-button', {type:'list'}); %>
+            </li>
+            <li class="nav-item collapse background-music-main background-music-saveload background-music-settings tools">
+              
+              <div class="card border-light bg-secondary mb-3" style="max-width: 20rem;">
+                <div class="card-header border-light text-white">Background Music</div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <select class="form-control audio-music-select" id="background-music">
+                      <option value='none'>None</option>
+                    </select>
+                  </div>
+                  <div class="form-group">                
+                    <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+                      <label class="btn btn-playback active">
+                        <input type="radio" name="options" autocomplete="off" checked="" onclick="playMusic()"><i class="fas fa-play"></i>
+                      </label>
+                      <label class="btn btn-playback ">
+                        <input type="radio" name="options" autocomplete="off" onclick="stopMusic()"><i class="fas fa-stop"></i>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
 
 
