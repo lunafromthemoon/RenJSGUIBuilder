@@ -40,6 +40,8 @@ function loadFont(name,fileName) {
           font-family: '${name}';\
           src: url('/assets/${gui.name}/${fileName}');\
           src: url('/assets/${gui.name}/${fileName}').format('truetype');\
+          font-weight: normal;\
+          font-style: normal;\
       }`)
     .appendTo("head");
   var temp = $(".font-template").clone();
@@ -57,7 +59,7 @@ function loadFont(name,fileName) {
     } else {
       $(this).closest('.card').remove();
       $(`.font-${name}`).remove();
-      gui.assets[currentMenu].splice(gui.assets[currentMenu].findIndex(item => item.name === name), 1)
+      gui.assets.fonts.splice(gui.assets.fonts.findIndex(item => item.name === name), 1)
     }
   })
   temp.find('.font-text').on('input',function(e){
@@ -192,7 +194,7 @@ $('.modal').on('shown.bs.modal', function (e) {
 });
 
 $('#interrupt-modal').on('shown.bs.modal', function (e) {
-  var choicesNotSet = (!gui.assets.hud.choice)
+  var choicesNotSet = (!gui.config.hud.choice)
   setOptions("interrupt-start","text-position-same-as-choices","text-position-not-same-as-choices-options",!choicesNotSet)
   setOptions("interrupt-start","text-style-same-as-choices","text-style-not-same-as-choices-options",!choicesNotSet)
   setOptions("interrupt-start","box-inline","box-not-inline-options",!choicesNotSet)
@@ -247,7 +249,7 @@ function addComponent(id,name,propNames,extra) {
     }
   }
   uploadAsset(lastUpload,props.id,function(fileName){
-    props.fileName = fileName;
-    gameLoader.addComponent(name,props)
+    // props.fileName = fileName;
+    gameLoader.addComponent(name,props,fileName)
   });
 }

@@ -2,17 +2,27 @@
 
 $('.remove-single-selected').click(function(e){
   if (!selected) return;
-  delete gui.assets[currentMenu][selected.config.id]
+  removeAsset(component)
+  delete gui.config[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
 })
 
+function removeAsset(component) {
+  var assetType = component.config.assetType;
+  if (assetType!='none'){
+    gui.assets[assetType].splice(gui.assets[assetType].findIndex(item => item.name === component.config.id), 1)
+  }
+}
+
 $('.remove-choice-selected').click(function(e){
   if (!selected) return;
   if (selected.interrupt){
-    delete gui.assets[currentMenu][selected.interrupt.config.id]
+    removeAsset(selected.interrupt)
+    delete gui.config[currentMenu][selected.interrupt.config.id]
   }
-  delete gui.assets[currentMenu][selected.config.id]
+  removeAsset(selected)
+  delete gui.config[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
 });
@@ -25,14 +35,16 @@ $('.remove-interrupt-selected').click(function(e){
     choiceBox.removeChild(selected);
     arrangeChoices(choiceBox);  
   }
-  delete gui.assets[currentMenu][selected.config.id]
+  removeAsset(selected)
+  delete gui.config[currentMenu][selected.config.id]
   selected.destroy();
   $('.tools').hide()
 })
 
 $('.remove-list-selected').click(function(e){
   if (!selected) return;
-  var list = gui.assets[currentMenu][selected.listComponent];
+  removeAsset(selected)
+  var list = gui.config[currentMenu][selected.listComponent];
   list.splice(list.findIndex(item => item.id === selected.config.id), 1)
   selected.destroy();
   $('.tools').hide()
@@ -203,9 +215,9 @@ $('#interrupt-text-style-same-as-choices').on('change',function() {
   if (!selected) return;
   selected.config.textStyleAsChoice = $(this).is(':checked');
   if (selected.config.textStyleAsChoice) {
-      selected.config.size = gui.assets.hud.choice.size
-      selected.config.color = gui.assets.hud.choice.color
-      selected.config.font = gui.assets.hud.choice.font
+      selected.config.size = gui.config.hud.choice.size
+      selected.config.color = gui.config.hud.choice.color
+      selected.config.font = gui.config.hud.choice.font
   }
   selected.text.fontSize = selected.config.size + 'px';
   selected.text.font = selected.config.font;
@@ -216,9 +228,9 @@ $('#interrupt-text-position-same-as-choices').on('change',function() {
   if (!selected) return;
   selected.config.textPositionAsChoice = $(this).is(':checked');
   if (selected.config.textPositionAsChoice) {
-      selected.config.align = gui.assets.hud.choice.align
-      selected.config['offset-x'] = gui.assets.hud.choice['offset-x']
-      selected.config['offset-y'] = gui.assets.hud.choice['offset-y']
+      selected.config.align = gui.config.hud.choice.align
+      selected.config['offset-x'] = gui.config.hud.choice['offset-x']
+      selected.config['offset-y'] = gui.config.hud.choice['offset-y']
   }
   changeTextPosition(selected,selected.text,selected.config)
 })
@@ -325,7 +337,7 @@ $('#choice-sample').on('input',function () {
       selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['color']
     }
     for (var i = 0; i < (samples-oldSamples); i++) {
-      var nextChoice = createChoiceBox(0,0,oldSamples+i,selected.config);
+      var nextChoice = createChoiceBox("choice",0,0,oldSamples+i,selected.config);
       selected.addChild(nextChoice);
       selected.nextChoices.push(nextChoice);
     }

@@ -1,51 +1,17 @@
 
 var preloader = {
   preload: function() {
-    for (var menu in gui.assets ) {
-      if (menu=='fonts') continue;
-      if (menu=='audio') {
-        for (var key in gui.assets.audio){
-          var fileName = gui.assets.audio[key].fileName
-          game.load.audio(key,`assets/${gui.name}/${fileName}`);
-        }
-        continue;
-      }
-      var singleImgs = ['name-box','message-box','background']
-      for (var i = singleImgs.length - 1; i >= 0; i--) {
-        if (singleImgs[i] in gui.assets[menu]) {
-          var asset = gui.assets[menu][singleImgs[i]];
-          var key = singleImgs[i];
-          if (key == 'background') key = menu+key;
-          game.load.image(key, `assets/${gui.name}/${asset.fileName}`);
-        }
-      }
-      var singleSpr = ['loading-bar','choice','interrupt'];
-      for (var i = singleSpr.length - 1; i >= 0; i--) {
-        if (singleSpr[i] in gui.assets[menu]) {
-          var asset = gui.assets[menu][singleSpr[i]];
-          var w = parseInt(asset.width)
-          var h = parseInt(asset.height)
-          game.load.spritesheet(singleSpr[i], `assets/${gui.name}/${asset.fileName}`,w,h);
-        }
-      }
-      
-      if ('images' in gui.assets[menu]) {
-        for (var i = gui.assets[menu].images.length - 1; i >= 0; i--) {
-          var asset = gui.assets[menu].images[i];
-          game.load.image(asset.id,`assets/${gui.name}/${asset.fileName}`)
-        }
-      }
-      var spritesheets = ['animations','buttons','sliders']
-      for (var j = spritesheets.length - 1; j >= 0; j--) {
-        if (spritesheets[j] in gui.assets[menu]){
-          for (var i = gui.assets[menu][spritesheets[j]].length - 1; i >= 0; i--) {
-            var asset = gui.assets[menu][spritesheets[j]][i];
-            var w = parseInt(asset.width)
-            var h = parseInt(asset.height)
-            game.load.spritesheet(asset.id,`assets/${gui.name}/${asset.fileName}`,w,h)
-          }
-        }
-      }
+    for (var key in gui.assets.audio){
+      var fileName = gui.assets.audio[key].fileName
+      game.load.audio(key,`assets/${gui.name}/${fileName}`);
+    }
+    for (var i = gui.assets.images.length - 1; i >= 0; i--) {
+      var asset = gui.assets.images[i];
+      game.load.image(asset.name, `assets/${gui.name}/${asset.fileName}`);
+    }
+    for (var i = gui.assets.spritesheets.length - 1; i >= 0; i--) {
+      var asset = gui.assets.spritesheets[i];
+      game.load.spritesheet(asset.name, `assets/${gui.name}/${asset.fileName}`,asset.w,asset.h);
     }
   },
 
@@ -61,21 +27,21 @@ var gameLoader = {
   create: function () {
     var singleComponents = ['loading-bar','name-box','message-box','ctc','interrupt','choice','background']
     for (var i = singleComponents.length - 1; i >= 0; i--) {
-      if (singleComponents[i] in gui.assets[currentMenu]){
-        this.loadComponent(singleComponents[i],gui.assets[currentMenu][singleComponents[i]])
+      if (singleComponents[i] in gui.config[currentMenu]){
+        this.loadComponent(singleComponents[i],gui.config[currentMenu][singleComponents[i]])
       }
     }
     var components = ['images','animations','buttons','sliders','labels','saveslot']
     for (var j = components.length - 1; j >= 0; j--) {
-      if (components[j] in gui.assets[currentMenu]) {
-        for (var i = gui.assets[currentMenu][components[j]].length - 1; i >= 0; i--) {
-          var config = gui.assets[currentMenu][components[j]][i];
+      if (components[j] in gui.config[currentMenu]) {
+        for (var i = gui.config[currentMenu][components[j]].length - 1; i >= 0; i--) {
+          var config = gui.config[currentMenu][components[j]][i];
           this.loadComponent(components[j],config)
         }
       }
     }
-    if (gui.assets[currentMenu].backgroundMusic){
-      this.loadBackgroundMusic(gui.assets[currentMenu].backgroundMusic);
+    if (gui.config[currentMenu].backgroundMusic){
+      this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
     }
   },
 
@@ -105,34 +71,44 @@ var gameLoader = {
     this.preloadAudio(name,fileName);
   },
 
-  addComponent: function(component,config) {
+  addComponent: function(component,config,fileName) {
     var listComponent = ['slider','image','button','animations'];
     var componentName = component;
     if (listComponent.includes(component)){
       componentName+='s';
-      if (!(componentName in gui.assets[currentMenu])){
-        gui.assets[currentMenu][componentName] = []
+      if (!(componentName in gui.config[currentMenu])){
+        gui.config[currentMenu][componentName] = []
       }
-      gui.assets[currentMenu][componentName].push(config)
+      gui.config[currentMenu][componentName].push(config)
     } else {
       if (this.spriteRefs[currentMenu+component]){
         // remove old unique component
+        removeAsset(this.spriteRefs[currentMenu+component])
         this.spriteRefs[currentMenu+component].destroy();
       }
-      gui.assets[currentMenu][component] = config;
+      gui.config[currentMenu][component] = config;
     }
     if (component == 'ctc' && config.animationStyle == 'tween'){
       delete config.width
       delete config.height
     }
-    this.preloadSpritesheet(config.id,config.fileName,config.width,config.height,function(){
-      this.loadComponent(componentName,config);
-    })
+    if (config.width && config.height){
+      config.assetType = "spritesheets";
+      this.preloadSpritesheet(config.id,fileName,config.width,config.height,function(){
+        this.loadComponent(componentName,config);
+      });
+    } else {
+      config.assetType = "images";
+      this.preloadImage(config.id,fileName,function(){
+        this.loadComponent(componentName,config);
+      });
+    }
   },
 
   // preload assets
 
   preloadAudio: function(id, fileName, callback) {
+    // gui.assets.audio[id] = {name: id, fileName:fileName};
     game.load.audio(id, `assets/${gui.name}/${fileName}`);
     if (callback){
       game.load.onLoadComplete.addOnce(callback, this);
@@ -141,12 +117,14 @@ var gameLoader = {
   },
 
   preloadImage: function(id,fileName,callback){
+    gui.assets.images.push({name:id,fileName:fileName})
     game.load.image(id, `assets/${gui.name}/${fileName}`);
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
   },
 
   preloadSpritesheet: function(id,fileName,w,h,callback){
+    gui.assets.spritesheets.push({name:id,fileName:fileName,w:parseInt(w),h:parseInt(h)})
     game.load.spritesheet(id, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
@@ -160,12 +138,12 @@ var gameLoader = {
     }
     if (name == 'none'){
       delete this.spriteRefs[currentMenu+'backgroundMusic'];
-      delete gui.assets[currentMenu].backgroundMusic;
+      delete gui.config[currentMenu].backgroundMusic;
       return;
     }
     var music = game.add.audio(name);
     this.spriteRefs[currentMenu+'backgroundMusic'] = music;
-    gui.assets[currentMenu].backgroundMusic = name;
+    gui.config[currentMenu].backgroundMusic = name;
     if (play){
       music.play();  
     }
@@ -268,14 +246,15 @@ var gameLoader = {
 
   loadInterrupt: function (config) {
     if (config.textStyleAsChoice) {
-      config.size = gui.assets.hud.choice.size
-      config.color = gui.assets.hud.choice.color
-      config.font = gui.assets.hud.choice.font
+      config.size = gui.config.hud.choice.size
+      config.color = gui.config.hud.choice.color
+      config.font = gui.config.hud.choice.font
     }
     if (config.textPositionAsChoice) {
-      config.align = gui.assets.hud.choice.align
-      config['offset-x'] = gui.assets.hud.choice['offset-x']
-      config['offset-y'] = gui.assets.hud.choice['offset-y']
+      config.isTextCentered = gui.config.hud.choice.isTextCentered;
+      config.align = gui.config.hud.choice.align
+      config['offset-x'] = gui.config.hud.choice['offset-x']
+      config['offset-y'] = gui.config.hud.choice['offset-y']
     }
     if (!config.x) config.x = 0;
     if (!config.y) config.y = 0;
@@ -344,29 +323,29 @@ var gameLoader = {
   },
 
   addFont: function (name, fileName) {
-    gui.assets[currentMenu].push({fileName:fileName,name:name});
+    gui.assets.fonts.push({fileName:fileName,name:name});
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
   addLabel: function(x,y,size,text,font,color) {
-    if ( !('labels' in gui.assets[currentMenu])){
-      gui.assets[currentMenu].labels = []
+    if ( !('labels' in gui.config[currentMenu])){
+      gui.config[currentMenu].labels = []
     }
     var config = {x:x,y:y,size:size,text:text,font:font,color:color};
-    gui.assets[currentMenu].labels.push(config);
+    gui.config[currentMenu].labels.push(config);
     this.loadLabel(config)
   },
 }
 
 function findFont(name) {
-  if (gui.assets.hud['name-box'] && gui.assets.hud['name-box'].font == name) return 'name-box';
-  if (gui.assets.hud['message-box'] && gui.assets.hud['message-box'].font == name) return 'message-box';
-  if (gui.assets.hud['choice'] && gui.assets.hud['choice'].font == name) return 'choice';
-  for (var menu in gui.assets ) {
+  if (gui.config.hud['name-box'] && gui.config.hud['name-box'].font == name) return 'name-box';
+  if (gui.config.hud['message-box'] && gui.config.hud['message-box'].font == name) return 'message-box';
+  if (gui.config.hud['choice'] && gui.config.hud['choice'].font == name) return 'choice';
+  for (var menu in gui.config ) {
     if (menu=='fonts') continue;
-    if (gui.assets[menu].labels) {
-      for (var i = gui.assets[menu].labels.length - 1; i >= 0; i--) {
-        if (gui.assets[menu].labels[i].font == name) return 'label';
+    if (gui.config[menu].labels) {
+      for (var i = gui.config[menu].labels.length - 1; i >= 0; i--) {
+        if (gui.config[menu].labels[i].font == name) return 'label';
       }
     }
   }
@@ -417,6 +396,7 @@ function changeMenu(menu){
     $(".asset-add").hide();
     $(`.asset-${menu}`).show();
     $('.tools').hide()
+    $(`.background-music`).hide();
     $("#fonts-container").hide();
     $("#canvas-container").hide();
     $("#audio-container").hide();
@@ -451,14 +431,14 @@ $('#btn-save-gui').on('click',function(e){
         success: function (dataR) {
           $('#btn-save-gui').html('Saved!');
           setTimeout(function() {
-            $('#btn-save-gui').html('Save');
+            $('#btn-save-gui').html('<i class="fas fa-save"></i> Save');
   }, 2000);
         },
         error: function (xhr, status, error) {
             console.log('Error: ' + error.message);
         }
     });
-})
+});
 
 function genAssetId(asset) {
     gui.assetCounter++;
@@ -475,13 +455,20 @@ function init() {
   var loaded = false;
   if (gui.isNew){
     gui.assetCounter = 0;
-    gui.assets = {
+    gui.config = {
       loader: {},
       main: {},
       settings: {},
       hud: {},
       saveload: {},
       fonts: []
+    }
+    gui.assets = {
+      images: [],
+      spritesheets: [],
+      fonts: [],
+      audio: {},
+
     }
     delete gui.isNew;
   } else {
