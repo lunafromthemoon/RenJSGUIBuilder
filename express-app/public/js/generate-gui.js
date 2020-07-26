@@ -1,15 +1,19 @@
-$('#btn-generate-gui').on('click',function(e){
+$('.btn-generate').click(function(){
   $('#generating-modal').show();
-  
-  $('#btn-save-gui').html('Saving...');
+  var guiName = $(this).attr('target');
+  console.log("Generating "+guiName)
+  // $('#btn-save-gui').html('Saving...');
   $.ajax({
-        url: `/generate_gui/${gui.name}` ,
+        url: `/generate_gui/${guiName}` ,
         type: 'GET',
         success: function (dataR) {
-          $('#generating-modal').show();
+          console.log("Generated")
+          $('#generating-modal').hide();
         },
         error: function (xhr, status, error) {
             console.log('Error: ' + error.message);
         }
     });
 });
+
+console.log("added thing")

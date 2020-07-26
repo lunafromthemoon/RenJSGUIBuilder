@@ -15,7 +15,7 @@
         </div>
       <%}%>
       <div id="<%= id %>-text-position-not-same-as-choices-options" class='<%if (id.includes("interrupt")) {%>collapse<%}%>'>
-        <%if (id.includes('message-box')) {%>
+        <%if (!id.includes('message-box')) {%>
           <div class="form-group">
             <div class="custom-control custom-switch">
               <input type="checkbox" class="custom-control-input show-more-when-off" target='<%= id %>-text-not-centered-options' id="<%= id %>-text-centered" checked="">
@@ -23,7 +23,7 @@
             </div>
           </div>
         <%}%>
-        <div id="<%= id %>-text-not-centered-options" class="<%if (id.includes('message-box')) {%>collapse<%}%>">
+        <div id="<%= id %>-text-not-centered-options" class="<%if (!id.includes('message-box')) {%>collapse<%}%>">
           <div class="form-group">
             <label for="<%= id %>-align">Text Align</label>
             <select class="form-control" id="<%= id %>-align">

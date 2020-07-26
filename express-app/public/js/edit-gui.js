@@ -5,12 +5,12 @@ var preloader = {
       var fileName = gui.assets.audio[key].fileName
       game.load.audio(key,`assets/${gui.name}/${fileName}`);
     }
-    for (var i = gui.assets.images.length - 1; i >= 0; i--) {
-      var asset = gui.assets.images[i];
+    for (var key in gui.assets.images){
+      var asset = gui.assets.images[key];
       game.load.image(asset.name, `assets/${gui.name}/${asset.fileName}`);
     }
-    for (var i = gui.assets.spritesheets.length - 1; i >= 0; i--) {
-      var asset = gui.assets.spritesheets[i];
+    for (var key in gui.assets.spritesheets){
+      var asset = gui.assets.spritesheets[key];
       game.load.spritesheet(asset.name, `assets/${gui.name}/${asset.fileName}`,asset.w,asset.h);
     }
   },
@@ -108,7 +108,6 @@ var gameLoader = {
   // preload assets
 
   preloadAudio: function(id, fileName, callback) {
-    // gui.assets.audio[id] = {name: id, fileName:fileName};
     game.load.audio(id, `assets/${gui.name}/${fileName}`);
     if (callback){
       game.load.onLoadComplete.addOnce(callback, this);
@@ -117,14 +116,14 @@ var gameLoader = {
   },
 
   preloadImage: function(id,fileName,callback){
-    gui.assets.images.push({name:id,fileName:fileName})
+    gui.assets.images[id] = {name:id,fileName:fileName};
     game.load.image(id, `assets/${gui.name}/${fileName}`);
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
   },
 
   preloadSpritesheet: function(id,fileName,w,h,callback){
-    gui.assets.spritesheets.push({name:id,fileName:fileName,w:parseInt(w),h:parseInt(h)})
+    gui.assets.spritesheets[id] = {name:id,fileName:fileName,w:parseInt(w),h:parseInt(h)}
     game.load.spritesheet(id, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
     game.load.onLoadComplete.addOnce(callback, this);
     game.load.start();
@@ -323,7 +322,7 @@ var gameLoader = {
   },
 
   addFont: function (name, fileName) {
-    gui.assets.fonts.push({fileName:fileName,name:name});
+    gui.assets.fonts[name] = {fileName:fileName,name:name};
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
@@ -415,7 +414,6 @@ function changeMenu(menu){
 $('#btn-save-gui').on('click',function(e){
   try {
     var preview = game.canvas.toDataURL();
-    gui.preview = preview;
   } catch(e) {
     console.log(e)
   }
@@ -423,7 +421,7 @@ $('#btn-save-gui').on('click',function(e){
   $('#btn-save-gui').html('Saving...');
   $.ajax({
         url: `/save_gui/${gui.name}` ,
-        data: {gui:JSON.stringify(gui)},
+        data: {gui:JSON.stringify(gui),preview:preview},
         dataType: 'json',
         type: 'POST',
         // processData: false,
@@ -464,9 +462,9 @@ function init() {
       fonts: []
     }
     gui.assets = {
-      images: [],
-      spritesheets: [],
-      fonts: [],
+      images: {},
+      spritesheets: {},
+      fonts: {},
       audio: {},
 
     }
@@ -475,17 +473,37 @@ function init() {
     // gui = JSON.parse(gui)
     loaded = true;
   }
+  $('.btn-generate').click(function(){
+    // $('#generating-modal').show();
+    // var guiName = $(this).attr('target');
+    // console.log("Generating "+guiName)
+    // $('#btn-save-gui').html('Saving...');
+    $.ajax({
+          url: `/generate_gui/${gui.name}` ,
+          type: 'GET',
+          success: function (dataR) {
+            console.log("Generated")
+            // $('#generating-modal').hide();
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+      });
+  });
+
+
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
   game.preserveDrawingBuffer = true;
   game.state.add('gameLoader', gameLoader);
   
   if (loaded){
     game.state.add('preloader', preloader);
-    for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
-      loadFont(gui.assets.fonts[i].name,gui.assets.fonts[i].fileName);
+    for (var key in gui.assets.fonts) {
+    // for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
+      loadFont(key,gui.assets.fonts[key].fileName);
     }
     for (var key in gui.assets.audio) {
-      loadAudio(gui.assets.audio[key].name,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
+      loadAudio(key,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
     }
     game.state.start('preloader')
   } else {

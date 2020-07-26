@@ -11,7 +11,7 @@ $('.remove-single-selected').click(function(e){
 function removeAsset(component) {
   var assetType = component.config.assetType;
   if (assetType!='none'){
-    gui.assets[assetType].splice(gui.assets[assetType].findIndex(item => item.name === component.config.id), 1)
+    delete gui.assets[assetType][component.config.id]
   }
 }
 

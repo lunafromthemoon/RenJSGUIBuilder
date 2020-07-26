@@ -20,7 +20,6 @@
   <p>The CTC (click to continue) is a small image that will appear when the game is waiting for the player to click anywhere to continue. Normally, after showing text or dialog. You can place it anywhere in the screen, but it's usually contained within the text box.</p>
   <%- include('components/partials/upload-image', {id:"ctc"}); %>
   <legend>Animation Style:</legend>
-  <small class="form-text text-muted">The CTC is always animated, since you want to attract the attention of the player. The animation can be traditional, by using a spritesheet; or tweened, in which case you only need a static image, and RenJS will take care of animating the alpha (transparency).</small>
   <div class="form-group">
     <div class="btn-group btn-group-toggle" id='ctc-start-style' data-toggle="buttons">
       <label class="btn btn-secondary">
@@ -30,6 +29,7 @@
         <input type="radio" name="options" opt="spritesheet" autocomplete="off"> Spritesheet
       </label>
     </div>
+    <small class="form-text text-muted">The CTC is always animated, since you want to attract the attention of the player. The animation can be traditional, by using a spritesheet; or tweened, in which case you only need a static image, and RenJS will take care of animating the alpha (transparency).</small>
   </div>
   <div id='ctc-spritesheet-options' class="collapse">
     <%- include('components/partials/frame-size', {id:"ctc"}); %>

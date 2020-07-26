@@ -9,7 +9,21 @@ $(document).ready(function () {
 	for (var i = guiList.length - 1; i >= 0; i--) {
 		var card = $('.gui-template').clone();
 		card.find('.card-title').html(guiList[i].name);
-		card.find('.btn-generate').attr('href','/generate_gui/'+guiList[i].name);
+		card.find('.btn-generate').attr('target',guiList[i].name)
+		card.find('.btn-generate').click(function(){
+			var name = $(this).attr('target')
+		    $.ajax({
+		          url: `/generate_gui/${name}` ,
+		          type: 'GET',
+		          success: function (dataR) {
+		            console.log("Generated")
+		            // $('#generating-modal').hide();
+		          },
+		          error: function (xhr, status, error) {
+		              console.log('Error: ' + error.message);
+		          }
+		      });
+		  });
 		card.find('.btn-edit').attr('href','/edit?name='+guiList[i].name);
 		card.find('.btn-clone').attr('target',guiList[i].name);
 		card.find('.btn-remove').attr('target',guiList[i].name);

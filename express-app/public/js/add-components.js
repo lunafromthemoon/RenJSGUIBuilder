@@ -59,7 +59,7 @@ function loadFont(name,fileName) {
     } else {
       $(this).closest('.card').remove();
       $(`.font-${name}`).remove();
-      gui.assets.fonts.splice(gui.assets.fonts.findIndex(item => item.name === name), 1)
+      delete gui.assets.fonts[name]
     }
   })
   temp.find('.font-text').on('input',function(e){
