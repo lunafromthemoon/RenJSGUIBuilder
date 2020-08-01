@@ -55,7 +55,7 @@ function loadFont(name,fileName) {
     if (usedIn) {
       var p = usedIn == 'label' ? "a" : "the";
       $("#error-modal").find(".modal-body").html(`<p>The font can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
-      $("#error-modal").show();
+      $("#error-modal").modal('show');
     } else {
       $(this).closest('.card').remove();
       $(`.font-${name}`).remove();
@@ -81,9 +81,9 @@ function loadAudio(name,type,fileName) {
   temp.find('.remove-audio').click(function (argument) {
     var usedIn = findAudio(name);
     if (usedIn) {
-      var p = usedIn == 'label' ? "a" : "the";
+      var p = usedIn == 'button' ? "a" : "the";
       $("#error-modal").find(".modal-body").html(`<p>The audio can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
-      $("#error-modal").show();
+      $("#error-modal").modal('show');
     } else {
       $(this).closest('.card').remove();
       $(`.audio-${type}-select`).remove();
@@ -185,7 +185,7 @@ $('.modal').on('shown.bs.modal', function (e) {
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
   if ($(this).find('.text-font').length){
-    if (gui.assets.fonts.length == 0){
+    if ($.isEmptyObject(gui.assets.fonts)){
       $(this).modal('hide')
       $("#error-modal").find(".modal-body").html(`<p>This component has text associated with it, and therefore it requires a font, but there are no fonts loaded yet. You can load a font on the fonts section.</p>`);
       $("#error-modal").modal('show');

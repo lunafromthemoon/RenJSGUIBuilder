@@ -3,6 +3,11 @@
   <%- include('components/image-tools', {includeTitle:false}); %>
 <%- include('components/partials/modal-footer', {id:"image",type:"list"}); %>
 
+<%- include('components/partials/modal-header', {id:"save-slot",title:"Save Slot"}); %>
+  <%- include('components/partials/upload-image', {id:"save-slot"}); %>
+  <%- include('components/save-slot-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"save-slot",type:"list"}); %>
+
 <%- include('components/partials/modal-header', {id:"animation",title:"Animation"}); %>
   <p>The animation is a spritesheet that will loop repeteadly. A spritesheet is a single image that contains many frames, read from the top-left frame to the bottom right.</p>
   <%- include('components/partials/upload-image', {id:"animation"}); %>

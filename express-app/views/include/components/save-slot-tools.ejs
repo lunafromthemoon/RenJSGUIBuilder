@@ -1,0 +1,67 @@
+<% id=(includeTitle) ? "save-slot" : "save-slot-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+	<%if (includeTitle) {%>
+		<div class="card text-white bg-secondary border-light">
+		  <div class="card-header border-light"><h3 class="mb-0">Save Slot</h3></div>
+		</div>
+	<%}%>
+  <%- include('partials/position', {id: id}); %>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>Header4">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-thumbnail-tool" aria-expanded="false" aria-controls="<%= id %>-thumbnail-tool">
+        Thumbnail Size
+      </a>
+    </div>
+    <div id="<%= id %>-thumbnail-tool" class="collapse" aria-labelledby="<%= id %>Header4" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Offset X</span>
+            </div>
+            <input type="number" class="form-control thumbnail-x" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Offset Y</span>
+            </div>
+            <input type="number" class="form-control thumbnail-y" value="0">
+          </div>
+        </div>  
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">W</span>
+            </div>
+            <input type="number" class="form-control thumbnail-width" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">H</span>
+            </div>
+            <input type="number" class="form-control thumbnail-height" value="0">
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="<%= id %>Header3">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-slot-tool" aria-expanded="false" aria-controls="<%= id %>-slot-tool">
+        Slot
+      </a>
+    </div>
+    <div id="<%= id %>-slot-tool" class="collapse" aria-labelledby="<%= id %>Header3" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control slot" type="number" id="<%= id %>-slot" value="0">
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+  

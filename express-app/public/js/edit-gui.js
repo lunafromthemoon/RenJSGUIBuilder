@@ -340,11 +340,27 @@ function findFont(name) {
   if (gui.config.hud['name-box'] && gui.config.hud['name-box'].font == name) return 'name-box';
   if (gui.config.hud['message-box'] && gui.config.hud['message-box'].font == name) return 'message-box';
   if (gui.config.hud['choice'] && gui.config.hud['choice'].font == name) return 'choice';
+  if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].font == name) return 'interrupt';
   for (var menu in gui.config ) {
-    if (menu=='fonts') continue;
     if (gui.config[menu].labels) {
       for (var i = gui.config[menu].labels.length - 1; i >= 0; i--) {
         if (gui.config[menu].labels[i].font == name) return 'label';
+      }
+    }
+  }
+}
+
+function findAudio(name) {
+  if (gui.config.main.backgroundMusic == name) return 'main menu';
+  if (gui.config.settings.backgroundMusic == name) return 'settings menu';
+  if (gui.config.saveload.backgroundMusic == name) return 'saveload menu';
+  if (gui.config.hud['message-box'] && gui.config.hud['message-box'].sfx == name) return 'message-box';
+  if (gui.config.hud['choice'] && gui.config.hud['choice'].sfx == name) return 'choice';
+  if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].sfx == name) return 'interrupt';
+  for (var menu in gui.config ) {
+    if (gui.config[menu].buttons) {
+      for (var i = gui.config[menu].buttons.length - 1; i >= 0; i--) {
+        if (gui.config[menu].buttons[i].sfx == name) return menu+' menu button';
       }
     }
   }
@@ -403,7 +419,13 @@ function changeMenu(menu){
     if(menu == "fonts" || menu =='audio'){
       $(`#${menu}-container`).show();
     } else {
-      $(".asset-all").show();
+      if (menu!="loader") $(".asset-all").show();
+      if (gui.config[menu].backgroundMusic){
+        $(`#background-music`).val(gui.config[menu].backgroundMusic);
+      } else {
+        $(`#background-music`).val('none');
+      }
+      
       $(`.background-music-${menu}`).show();
       $("#canvas-container").show();
       game.state.start('gameLoader');
