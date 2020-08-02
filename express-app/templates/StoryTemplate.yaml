@@ -1,0 +1,20 @@
+start:
+  - play music_1:
+  - show background_static: WITH FADE CONTINUE
+  - show char_1: happy AT CENTER WITH FADE
+  - text: Hello World
+  - char_1 says normal: Hello for you too!
+  - scene: next_scene
+
+next_scene:
+  - play music_2:
+  - show background_anim: WITH FADE CONTINUE
+  - text: Thanks for playing!
+  - effect ROLLINGCREDITS:
+    endGame: true
+    text:
+      - RenJS developed by
+      - lunafromthemoon
+      - null
+      - Inspired by Ren'Py
+      - Powered by PhaserJS

@@ -1,21 +1,6 @@
-# electron-with-express
+# RenJS Gui Builder
 
-A simple project demonstrating how to spawn an Express app from Electron as well
-as providing server logs directly in the Electron app.
-
-Express App:
-
-![Express-App](screenshots/express-app.png)
-
-Press 'F1' to show the server log:
-
-![Server-Log](screenshots/server-log.png)
-
-## Additional Information
-
-The `express-app` folder is just a vanilla Express generated app using
-`express-generator`. Actually, this used to be the case but I moved the default
-routes from the routes folder to the root to make it a little easier to follow.
+RenJS Gui Builder is a desktop app to create GUIs for RenJS.
 
 ## How to run
 
@@ -73,8 +58,8 @@ electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=r
 
 ## Author(s)
 
-Frank Hale &lt;frankhale@gmail.com&gt;
-28 January 2020
+lunafromthemoon &lt;je.luna.mdq@gmail.com&gt;
+02 Aout 2020
 
 ## License
 

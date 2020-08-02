@@ -163,7 +163,6 @@ function generateGui(guiName,gui) {
     if (err) {
       return console.error(err);
     }
-    console.log('done!');
     // check files and remove repeated
     // fs.readdirSync(buildPath+gui.assetsPath).forEach(file => {
     //   console.log(file);
@@ -205,9 +204,9 @@ function generateGui(guiName,gui) {
 // }
 
 function generateGuiYAML(gui,buildPath){
-  const doc = yaml.safeDump(gui);
-  // console.log(doc);
-  fs.writeFileSync(buildPath+'GUI.yaml', doc);
+  fs.writeFileSync(buildPath+'GUI.yaml', yaml.safeDump(gui));
+  fs.copyFileSync('templates/SetupTemplate.yaml', buildPath+'Setup.yaml');
+  fs.copyFileSync('templates/StoryTemplate.yaml', buildPath+'Story.yaml');
 }
 
 function generateFontsCss(gui,buildPath,assetsPath) {
@@ -257,7 +256,7 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     fonts: `${assetsPath}fonts.css`,
     guiConfig: "GUI.yaml",
     storySetup: "Setup.yaml",
-    storyText: [ "YourStory.yaml" ],
+    storyText: [ "Story.yaml" ],
   }
   // console.log("Saving as "+buildPath+'config.json')
   fs.writeFileSync(buildPath+'config.json', JSON.stringify(configFile,null,"  "));

@@ -76,7 +76,7 @@
       node.on('message', (message) => {
         console.log(message);
         if (message.action == 'open_dir'){
-          console.log(message.path);
+          // console.log(message.path);
           shell.openPath(message.path)
         }
       });

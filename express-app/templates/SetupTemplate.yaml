@@ -1,0 +1,13 @@
+backgrounds:
+  background_static: path/to/background_static.png
+  background_anim: path/to/background_anim.png 800 600 5
+characters:
+  char_1:
+    displayName: Char One
+    speechColour: "#ca90cf"
+    looks:
+      normal: path/to/char_1_normal.png
+      happy: path/to/char_1_happy.png
+music:
+  music_1: path/to/music_1.mp3
+  music_2: path/to/music_2.mp3
