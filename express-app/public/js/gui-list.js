@@ -6,18 +6,38 @@ $(document).ready(function () {
 		guiList = [];
 	}
 
+	$('#open-dir').click(function (argument) {
+		var name = $(this).attr('target');
+		$.ajax({
+          url: `/open_dir/${name}` ,
+          type: 'GET',
+          success: function (dataR) {
+          	console.log(dataR)
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+        });
+	})
+
 	for (var i = guiList.length - 1; i >= 0; i--) {
 		var card = $('.gui-template').clone();
 		card.find('.card-title').html(guiList[i].name);
 		card.find('.btn-generate').attr('target',guiList[i].name)
 		card.find('.btn-generate').click(function(){
-			var name = $(this).attr('target')
+			var name = $(this).attr('target');
+			$('#generating-modal').find('.fa-cog').show();
+			$('#generating-modal').find('p').hide();
+			$('#open-dir').hide()
+			$('#generating-modal').modal('show');
 		    $.ajax({
 		          url: `/generate_gui/${name}` ,
 		          type: 'GET',
 		          success: function (dataR) {
-		            console.log("Generated")
-		            // $('#generating-modal').hide();
+		            $('#generating-modal').find('.fa-cog').hide();
+					$('#generating-modal').find('p').show();
+					$('#open-dir').attr('target',name)
+					$('#open-dir').show()
 		          },
 		          error: function (xhr, status, error) {
 		              console.log('Error: ' + error.message);

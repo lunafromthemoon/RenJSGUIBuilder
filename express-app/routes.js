@@ -3,15 +3,15 @@ const express = require("express"),
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
-const guisDir = '../guis/';
-const buildDir = '../builds/';
+const rimraf = require('rimraf')
+const guisDir = __dirname + '/../guis/';
+const buildDir = './builds/';
 
 if (!fs.existsSync(guisDir)){
   fs.mkdirSync(guisDir);
 }
-
-router.use('/assets', express.static(__dirname + '/' + guisDir));
+console.log(guisDir)
+router.use('/assets', express.static(guisDir));
 
 //GET home page.
 router.get("/", function(req, res) {
@@ -109,7 +109,9 @@ router.get('/remove_gui/:guiName', (req, res, next) => {
     let guis = (err) ? []  : JSON.parse(data);
     guis.splice(guis.findIndex(item => item.name === req.params.guiName), 1)
     fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
-    fs.rmdirSync(guisDir+req.params.guiName, { recursive: true });
+    // fs.rmdirSync(guisDir+req.params.guiName, { recursive: true });
+    rimraf.sync(guisDir+req.params.guiName);
+
     res.json({"removed":true})
   });
 });
@@ -119,6 +121,19 @@ router.post('/save_gui/:guiName', (req, res, next) => {
   updateGuiList(gui.name,gui.resolution,req.body.preview)
   fs.writeFileSync(guisDir+`${gui.name}/gui_config.json`, req.body.gui);
   res.json({"saved":true})
+});
+
+const process = require('process');
+
+router.get('/open_dir/:guiName', (req, res, next) => {
+  var path = buildDir + req.params.guiName + "/";
+  if (fs.existsSync(path)){
+    process.send({action:"open_dir",path:path});
+    res.json({"opened":true});
+  } else {
+    res.json({"opened":false});
+  }
+  
 });
 
 router.get('/generate_gui/:guiName', (req, res, next) => {
@@ -139,8 +154,9 @@ function generateGui(guiName,gui) {
   gui.madeWithRenJSBuilder = true;
   gui.assetsPath = 'assets/gui/'
   var buildPath = buildDir + guiName + "/";
-  if (fs.existsSync(buildPath+gui.assetsPath)){
-    fs.unlinkSync(buildPath+gui.assetsPath, { recursive: true });
+  if (fs.existsSync(buildPath)){
+    // fs.rmdirSync(buildPath, { recursive: true });
+    rimraf.sync(buildPath);
   }
   fs.mkdirSync(buildPath+gui.assetsPath, { recursive: true });
   ncp(guisDir+guiName, buildPath+gui.assetsPath, function (err) {
@@ -190,7 +206,7 @@ function generateGui(guiName,gui) {
 
 function generateGuiYAML(gui,buildPath){
   const doc = yaml.safeDump(gui);
-  console.log(doc);
+  // console.log(doc);
   fs.writeFileSync(buildPath+'GUI.yaml', doc);
 }
 
@@ -199,13 +215,13 @@ function generateFontsCss(gui,buildPath,assetsPath) {
   // for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
   for (var key in gui.assets.fonts) {
     var font = gui.assets.fonts[key];
-    fontsCSS += `\
-      @font-face {\
-          font-family: '${font.name}';\
-          src: url('/${assetsPath}${font.fileName}');\
-          src: url('/${assetsPath}${font.fileName}').format('truetype');\
-          font-weight: normal;\
-          font-style: normal;\
+    fontsCSS += `\n
+      @font-face {\n
+          font-family: '${font.name}';\n
+          src: url('/${assetsPath}${font.fileName}');\n
+          src: url('/${assetsPath}${font.fileName}').format('truetype');\n
+          font-weight: normal;\n
+          font-style: normal;\n
       }\n`
   }
   fs.writeFileSync(buildPath+assetsPath+'fonts.css', fontsCSS);
@@ -243,7 +259,8 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     storySetup: "Setup.yaml",
     storyText: [ "YourStory.yaml" ],
   }
-  fs.writeFileSync(buildPath+'config.json', JSON.stringify(configFile));
+  // console.log("Saving as "+buildPath+'config.json')
+  fs.writeFileSync(buildPath+'config.json', JSON.stringify(configFile,null,"  "));
 }
 
 

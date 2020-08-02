@@ -495,23 +495,39 @@ function init() {
     // gui = JSON.parse(gui)
     loaded = true;
   }
-  $('.btn-generate').click(function(){
-    // $('#generating-modal').show();
-    // var guiName = $(this).attr('target');
-    // console.log("Generating "+guiName)
-    // $('#btn-save-gui').html('Saving...');
+  $('#btn-generate-gui').click(function(){
+    $('#generating-modal').find('.fa-cog').show();
+    $('#generating-modal').find('p').hide();
+    $('#open-dir').hide()
+    $('#generating-modal').modal('show');
     $.ajax({
           url: `/generate_gui/${gui.name}` ,
           type: 'GET',
           success: function (dataR) {
-            console.log("Generated")
-            // $('#generating-modal').hide();
+            $('#generating-modal').find('.fa-cog').hide();
+            $('#generating-modal').find('p').show();
+            $('#open-dir').attr('target',name)
+            $('#open-dir').show()
           },
           error: function (xhr, status, error) {
               console.log('Error: ' + error.message);
           }
       });
   });
+
+  $('#open-dir').click(function (argument) {
+    $.ajax({
+          url: `/open_dir/${gui.name}` ,
+          type: 'GET',
+          success: function (dataR) {
+            console.log(dataR)
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+        });
+  })
+
 
 
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");

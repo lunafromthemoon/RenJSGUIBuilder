@@ -4,6 +4,7 @@
 <%- include('components/partials/modal-footer', {id:"image",type:"list"}); %>
 
 <%- include('components/partials/modal-header', {id:"save-slot",title:"Save Slot"}); %>
+  <p>The save slot image is a space representing a saved game. When the slot is used, an image taken from the game at the save point will be displayed. If the slot is free, this image will be displayed. Save slot images are not mandatory to have many save slots, but they are good to help the player remember which slot is which. Combine the save slot with save/load buttons to create the save/load menu.</p>
   <%- include('components/partials/upload-image', {id:"save-slot"}); %>
   <%- include('components/save-slot-tools', {includeTitle:false}); %>
 <%- include('components/partials/modal-footer', {id:"save-slot",type:"list"}); %>
@@ -120,8 +121,3 @@
   </div>
 </div>
 
-<%- include('components/partials/modal-header', {id:"saveslot",title:"Save Slot Image"}); %>
-  <p>The save slot image is a space representing a saved game. When the slot is used, an image taken from the game at the save point will be displayed. If the slot is free, this image will be displayed. Save slot images are not mandatory to have many save slots, but they are good to help the player remember which slot is which. Combine the save slot with save/load buttons to create the save/load menu.</p>
-  <%- include('components/partials/upload-image', {id:"saveslot"}); %>
-  <%- include('components/saveslot-tools', {includeTitle:false}); %>
-<%- include('components/partials/modal-footer', {id:"saveslot",type:"list"}); %>

@@ -22,8 +22,7 @@
                     <p class="card-text resolution"></p>
                     <button type="button" class="btn btn-outline-primary btn-generate" data-toggle="tooltip" data-placement="top" title="" data-original-title="Generate"><i class="fas fa-download"></i></button>
                     <a type="button" href="" class="btn btn-outline-secondary btn-edit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fas fa-edit"></i></a>
-                    <a type="button" class="btn btn-outline-secondary btn-clone" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Clone" ><i class="far fa-clone"></i></i></a>
-                    
+                    <button type="button" class="btn btn-outline-secondary btn-clone" data-toggle="tooltip" data-placement="top" title="" data-original-title="Clone" ><i class="far fa-clone"></i></i></button>
                     <button type="button" class="btn btn-outline-danger btn-remove" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete"><i class="fas fa-trash-alt"></i></button>
                   </div>
                 </div>
@@ -105,6 +104,25 @@
           </div>
         </div>
 
+        <div class="modal" id="generating-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Generating!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                <p>Your GUI was successfully generated and can be found in the build directory.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id='open-dir'>Open Directory</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <script type="text/javascript">
             guiList = JSON.parse('<%- guis %>');
         </script>
@@ -114,7 +132,6 @@
         <script src="popper/popper.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="js/gui-list.js"></script>
-        <script src="js/generate-gui.js"></script>
     </body>
 </html>
 
