@@ -239,7 +239,7 @@ var gameLoader = {
       chBox.nextChoices.push(nextChoice)
       
     }
-    chBox.nextChoices[config.sample-2].text.fill = config['chosen-color'];
+    chBox.nextChoices[config.sample-2].tint = config['chosen-color'];
     this.makeDraggable(chBox,'choice',['sample','separation','sfx','font','color','chosen-color','size','align','offset-x','offset-y'],config.isBoxCentered)
   },
 
@@ -480,15 +480,13 @@ function init() {
       main: {},
       settings: {},
       hud: {},
-      saveload: {},
-      fonts: []
+      saveload: {}
     }
     gui.assets = {
       images: {},
       spritesheets: {},
       fonts: {},
       audio: {},
-
     }
     delete gui.isNew;
   } else {

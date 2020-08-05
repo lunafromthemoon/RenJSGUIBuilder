@@ -344,7 +344,7 @@ $('#choice-sample').on('input',function () {
   }
   selected.config.sample = samples;
   if (selected.nextChoices.length>0){
-    selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['chosen-color']
+    selected.nextChoices[selected.nextChoices.length-1].tint = selected.config['chosen-color']
   }
   arrangeChoices(selected);
 })

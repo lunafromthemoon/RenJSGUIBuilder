@@ -10,7 +10,6 @@ const buildDir = './builds/';
 if (!fs.existsSync(guisDir)){
   fs.mkdirSync(guisDir);
 }
-console.log(guisDir)
 router.use('/assets', express.static(guisDir));
 
 //GET home page.
@@ -34,11 +33,8 @@ router.get("/edit", function(req, res) {
           res.render("edit", { title: "RenJS - "+name, name: name, gui: data });
         });
       }
-      
   });
 });
-
-
 
 // SET STORAGE
 var storage = multer.diskStorage({
@@ -50,7 +46,6 @@ var storage = multer.diskStorage({
     cb(null, dir)
   },
   filename: function (req, file, cb) {
-    // console.log("Changing name")
     cb(null, req.params.asset + path.extname(file.originalname))
   }
 })
@@ -109,9 +104,7 @@ router.get('/remove_gui/:guiName', (req, res, next) => {
     let guis = (err) ? []  : JSON.parse(data);
     guis.splice(guis.findIndex(item => item.name === req.params.guiName), 1)
     fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
-    // fs.rmdirSync(guisDir+req.params.guiName, { recursive: true });
     rimraf.sync(guisDir+req.params.guiName);
-
     res.json({"removed":true})
   });
 });
@@ -155,7 +148,6 @@ function generateGui(guiName,gui) {
   gui.assetsPath = 'assets/gui/'
   var buildPath = buildDir + guiName + "/";
   if (fs.existsSync(buildPath)){
-    // fs.rmdirSync(buildPath, { recursive: true });
     rimraf.sync(buildPath);
   }
   fs.mkdirSync(buildPath+gui.assetsPath, { recursive: true });
@@ -164,54 +156,83 @@ function generateGui(guiName,gui) {
       return console.error(err);
     }
     // check files and remove repeated
-    // fs.readdirSync(buildPath+gui.assetsPath).forEach(file => {
-    //   console.log(file);
-
-    //   var asset = findAsset(gui,file);
-    //   console.log(asset);
-    //   if (!asset){
-    //     fs.unlinkSync(buildPath+gui.assetsPath+file)
-    //   } 
-    // });
+    fs.readdirSync(buildPath+gui.assetsPath).forEach(file => {
+      var asset = findAsset(gui,file);
+      if (!asset){
+        fs.unlinkSync(buildPath+gui.assetsPath+file)
+      } else {
+        deleteRepeatedAsset(gui,asset,buildPath+gui.assetsPath);
+      }
+    });
     generateRenJSConfig(gui,buildPath,gui.assetsPath);
     generateFontsCss(gui,buildPath,gui.assetsPath);
     generateGuiYAML(gui,buildPath)
   });
 }
 
-// function findRepeatedAsset(gui,asset) {
-//   if (asset.type == 'audio'){
-//     return;
-//   }
-// }
+function deleteRepeatedAsset(gui,asset,path) {
+  var repeats = findRepeatedAsset(gui,asset,path);
+  for (var i = repeats.length - 1; i >= 0; i--) {
+    delete gui.assets[asset.type][repeats[i]];
+    for (var menu in gui.config){
+      for (var component in gui.config[menu]){
+        if (gui.config[menu][component] instanceof Array){
+          for (var j = gui.config[menu][component].length - 1; j >= 0; j--) {
+            if (gui.config[menu][component][j].id == repeats[i]){
+              gui.config[menu][component][j].id = asset.name;
+            }
+          }
+          continue;
+        } 
+        if (component == "backgroundMusic") {
+          if (gui.config[menu][component] == repeats[i]){
+            gui.config[menu][component] = asset.name;
+          }
+          continue;
+        } 
+        if (gui.config[menu][component].id == repeats[i]){
+          gui.config[menu][component].id = asset.name;
+        }
+      }
+    }
+  }
+}
 
-// function findAsset(gui,fileName) {
-//   // console.log(gui)
-//   var lists = ['images','spritesheets','fonts'];
-//   for (var j = lists.length - 1; j >= 0; j--) {
-//     for (var i = gui.assets[lists[j]].length - 1; i >= 0; i--) {
-//       if (gui.assets[lists[j]][i].fileName == fileName){
-//         return {name: gui.assets[lists[j]][i].name, type:lists[j], index:i};
-//       }
-//     }
-//   }
-//   for (var key in gui.assets.audio) {
-//     if (gui.assets.audio[key].fileName == fileName){
-//       return {name: key, type:'audio'};
-//     }
-//   }
-//   return null;
-// }
+function findRepeatedAsset(gui,asset,path) {
+  var repeats = []
+  for (var key in gui.assets[asset.type]) {
+    if (asset.name != key && sameFile(path+asset.fileName,path+gui.assets[asset.type][key].fileName)){
+      repeats.push(key);
+    }
+  }
+  return repeats;
+}
+
+function sameFile(f1,f2) {
+  var fileBuf1 = fs.readFileSync(f1);
+  var fileBuf2 = fs.readFileSync(f2);
+  return fileBuf1.equals(fileBuf2)
+}
+
+function findAsset(gui,fileName) {
+  for (var type in gui.assets){
+    for (var key in gui.assets[type]) {
+      if (gui.assets[type][key].fileName == fileName){
+        return {name: key, type:type,fileName:fileName};
+      }
+    }
+  }
+  return null;
+}
 
 function generateGuiYAML(gui,buildPath){
   fs.writeFileSync(buildPath+'GUI.yaml', yaml.safeDump(gui));
-  fs.copyFileSync('templates/SetupTemplate.yaml', buildPath+'Setup.yaml');
-  fs.copyFileSync('templates/StoryTemplate.yaml', buildPath+'Story.yaml');
+  fs.copyFileSync(__dirname +'/templates/SetupTemplate.yaml', buildPath+'Setup.yaml');
+  fs.copyFileSync(__dirname +'/templates/StoryTemplate.yaml', buildPath+'Story.yaml');
 }
 
 function generateFontsCss(gui,buildPath,assetsPath) {
   var fontsCSS = "";
-  // for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
   for (var key in gui.assets.fonts) {
     var font = gui.assets.fonts[key];
     fontsCSS += `\n
@@ -258,15 +279,8 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     storySetup: "Setup.yaml",
     storyText: [ "Story.yaml" ],
   }
-  // console.log("Saving as "+buildPath+'config.json')
-  fs.writeFileSync(buildPath+'config.json', JSON.stringify(configFile,null,"  "));
-}
-
-
-function sameFile(f1,f2) {
-  var fileBuf1 = fs.readFileSync(f1);
-  var fileBuf2 = fs.readFileSync(f2);
-  return fileBuf1.equals(fileBuf2)
+  var configJs = "var globalConfig = "+JSON.stringify(configFile,null,"  ")
+  fs.writeFileSync(buildPath+'config.js', configJs);
 }
 
 module.exports = router;
