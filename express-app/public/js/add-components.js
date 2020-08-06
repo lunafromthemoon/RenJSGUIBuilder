@@ -99,7 +99,7 @@ var listComponents = {
   image: ['x','y'],
   animation: ['x','y','width','height'],
   button: ['x','y','width','height','binding','slot','sfx'],
-  saveslot: ['x','y','slot']
+  'save-slot': ['x','y','thumbnail-x','thumbnail-y','thumbnail-width','thumbnail-height','slot'],
 }
 
 $('.upload-list-component').click(function(e){

@@ -129,11 +129,16 @@ $('.text-color').on('change',function(e){
   }
 });
 
+function colorToSigned24Bit(s) {
+      return (parseInt(s.substr(1), 16) << 8) / 256;
+  }
+
 $('#choice-chosen-color').on('change',function(e){
   if (!selected) return;
   selected.config['chosen-color'] = $(this).val();
+  
   if (selected.nextChoices.length>0){
-    selected.nextChoices[selected.nextChoices.length-1].text.fill = $(this).val();
+    selected.nextChoices[selected.nextChoices.length-1].tint = colorToSigned24Bit($(this).val());
   }
 });
 
@@ -333,9 +338,9 @@ $('#choice-sample').on('input',function () {
       selected.nextChoices.pop();
     }
   } else if (samples > oldSamples){
-    if (selected.nextChoices.length>0){
-      selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['color']
-    }
+    // if (selected.nextChoices.length>0){
+    //   selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['color']
+    // }
     for (var i = 0; i < (samples-oldSamples); i++) {
       var nextChoice = createChoiceBox("choice",0,0,oldSamples+i,selected.config);
       selected.addChild(nextChoice);
@@ -344,7 +349,7 @@ $('#choice-sample').on('input',function () {
   }
   selected.config.sample = samples;
   if (selected.nextChoices.length>0){
-    selected.nextChoices[selected.nextChoices.length-1].tint = selected.config['chosen-color']
+    selected.nextChoices[selected.nextChoices.length-1].tint = colorToSigned24Bit(selected.config['chosen-color'])
   }
   arrangeChoices(selected);
 })
