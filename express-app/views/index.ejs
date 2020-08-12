@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <%- include('include/head'); %>
 <html lang="en">
-    <body>
+    <body class="">
         <div class="container">
-          <h1>RenJS GUI Builder</h1>
+          <div class="jumbotron mt-3">
+            <h1 class="display-3 text-secondary">RenJS GUI Builder</h1>
+            <p class="lead">With the RenJS GUI Builder you can build awesome GUI's for your visual novel in a visual and easy way!</p>
+            <hr class="my-4">
+            <p>You can create a new GUI from scratch or clone a previous one and modify it. When your GUI is ready, simply press the Build button and the configuration file will be compiled, along with the configuration file for RenJS, the assets directory and a barebones game structure.</p>
+            <a type="button" class="btn btn-secondary btn-block" href="#" data-toggle="modal" data-target="#new-gui-modal">Create New GUI!</a>
+          </div>
           <div class="bs-docs-section">
             <div class="row">
               <div class="card-columns">
-                <div class="card">
+                <!-- <div class="card">
                   <img class="card-img-top" src="img/index.svg" alt="Card image">
                   <div class="card-body">
                     <h5 class="card-title">New GUI</h5>
                     <p class="card-text">Create a new GUI from scratch!</p>
                     <a type="button" class="btn btn-outline-secondary btn-block" href="#" data-toggle="modal" data-target="#new-gui-modal">New</a>
                   </div>
-                </div>
+                </div> -->
                 <div class="card d-none gui-template">
                   <img class="card-img-top" src="img/index.svg" alt="Card image">
                   <div class="card-body">
                     <h5 class="card-title"></h5>
                     <p class="card-text resolution"></p>
-                    <button type="button" class="btn btn-outline-primary btn-generate" data-toggle="tooltip" data-placement="top" title="" data-original-title="Generate"><i class="fas fa-download"></i></button>
-                    <a type="button" href="" class="btn btn-outline-secondary btn-edit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fas fa-edit"></i></a>
-                    <button type="button" class="btn btn-outline-secondary btn-clone" data-toggle="tooltip" data-placement="top" title="" data-original-title="Clone" ><i class="far fa-clone"></i></i></button>
-                    <button type="button" class="btn btn-outline-danger btn-remove" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="btn btn-outline-primary btn-generate">Build</button>
+                    <a type="button" href="" class="btn btn-outline-secondary btn-edit">Edit</a>
+                    <button type="button" class="btn btn-outline-info btn-clone">Clone</button>
+                    <button type="button" class="btn btn-outline-danger btn-remove">Delete</button>
                   </div>
                 </div>
               </div>

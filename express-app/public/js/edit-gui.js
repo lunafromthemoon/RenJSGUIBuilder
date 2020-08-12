@@ -25,13 +25,13 @@ var gameLoader = {
   spriteRefs: {},
 
   create: function () {
-    var singleComponents = ['loading-bar','name-box','message-box','ctc','interrupt','choice','background']
+    var singleComponents = ['loading-bar','name-box','ctc','message-box','interrupt','choice','background']
     for (var i = singleComponents.length - 1; i >= 0; i--) {
       if (singleComponents[i] in gui.config[currentMenu]){
         this.loadComponent(singleComponents[i],gui.config[currentMenu][singleComponents[i]])
       }
     }
-    var components = ['images','animations','buttons','sliders','labels','saveslot']
+    var components = ['buttons','sliders','labels','save-slots','images','animations']
     for (var j = components.length - 1; j >= 0; j--) {
       if (components[j] in gui.config[currentMenu]) {
         for (var i = gui.config[currentMenu][components[j]].length - 1; i >= 0; i--) {
@@ -46,8 +46,10 @@ var gameLoader = {
   },
 
   loadComponent: function(component,config) {
+    // console.log("loading")
+    // console.log(component)
     switch (component) {
-      case 'background' : this.loadBackground(); break;
+      case 'background' : this.loadBackground(config); break;
       case 'loading-bar' : this.loadLoadingBar(config); break;
       case 'images' : this.loadImage(config); break;
       case 'animations' : this.loadImage(config); break;
@@ -59,7 +61,7 @@ var gameLoader = {
       case 'name-box' : this.loadNameBox(config); break;
       case 'message-box' : this.loadMessageBox(config); break;
       case 'ctc' : this.loadCtc(config); break;
-      case 'saveslot' : this.loadSaveSlot(config); break;
+      case 'save-slots' : this.loadSaveSlot(config); break;
     }
   },
 
@@ -72,7 +74,10 @@ var gameLoader = {
   },
 
   addComponent: function(component,config,fileName) {
-    var listComponent = ['slider','image','button','animations'];
+    // console.log("adding component to canvas")
+    // console.log(component)
+    // console.log(fileName)
+    var listComponent = ['slider','image','button','animations','save-slot'];
     var componentName = component;
     if (listComponent.includes(component)){
       componentName+='s';
@@ -148,11 +153,12 @@ var gameLoader = {
     }
   },
 
-  loadBackground: function(){
-    var bg = game.add.sprite(0,0,currentMenu+'background');
+  loadBackground: function(config){
+    var bg = game.add.sprite(0,0,config.id);
     bg.sendToBack();
     this.spriteRefs[currentMenu+'background'] = bg;
-    bg.config = {id: 'background'};
+    bg.config = config;
+    bg.component = 'background';
     bg.inputEnabled = true;
     bg.events.onInputDown.add(function(){
       showTools('background');
@@ -161,10 +167,10 @@ var gameLoader = {
   },
 
   loadLoadingBar: function(config){
-    var sprite = game.add.sprite(config.x,config.y,'loading-bar');
+    var sprite = game.add.sprite(config.x,config.y,config.id);
     this.spriteRefs[currentMenu+'loading-bar'] = sprite;
     sprite.config = config;
-    sprite.config.id = 'loading-bar'
+    sprite.component = 'loading-bar';
     this.makeDraggable(sprite,'loading-bar')
   },
 
@@ -184,15 +190,26 @@ var gameLoader = {
   },
 
   loadSaveSlot: function(config){
+    console.log("Adding save slot");
     var sprite = game.add.sprite(config.x,config.y,config.id);
     sprite.config = config;
-    this.makeDraggable(sprite,'saveslot',['slot'])
+    var thumbnail = game.add.graphics(config['thumbnail-x'], config['thumbnail-y']);
+    var randomColor = Math.floor(Math.random()*16777215);
+    thumbnail.color = randomColor;
+    thumbnail.beginFill(randomColor);
+    thumbnail.drawRect(0, 0, config['thumbnail-width'], config['thumbnail-height'])
+    thumbnail.endFill();
+    thumbnail.visible = false;
+    sprite.thumbnail = thumbnail;
+    sprite.addChild(thumbnail)
+    this.makeDraggable(sprite,'save-slot',['slot','thumbnail-x','thumbnail-y','thumbnail-width','thumbnail-height'])
   },
 
   loadCtc: function(config){
-    var sprite = game.add.sprite(config.x,config.y,'ctc');
+    var sprite = game.add.sprite(config.x,config.y,config.id);
     this.spriteRefs[currentMenu+'ctc'] = sprite;
     sprite.config = config;
+    sprite.component = 'ctc';
     this.makeDraggable(sprite,'ctc')
     if (config.animationStyle == 'spritesheet'){
       sprite.animations.add('do').play(true)
@@ -232,6 +249,7 @@ var gameLoader = {
     var chBox = createChoiceBox('choice',x,y,0,config);
     chBox.config = config;
     chBox.nextChoices = []
+    chBox.component = 'choice';
     this.spriteRefs[currentMenu+'choice'] = chBox;
     for (var i = 1; i < config.sample; i++) {
       var nextChoice = createChoiceBox('choice',0,0,i,config);
@@ -258,6 +276,7 @@ var gameLoader = {
     if (!config.y) config.y = 0;
     var intBox = createChoiceBox('interrupt',config.x,config.y,0,config);
     this.spriteRefs[currentMenu+'interrupt'] = intBox;
+    intBox.component = 'interrupt';
     intBox.config = config;
     if (config.inlineWithChoice) {
       this.spriteRefs[currentMenu+'choice'].interrupt = intBox;
@@ -268,9 +287,10 @@ var gameLoader = {
   },
 
   loadNameBox: function(config) {
-    var sprite = game.add.sprite(config.x,config.y,'name-box');
+    var sprite = game.add.sprite(config.x,config.y,config.id);
     this.spriteRefs[currentMenu+'name-box'] = sprite;
     sprite.config = config;
+    sprite.component = 'name-box';
     var text = game.add.text(0,0, "Char Name", {font: config.size+'px '+config.font, fill: config.color});
     changeTextPosition(sprite,text, config)
     sprite.name = text;
@@ -279,9 +299,10 @@ var gameLoader = {
   },
 
   loadMessageBox: function(config) {
-    var sprite = game.add.sprite(config.x,config.y,'message-box');
+    var sprite = game.add.sprite(config.x,config.y,config.id);
     this.spriteRefs[currentMenu+'message-box'] = sprite;
     sprite.config = config;
+    sprite.component = 'message-box';
     var textSample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     var text = game.add.text(config['offset-x'],config['offset-y'], textSample, {font: config.size+'px '+config.font, fill: config.color});
     text.wordWrap = true;
@@ -368,7 +389,7 @@ function findAudio(name) {
 function createChoiceBox(choiceType,start_x,start_y,index,config) {
   var separation = index*(parseInt(config.height)+parseInt(config.separation));
   console.log(separation)
-  var chBox = game.add.button(start_x, start_y+separation, choiceType,function(){
+  var chBox = game.add.button(start_x, start_y+separation, config.id,function(){
       console.log(`click on ${choiceType} ${index}`);
       if (config.sfx && config.sfx != 'none') {
         var sfx = game.add.audio(config.sfx);
@@ -379,8 +400,8 @@ function createChoiceBox(choiceType,start_x,start_y,index,config) {
   if (chBox.animations.frameTotal == 2 || chBox.animations.frameTotal == 4){
     chBox.setFrames(1,0,1,0)
   }
-  console.log("chBox.animations.frameTotal")
-  console.log(chBox.animations.frameTotal)
+  // console.log("chBox.animations.frameTotal")
+  // console.log(chBox.animations.frameTotal)
   var text = game.add.text(0,0, `${choiceType} ${index}`, {font: config.size+'px '+config.font, fill: config.color});
   changeTextPosition(chBox,text, config)
   chBox.text = text;

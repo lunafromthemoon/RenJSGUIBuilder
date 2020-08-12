@@ -104,21 +104,22 @@ var listComponents = {
 
 $('.upload-list-component').click(function(e){
   var component = $(this).attr('component');
-  addComponent('gen',component,listComponents[component])
+  console.log(component)
+  addComponent(component,listComponents[component])
 })
 
 $('.upload-bg-component').click(function(e){
-  addComponent(currentMenu+'background','background',[])
+  addComponent('background',[])
 })
 
 $('.upload-loading-bar-component').click(function(e){
-  addComponent('loading-bar','loading-bar',['x','y','width','height'])
+  addComponent('loading-bar',['x','y','width','height'])
 })
 
 $('.upload-choice-component').click(function(e){
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
   var isTextCentered = $('#choice-start-text-centered').is(':checked');
-  addComponent("choice","choice",['x','y','sfx','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
+  addComponent("choice",['x','y','sfx','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
 })
 
 $('.upload-interrupt-component').click(function(e){
@@ -127,21 +128,21 @@ $('.upload-interrupt-component').click(function(e){
   var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
   var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
   var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
-  addComponent("interrupt","interrupt",['x','y','sfx','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
+  addComponent("interrupt",['x','y','sfx','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){
   var ctcStyle = $('#ctc-start-style input:checked').attr('opt');
-  addComponent('ctc','ctc',['x','y','width','height'],{animationStyle:ctcStyle})
+  addComponent('ctc',['x','y','width','height'],{animationStyle:ctcStyle})
 })
 
 $('.upload-name-box-component').click(function(e){
   var isTextCentered = $('#name-box-start-text-centered').is(':checked');
-  addComponent('name-box','name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
+  addComponent('name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
 })
 
 $('.upload-message-box-component').click(function(e){
-  addComponent('message-box','message-box',['x','y','sfx','size','font','color','align','offset-x','offset-y','text-width'])
+  addComponent('message-box',['x','y','sfx','size','font','color','align','offset-x','offset-y','text-width'])
 })
 
 $('.upload-font').click(function(e){
@@ -184,6 +185,12 @@ $('.modal').on('shown.bs.modal', function (e) {
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
   $(this).find('.img-preview').attr('src', thumbnail);
   $(this).find('.custom-file-label').html("Choose file");
+  if ($(this).find('.thumbnail-prop').length && gui.config.saveload['save-slots'].length){
+    $(this).find('#save-slot-start-thumbnail-x').val(gui.config.saveload['save-slots'][0]['thumbnail-x'])
+    $(this).find('#save-slot-start-thumbnail-y').val(gui.config.saveload['save-slots'][0]['thumbnail-y'])
+    $(this).find('#save-slot-start-thumbnail-width').val(gui.config.saveload['save-slots'][0]['thumbnail-width'])
+    $(this).find('#save-slot-start-thumbnail-height').val(gui.config.saveload['save-slots'][0]['thumbnail-height'])
+  }
   if ($(this).find('.text-font').length){
     if ($.isEmptyObject(gui.assets.fonts)){
       $(this).modal('hide')
@@ -231,11 +238,8 @@ function uploadAsset(file, asset, callback){
 
 
 
-function addComponent(id,name,propNames,extra) {
-  var props = { id: id }
-  if (id == 'gen'){
-    props.id = genAssetId('img');
-  }
+function addComponent(name,propNames,extra) {
+  var props = { id: genAssetId('asset') }
   for (var i = propNames.length - 1; i >= 0; i--) {
     var val = $(`#${name}-start-${propNames[i]}`).val();
     props[propNames[i]] = val;
@@ -248,6 +252,9 @@ function addComponent(id,name,propNames,extra) {
       props[key] = extra[key];
     }
   }
+  // console.log("adding component ")
+  // console.log(name)
+  // console.log(props)
   uploadAsset(lastUpload,props.id,function(fileName){
     // props.fileName = fileName;
     gameLoader.addComponent(name,props,fileName)

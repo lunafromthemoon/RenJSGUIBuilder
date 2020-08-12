@@ -268,6 +268,7 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     }
   }
   var configFile = {
+    name: gui.name,
     w : gui.resolution[0],
     h : gui.resolution[1],
     mode: "AUTO",

@@ -9,17 +9,30 @@
   <div class="card text-white bg-secondary border-light">
     <div class="card-header" id="<%= id %>Header4">
       <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-thumbnail-tool" aria-expanded="false" aria-controls="<%= id %>-thumbnail-tool">
-        Thumbnail Size
+        Thumbnail
       </a>
     </div>
     <div id="<%= id %>-thumbnail-tool" class="collapse" aria-labelledby="<%= id %>Header4" data-parent="#<%= id %>-accordion">
       <div class="card-body">
+        <small class="form-text text-white">The thumbnail represents a screenshot of the game in the moment it was saved. It will be shown as a colored rectangle as a sample of the size.</small>  
+        <%if (includeTitle) {%>
+          <div class="form-group">                
+            <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked="" onclick="showThumbnail(false)"> Hide
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off" onclick="showThumbnail(true)"> Show
+              </label>
+            </div>
+          </div>
+        <%}%>
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">Offset X</span>
             </div>
-            <input type="number" class="form-control thumbnail-x" id="<%= id %>-thumbnail-x" value="0">
+            <input type="number" class="form-control thumbnail-prop" target='x' id="<%= id %>-thumbnail-x" value="0">
           </div>
         </div>
         <div class="form-group">
@@ -27,7 +40,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">Offset Y</span>
             </div>
-            <input type="number" class="form-control thumbnail-y" id="<%= id %>-thumbnail-y" value="0">
+            <input type="number" class="form-control thumbnail-prop" target='y' id="<%= id %>-thumbnail-y" value="0">
           </div>
         </div>  
         <div class="form-group">
@@ -35,7 +48,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">W</span>
             </div>
-            <input type="number" class="form-control thumbnail-width" id="<%= id %>-thumbnail-width"value="0">
+            <input type="number" class="form-control thumbnail-prop" target='width' id="<%= id %>-thumbnail-width"value="0">
           </div>
         </div>
         <div class="form-group">
@@ -43,7 +56,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">H</span>
             </div>
-            <input type="number" class="form-control thumbnail-height" id="<%= id %>-thumbnail-height"value="0">
+            <input type="number" class="form-control thumbnail-prop" target='height' id="<%= id %>-thumbnail-height"value="0">
           </div>
         </div>  
       </div>

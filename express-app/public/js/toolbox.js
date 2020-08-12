@@ -2,13 +2,17 @@
 
 $('.remove-single-selected').click(function(e){
   if (!selected) return;
-  removeAsset(component)
-  delete gui.config[currentMenu][selected.config.id]
+  removeAsset(selected);
+  console.log('selected.component!!!!!!!!!!!')
+  console.log(selected.component)
+  console.log(gui.config[currentMenu][selected.component])
+  delete gui.config[currentMenu][selected.component]
   selected.destroy();
   $('.tools').hide()
 })
 
 function removeAsset(component) {
+  // console.log(component)
   var assetType = component.config.assetType;
   if (assetType!='none'){
     delete gui.assets[assetType][component.config.id]
@@ -19,10 +23,10 @@ $('.remove-choice-selected').click(function(e){
   if (!selected) return;
   if (selected.interrupt){
     removeAsset(selected.interrupt)
-    delete gui.config[currentMenu][selected.interrupt.config.id]
+    delete gui.config[currentMenu]['interrupt']
   }
   removeAsset(selected)
-  delete gui.config[currentMenu][selected.config.id]
+  delete gui.config[currentMenu]['choice']
   selected.destroy();
   $('.tools').hide()
 });
@@ -36,7 +40,7 @@ $('.remove-interrupt-selected').click(function(e){
     arrangeChoices(choiceBox);  
   }
   removeAsset(selected)
-  delete gui.config[currentMenu][selected.config.id]
+  delete gui.config[currentMenu]['interrupt']
   selected.destroy();
   $('.tools').hide()
 })
@@ -120,7 +124,7 @@ $('.text-color').on('change',function(e){
   target.fill = $(this).val();
   selected.config.color = $(this).val();
   if (selected.nextChoices){
-    for (var i = 0; i < selected.nextChoices.length-1; i++) {
+    for (var i = 0; i < selected.nextChoices.length; i++) {
       selected.nextChoices[i].text.fill = target.fill;
     }
   }
@@ -130,8 +134,8 @@ $('.text-color').on('change',function(e){
 });
 
 function colorToSigned24Bit(s) {
-      return (parseInt(s.substr(1), 16) << 8) / 256;
-  }
+    return (parseInt(s.substr(1), 16) << 8) / 256;
+}
 
 $('#choice-chosen-color').on('change',function(e){
   if (!selected) return;
@@ -338,9 +342,9 @@ $('#choice-sample').on('input',function () {
       selected.nextChoices.pop();
     }
   } else if (samples > oldSamples){
-    // if (selected.nextChoices.length>0){
-    //   selected.nextChoices[selected.nextChoices.length-1].text.fill = selected.config['color']
-    // }
+    if (selected.nextChoices.length>0){
+      selected.nextChoices[selected.nextChoices.length-1].tint = 0xFFFFFF;
+    }
     for (var i = 0; i < (samples-oldSamples); i++) {
       var nextChoice = createChoiceBox("choice",0,0,oldSamples+i,selected.config);
       selected.addChild(nextChoice);
@@ -506,9 +510,31 @@ $('.show-more-when-off').on('change',function(e){
   $(`#${target}`).toggle(!($(this).is(':checked')))
 });
 
+$('.thumbnail-prop').on('input',function () {
+  if (!selected) return;
+  console.log('changing save slot thumbnail')
+  var prop = $(this).attr('target');
+  selected.config['thumbnail-'+prop] = parseInt($(this).val());
+  if (prop == 'width' || prop == 'height'){
+    selected.thumbnail.clear();
+    selected.thumbnail.beginFill(selected.thumbnail.color);
+    selected.thumbnail.drawRect(0, 0, selected.config['thumbnail-width'], selected.config['thumbnail-height'])
+    selected.thumbnail.endFill();
+  } else {
+    selected.thumbnail[prop] = selected.config['thumbnail-'+prop];
+  }
+  // console.log($(this).val())
+  
+})
+
 function showFrame(frame){
   if (!selected) return;
   selected.frame = frame;
+}
+
+function showThumbnail(show) {
+  if (!selected) return;
+  selected.thumbnail.visible = show;
 }
 
 function changeButtonFrames(frame){
