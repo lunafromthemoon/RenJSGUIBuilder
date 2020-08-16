@@ -5,10 +5,12 @@ const electron = require("electron"),
 let mainWindow;
 
 function createWindow() {
+
   mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
     width: 1920,
     height: 1080,
+    icon: __dirname + '/logo.png',
     webPreferences: {
       nodeIntegration: true
     }

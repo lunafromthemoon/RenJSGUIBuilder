@@ -54,6 +54,9 @@ You can then package the code up using the command line:
 
 ```
 electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron-With-Express\" --asar
+
+
+electron-packager . --overwrite --prune=true --out=../builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"RenJS-GUI-Builder\" --asar
 ```
 
 ## Author(s)

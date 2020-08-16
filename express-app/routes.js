@@ -4,17 +4,21 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const rimraf = require('rimraf')
-const guisDir = __dirname + '/../guis/';
-const buildDir = './builds/';
+const guisDir = path.join(__dirname,'../../../DATA/guis/');
+const buildDir = path.join(__dirname,'../../../DATA/builds/');
+
+console.log(__dirname)
+console.log(guisDir)
 
 if (!fs.existsSync(guisDir)){
-  fs.mkdirSync(guisDir);
+  fs.mkdirSync(guisDir, { recursive: true });
 }
+
 router.use('/assets', express.static(guisDir));
 
 //GET home page.
 router.get("/", function(req, res) {
-  fs.readFile(guisDir+'guis.json', (err, data) => {
+  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
       let guis = (err) ? []  : JSON.parse(data);
       res.render("index", { title: "RenJS - Your GUIs", guis: JSON.stringify(guis) });
   });
@@ -22,14 +26,14 @@ router.get("/", function(req, res) {
 
 router.get("/edit", function(req, res) {
   var name = req.query.name;
-  fs.readFile(guisDir+'guis.json', (err, data) => {
+  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
       let guis = (err) ? []  : JSON.parse(data);
       let gui = guis.find(x => x.name === name);
       if (!gui) {
         gui = {name:name, resolution: [parseInt(req.query.w),parseInt(req.query.h)], isNew:true};
         res.render("edit", { title: "RenJS - "+name, name: name, gui: JSON.stringify(gui) });
       } else {
-        fs.readFile(guisDir+`${name}/gui_config.json`, (err, data) => {
+        fs.readFile(path.join(guisDir,`${name}/gui_config.json`), (err, data) => {
           res.render("edit", { title: "RenJS - "+name, name: name, gui: data });
         });
       }
@@ -39,9 +43,9 @@ router.get("/edit", function(req, res) {
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-  	var dir = guisDir+req.params.guiName;
+  	var dir = path.join(guisDir,req.params.guiName);
   	if (!fs.existsSync(dir)){
-	    fs.mkdirSync(dir);
+	    fs.mkdirSync(dir, { recursive: true });
 	  }
     cb(null, dir)
   },
@@ -62,13 +66,13 @@ router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, n
   }
   var ext = path.extname(file.originalname)
   var fileName = req.params.asset + ext
-  console.log(fileName)
+  // console.log(fileName)
   res.json({"fileName":fileName})
   
 });
 
 function updateGuiList(name,resolution,preview){
-  fs.readFile(guisDir+'guis.json', (err, data) => {
+  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
     let guis = (err) ? []  : JSON.parse(data);
     let gui = guis.find(x => x.name === name)
     if (!gui){
@@ -76,23 +80,24 @@ function updateGuiList(name,resolution,preview){
     } else {
       gui.preview = preview;
     }
-    fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
+    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
   });
 }
 
 router.get('/clone_gui/:toClone/:newName', (req, res, next) => {
   var toClone = req.params.toClone
   var newName = req.params.newName
-  fs.readFile(guisDir+'guis.json', (err, data) => {
+  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
     let guis = (err) ? []  : JSON.parse(data);
     let gui = guis.find(x => x.name === toClone)
     guis.push({name:newName,resolution:gui.resolution,preview:gui.preview})
-    fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
-    ncp(guisDir+gui.name, guisDir+newName, function (err) {
-      fs.readFile(`${guisDir}${newName}/gui_config.json`, (err, data) => {
+    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
+    ncp(path.join(guisDir,gui.name), path.join(guisDir,newName), function (err) {
+      var guiConfigFile = path.join(guisDir,`${newName}/gui_config.json`) ;
+      fs.readFile(guiConfigFile, (err, data) => {
         var newGuiConfig = JSON.parse(data);
         newGuiConfig.name = newName;
-        fs.writeFileSync(`${guisDir}${newName}/gui_config.json`, JSON.stringify(newGuiConfig));
+        fs.writeFileSync(guiConfigFile, JSON.stringify(newGuiConfig));
         res.json({"cloned":true})
       });
     });
@@ -100,11 +105,11 @@ router.get('/clone_gui/:toClone/:newName', (req, res, next) => {
 });
 
 router.get('/remove_gui/:guiName', (req, res, next) => {
-  fs.readFile(guisDir+'guis.json', (err, data) => {
+  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
     let guis = (err) ? []  : JSON.parse(data);
     guis.splice(guis.findIndex(item => item.name === req.params.guiName), 1)
-    fs.writeFileSync(guisDir+'guis.json', JSON.stringify(guis));
-    rimraf.sync(guisDir+req.params.guiName);
+    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
+    rimraf.sync(path.join(guisDir,req.params.guiName));
     res.json({"removed":true})
   });
 });
@@ -112,26 +117,25 @@ router.get('/remove_gui/:guiName', (req, res, next) => {
 router.post('/save_gui/:guiName', (req, res, next) => {
   var gui = JSON.parse(req.body.gui)
   updateGuiList(gui.name,gui.resolution,req.body.preview)
-  fs.writeFileSync(guisDir+`${gui.name}/gui_config.json`, req.body.gui);
+  fs.writeFileSync(path.join(guisDir,`${gui.name}/gui_config.json`), req.body.gui);
   res.json({"saved":true})
 });
 
 const process = require('process');
 
 router.get('/open_dir/:guiName', (req, res, next) => {
-  var path = buildDir + req.params.guiName + "/";
-  if (fs.existsSync(path)){
-    process.send({action:"open_dir",path:path});
+  var dir = path.join(buildDir,req.params.guiName);
+  if (fs.existsSync(dir)){
+    process.send({action:"open_dir",path:dir});
     res.json({"opened":true});
   } else {
     res.json({"opened":false});
   }
-  
 });
 
 router.get('/generate_gui/:guiName', (req, res, next) => {
   var guiName = req.params.guiName
-  fs.readFile(guisDir+`${guiName}/gui_config.json`, (err, data) => {
+  fs.readFile(path.join(guisDir,`${guiName}/gui_config.json`), (err, data) => {
     generateGui(guiName,JSON.parse(data));
     res.json({"generated":true})
   });
@@ -146,22 +150,23 @@ const yaml = require('js-yaml');
 function generateGui(guiName,gui) {
   gui.madeWithRenJSBuilder = true;
   gui.assetsPath = 'assets/gui/'
-  var buildPath = buildDir + guiName + "/";
+  var buildPath = path.join(buildDir,guiName);
+  var assetsPath = path.join(buildPath,gui.assetsPath)
   if (fs.existsSync(buildPath)){
     rimraf.sync(buildPath);
   }
-  fs.mkdirSync(buildPath+gui.assetsPath, { recursive: true });
-  ncp(guisDir+guiName, buildPath+gui.assetsPath, function (err) {
+  fs.mkdirSync(assetsPath, { recursive: true });
+  ncp(path.join(guisDir,guiName), assetsPath, function (err) {
     if (err) {
       return console.error(err);
     }
     // check files and remove repeated
-    fs.readdirSync(buildPath+gui.assetsPath).forEach(file => {
+    fs.readdirSync(assetsPath).forEach(file => {
       var asset = findAsset(gui,file);
       if (!asset){
-        fs.unlinkSync(buildPath+gui.assetsPath+file)
+        fs.unlinkSync(path.join(assetsPath,file))
       } else {
-        deleteRepeatedAsset(gui,asset,buildPath+gui.assetsPath);
+        deleteRepeatedAsset(gui,asset,assetsPath);
       }
     });
     generateRenJSConfig(gui,buildPath,gui.assetsPath);
@@ -226,9 +231,9 @@ function findAsset(gui,fileName) {
 }
 
 function generateGuiYAML(gui,buildPath){
-  fs.writeFileSync(buildPath+'GUI.yaml', yaml.safeDump(gui));
-  fs.copyFileSync(__dirname +'/templates/SetupTemplate.yaml', buildPath+'Setup.yaml');
-  fs.copyFileSync(__dirname +'/templates/StoryTemplate.yaml', buildPath+'Story.yaml');
+  fs.writeFileSync(path.join(buildPath,'GUI.yaml'), yaml.safeDump(gui));
+  fs.copyFileSync(path.join(__dirname,'/templates/SetupTemplate.yaml'), path.join(buildPath,'Setup.yaml'));
+  fs.copyFileSync(path.join(__dirname,'/templates/StoryTemplate.yaml'), path.join(buildPath,'Story.yaml'));
 }
 
 function generateFontsCss(gui,buildPath,assetsPath) {
@@ -244,7 +249,7 @@ function generateFontsCss(gui,buildPath,assetsPath) {
           font-style: normal;\n
       }\n`
   }
-  fs.writeFileSync(buildPath+assetsPath+'fonts.css', fontsCSS);
+  fs.writeFileSync(path.join(buildPath,assetsPath,'fonts.css'), fontsCSS);
 }
 
 function generateRenJSConfig(gui,buildPath,assetsPath) {
@@ -281,7 +286,7 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     storyText: [ "Story.yaml" ],
   }
   var configJs = "var globalConfig = "+JSON.stringify(configFile,null,"  ")
-  fs.writeFileSync(buildPath+'config.js', configJs);
+  fs.writeFileSync(path.join(buildPath,'config.js'), configJs);
 }
 
 module.exports = router;

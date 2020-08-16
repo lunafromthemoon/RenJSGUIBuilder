@@ -1,10 +1,10 @@
 {
-  "name": "electron-with-express",
-  "description": "Demonstrates spawning Express from Electron and using it to serve content",
-  "version": "0.15.0",
+  "name": "RenJSGUIBuilder",
+  "description": "Allows to build RenJS GUIs easily in a visual way.",
+  "version": "0.0.1",
   "main": "main.js",
   "authors": [
-    "Frank Hale <frankhale@gmail.com>"
+    "lunafromthemoon <je.luna.mdq@gmail.com>"
   ],
   "license": "GPL-3.0",
   "private": true,
@@ -12,12 +12,16 @@
     "start": "electron ."
   },
   "dependencies": {
+    "asar": "^3.0.3",
     "electron": "9.0.4",
     "jquery": "^3.5.1",
     "keymaster": "^1.6.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "node": "^14.5.0",
     "request": "^2.88.2",
     "strip": "^3.0.0"
+  },
+  "devDependencies": {
+    "electron": "^9.2.0"
   }
 }

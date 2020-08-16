@@ -56,10 +56,13 @@
         spawn = require("child_process").spawn,
         // For electron-packager change cwd in spawn to app.getAppPath() and
         // uncomment the app require below
-        //app = require('electron').remote.app,
-        node = spawn(
-          "node",
-          ["./express-app/bin/www"],
+        app = require('electron').remote.app,
+        // node = spawn(
+        //   "node",
+        //   ["./express-app/bin/www"],
+        node = require("child_process").fork(
+          `${app.getAppPath()}/express-app/bin/www`,
+          [],
           {
             cwd: process.cwd(),
             env: { 'DISPLAY': process.env.DISPLAY },
