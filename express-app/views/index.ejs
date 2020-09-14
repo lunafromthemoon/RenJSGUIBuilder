@@ -7,8 +7,24 @@
             <h1 class="display-3 text-secondary">RenJS GUI Builder</h1>
             <p class="lead">With the RenJS GUI Builder you can build awesome GUI's for your visual novel in a visual and easy way!</p>
             <hr class="my-4">
-            <p>You can create a new GUI from scratch or clone a previous one and modify it. When your GUI is ready, simply press the Build button and the configuration file will be compiled, along with the configuration file for RenJS, the assets directory and a barebones game structure.</p>
-            <a type="button" class="btn btn-secondary btn-block" href="#" data-toggle="modal" data-target="#new-gui-modal">Create New GUI!</a>
+            <p>You can create a new GUI from scratch or clone a previous one and modify it. When your GUI is ready, simply press the Build button and the GUI file will be compiled, along with the configuration file for RenJS, the assets directory and a barebones game structure.</p>
+            <a type="button" class="btn btn-secondary btn-block mb-3" href="#" data-toggle="modal" data-target="#new-gui-modal">Create New GUI!</a>
+            <div class="form-group">
+              <div class="input-group mb-3 btn-block">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Workspace</span>
+                </div>
+                <!-- <div class="custom-file"> -->
+                  <!-- <input type="file" class="custom-file-input" id="workspaceInput" webkitdirectory> -->
+                <input type="text" class="form-control" readonly value="<%= workspace %>">
+                <!-- </div> -->
+                <div class="input-group-append">
+                  <button type="button" class="input-group-text" id="change-workspace">Change</button>
+                  <button type="button" class="input-group-text" id="open-workspace">Explore</button>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="bs-docs-section">
             <div class="row">
@@ -131,8 +147,32 @@
           </div>
         </div>
 
+        <div class="modal" id="change-workspace-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Workspace Problem!</h4>
+              </div>
+              <div class="modal-body">
+                <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                <p>The workspace directory is not set or not available anymore, please select a new workspace directory.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-block" id='change-workspace'>Change Workspace</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <script type="text/javascript">
+          <% if (guis) { %>
+            changeWorkspace = false;
             guiList = JSON.parse('<%- guis %>');
+          <% } else { %>
+            guiList = [];
+            changeWorkspace = true;
+          <% }%>
+          
         </script>
 
 

@@ -4,24 +4,72 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const rimraf = require('rimraf')
-const guisDir = path.join(__dirname,'../../../DATA/guis/');
-const buildDir = path.join(__dirname,'../../../DATA/builds/');
+const ncp = require('ncp').ncp;
+ncp.limit = 16;
+const yaml = require('js-yaml');
+const unzipper = require('unzipper');
 
-console.log(__dirname)
-console.log(guisDir)
 
-if (!fs.existsSync(guisDir)){
-  fs.mkdirSync(guisDir, { recursive: true });
+let workspaceDir, guisDir, buildDir;
+let workspaceReady = false;
+
+
+function loadWorkspace() {
+  if (fs.existsSync('workspace_config.json')){
+    fs.readFile('workspace_config.json', (err, data) => {
+      let workspaceConfig = JSON.parse(data);
+      workspaceDir = workspaceConfig.path;
+      createWorkspace();
+    });
+  } else {
+    workspaceDir = path.join(__dirname,'../../../DATA/');
+    createWorkspace();
+  }
 }
 
-router.use('/assets', express.static(guisDir));
+function createWorkspace(callback) {
+  try {
+    if (!callback) callback = ()=>{console.log("Workspace Created!")};
+    guisDir = path.join(workspaceDir,'guis/');
+    buildDir = path.join(workspaceDir,'builds/');
+
+    console.log(__dirname)
+    console.log(guisDir)
+
+    if (!fs.existsSync(guisDir)){
+      fs.mkdirSync(guisDir, { recursive: true });
+
+    }
+    var contents = fs.readdirSync(guisDir);
+    if (!contents || contents.length == 0){
+      fs.copyFileSync(path.join(__dirname,'/templates/workspace.zip'), path.join(guisDir,'workspace.zip'));
+      fs.createReadStream(path.join(guisDir,'workspace.zip'))
+        .pipe(unzipper.Extract({ path: guisDir })
+        .on('finish',callback));
+    }
+
+    router.use('/assets', express.static(guisDir));
+    workspaceReady = true;
+  } catch(error){
+    console.log("Error creating workspace");
+    console.log(error);
+    workspaceReady = false;
+  }
+  
+}
+
+loadWorkspace();
 
 //GET home page.
 router.get("/", function(req, res) {
-  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
+  if (!workspaceReady){
+    res.render("index", { title: "RenJS - Your GUIs", workspace: 'error' });
+  } else {
+    fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
       let guis = (err) ? []  : JSON.parse(data);
-      res.render("index", { title: "RenJS - Your GUIs", guis: JSON.stringify(guis) });
-  });
+      res.render("index", { title: "RenJS - Your GUIs", guis: JSON.stringify(guis), workspace: workspaceDir });
+    });
+  }
 });
 
 router.get("/edit", function(req, res) {
@@ -123,6 +171,31 @@ router.post('/save_gui/:guiName', (req, res, next) => {
 
 const process = require('process');
 
+router.get('/change_workspace', (req, res, next) => {
+  process.send({action:"select_dir"});
+  process.on('message', message => {
+    if (message.path){
+      fs.writeFileSync('workspace_config.json', JSON.stringify({path: message.path}));
+      workspaceDir = message.path;
+      createWorkspace(()=>{
+        res.json({"workspace":workspaceDir});
+      });
+    } else {
+      res.json({"workspace":workspaceDir,"error":message.error});
+    }
+    
+  });
+});
+
+router.get('/open_workspace', (req, res, next) => {
+  if (fs.existsSync(workspaceDir)){
+    process.send({action:"open_dir",path:workspaceDir});
+    res.json({"opened":true});
+  } else {
+    res.json({"opened":false});
+  }
+});
+
 router.get('/open_dir/:guiName', (req, res, next) => {
   var dir = path.join(buildDir,req.params.guiName);
   if (fs.existsSync(dir)){
@@ -142,10 +215,8 @@ router.get('/generate_gui/:guiName', (req, res, next) => {
   
 });
 
-const ncp = require('ncp').ncp;
-ncp.limit = 16;
+
  
-const yaml = require('js-yaml');
 
 function generateGui(guiName,gui) {
   gui.madeWithRenJSBuilder = true;

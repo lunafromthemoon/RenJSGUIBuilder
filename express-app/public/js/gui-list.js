@@ -1,10 +1,43 @@
 
 $(document).ready(function () {
+
     $('[data-toggle="tooltip"]').tooltip()
 
     if (!guiList) {
 		guiList = [];
 	}
+
+	$('#change-workspace').click(function (argument) {
+		$.ajax({
+          url: `/change_workspace` ,
+          type: 'GET',
+          success: function (dataR) {
+          	console.log(dataR)
+          	location.reload();
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+              location.reload();
+          }
+        });
+	})
+
+	if (changeWorkspace) {
+		$('#change-workspace-modal').show();
+	}
+
+	$('#open-workspace').click(function (argument) {
+		$.ajax({
+          url: `/open_workspace` ,
+          type: 'GET',
+          success: function (dataR) {
+          	console.log(dataR)
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+        });
+	})
 
 	$('#open-dir').click(function (argument) {
 		var name = $(this).attr('target');

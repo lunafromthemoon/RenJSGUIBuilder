@@ -10,16 +10,18 @@ $('.custom-file-input').on('change',function(e){
       } 
       var modal = $(this).closest('.modal-body');
       var reader = new FileReader();
+
       reader.onload = function (file) {
+        console.log("file read")
         if (modal.find('.img-preview').length){
           var image = new Image();
           image.src = file.target.result;
+          modal.find('.img-preview').attr('src', image.src);
           image.onload = function() {
             if (modal.find('.asset-width').length){
               modal.find('.asset-width').val(this.width)
               modal.find('.asset-height').val(this.height)
             }
-            modal.find('.img-preview').attr('src', this.src);
           };
         } 
         if (modal.find('.audio-preview').length){
@@ -28,6 +30,8 @@ $('.custom-file-input').on('change',function(e){
           $("#audio-name").val(fileName.split(".")[0])
         }
       }
+      console.log("reading ")
+      console.log(lastUpload)
       reader.readAsDataURL(lastUpload);
     }
 })
@@ -184,6 +188,7 @@ $('.modal').on('shown.bs.modal', function (e) {
   selected = null;
   var thumbnail = $(this).find('.img-preview').attr('thumbnail');
   $(this).find('.img-preview').attr('src', thumbnail);
+  $('.custom-file-input').val('')
   $(this).find('.custom-file-label').html("Choose file");
   if ($(this).find('.thumbnail-prop').length && gui.config.saveload['save-slots'].length){
     $(this).find('#save-slot-start-thumbnail-x').val(gui.config.saveload['save-slots'][0]['thumbnail-x'])

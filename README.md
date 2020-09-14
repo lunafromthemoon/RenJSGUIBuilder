@@ -41,7 +41,7 @@ process for the Express server instead of our copy of Node.
 In `index.html` around line 64 change the code to:
 
 ```javascript
-app = require("electron").remote.app),
+app = require("electron").remote.app,
 node = require("child_process").fork(
     `${app.getAppPath()}/express-app/bin/www`,
     [],
@@ -53,7 +53,7 @@ node = require("child_process").fork(
 You can then package the code up using the command line:
 
 ```
-electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron-With-Express\" --asar
+electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=../builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"RenJS-GUI-Builder\" --asar
 
 
 electron-packager . --overwrite --prune=true --out=../builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"RenJS-GUI-Builder\" --asar

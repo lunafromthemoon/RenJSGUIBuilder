@@ -51,12 +51,12 @@
     <script>
       window.$ = window.jQuery = require("./node_modules/jquery/dist/jquery.min.js");
 
-      const { ipcRenderer, shell } = require("electron"),
+      const { ipcRenderer, shell  } = require("electron"),
         expressAppUrl = "http://127.0.0.1:3000",
         spawn = require("child_process").spawn,
         // For electron-packager change cwd in spawn to app.getAppPath() and
         // uncomment the app require below
-        app = require('electron').remote.app,
+        {dialog, app} = require('electron').remote,
         // node = spawn(
         //   "node",
         //   ["./express-app/bin/www"],
@@ -76,11 +76,29 @@
         $expressApp = $("#expressApp"),
         $loading = $("#loading");
 
+        
+
       node.on('message', (message) => {
         console.log(message);
         if (message.action == 'open_dir'){
           // console.log(message.path);
           shell.openPath(message.path)
+        }
+
+        if (message.action == 'select_dir'){
+          let win = require('electron').remote.getCurrentWindow()
+          dialog.showOpenDialog(win, {
+            properties: ['openDirectory']
+          }).then(result => {
+            console.log('directory selected', result.filePaths)
+            if (result.filePaths.length){
+              node.send({path:result.filePaths[0]})
+            } else {
+              node.send({error:"no-file-selected"})
+            }
+            
+          })
+          
         }
       });
 
