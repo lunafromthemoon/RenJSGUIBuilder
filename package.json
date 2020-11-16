@@ -1,7 +1,7 @@
 {
   "name": "RenJSGUIBuilder",
   "description": "Allows to build RenJS GUIs easily in a visual way.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "main.js",
   "authors": [
     "lunafromthemoon <je.luna.mdq@gmail.com>"

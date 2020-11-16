@@ -301,7 +301,8 @@ $('#name-box-offset-y').on('input',function () {
 
 $('#message-box-sample').on('input',function () {
   if (!selected) return;
-  selected.message.text = $(this).val();
+  selected.sample = $(this).val();
+  setTextWithStyle(selected.sample,selected.message)
 })
 
 $('#message-box-offset-x').on('input',function () {
@@ -424,8 +425,8 @@ function playMessageBox() {
     resetMessageBox();
   }
   selected.playing = true;
+  var textSample = selected.message.text;
   selected.message.text = ""
-  var textSample = $('#message-box-sample').val();
   var position = 0;
   selected.sfx =  (selected.config.sfx != 'none') ? game.add.audio(selected.config.sfx) : null;
   selected.playback = setInterval(function(){
@@ -454,7 +455,7 @@ function resetMessageBox() {
     selected.sfx.destroy();
   }
   delete selected.playback;
-  selected.message.text = $('#message-box-sample').val();
+  setTextWithStyle(selected.sample,selected.message)
 }
 
 function showTools(tool){
@@ -485,7 +486,7 @@ function showTools(tool){
     $('#interrupt-state').toggle(selected.animations.frameTotal >= 4);
   }
   if (tool == 'message-box'){
-    $('#message-box-sample').val(selected.message.text)
+    $('#message-box-sample').val(selected.sample)
   }
   // if (tool == 'name-box' ||)
   // $('#choice-color').trigger('change');

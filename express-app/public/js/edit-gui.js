@@ -303,15 +303,20 @@ var gameLoader = {
     this.spriteRefs[currentMenu+'message-box'] = sprite;
     sprite.config = config;
     sprite.component = 'message-box';
-    var textSample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-    var text = game.add.text(config['offset-x'],config['offset-y'], textSample, {font: config.size+'px '+config.font, fill: config.color});
+
+    var textSample = "Lorem (color:#f593e6)ipsum(end) (color:red)dolor(end) sit amet, (italic)consectetur adipiscing elit(end), sed do (bold)eiusmod(end) tempor incididunt ut labore et dolore magna aliqua.";
+    var text = game.add.text(config['offset-x'],config['offset-y'], "", {font: config.size+'px '+config.font, fill: config.color});
     text.wordWrap = true;
     text.align = config.align;
     text.wordWrapWidth = config['text-width'];
+    setTextWithStyle(textSample,text)
     sprite.message = text;
     sprite.addChild(text);
+    sprite.sample = textSample;
     this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width'])
   },
+
+
 
   makeDraggable: function(sprite,name,otherProps,notDraggable){
     sprite.inputEnabled = true;
@@ -354,6 +359,47 @@ var gameLoader = {
     gui.config[currentMenu].labels.push(config);
     this.loadLabel(config)
   },
+}
+
+function setTextWithStyle(text,text_obj) {
+  text_obj.clearFontValues();
+  text_obj.clearColors()
+  let styles = []
+  while(true){
+    let re = /\((color:((\w+|#(\d|\w)+))|italic|bold)\)/
+    let match = text.match(re);
+    if (match){
+      let s = {
+        start: text.search(re),
+        style: match[1].includes("color") ? "color" : match[1]
+      }
+      if (s.style == "color"){
+        s.color = match[2];
+      }
+      text = text.replace(re,"")
+      let endIdx = text.indexOf("(end)");
+      if (endIdx!=-1){
+        text = text.replace("(end)","")
+        s.end = endIdx;
+        styles.push(s)
+      }
+    } else break;
+  }
+  styles.forEach(s=>{
+    if (s.style=="italic"){
+      text_obj.addFontStyle("italic", s.start);
+      text_obj.addFontStyle("normal", s.end);
+    }
+    if (s.style=="bold"){
+      text_obj.addFontWeight("bold", s.start);
+      text_obj.addFontWeight("normal", s.end);
+    }
+    if (s.style=="color"){
+      text_obj.addColor(s.color, s.start)
+      text_obj.addColor(text_obj.fill, s.end)
+    }
+  })
+  text_obj.text=text;
 }
 
 function findFont(name) {
@@ -453,9 +499,19 @@ function changeMenu(menu){
   }
 }
 
+function getThumbnail() {
+  var canvas = document.createElement("canvas");
+  let maxSize = 350;
+  canvas.width = maxSize;
+  canvas.height = (game.canvas.height * maxSize)/game.canvas.width;
+  canvas.getContext("2d").drawImage(game.canvas, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg");
+}
+
 $('#btn-save-gui').on('click',function(e){
   try {
-    var preview = game.canvas.toDataURL();
+    var preview = getThumbnail();
+    // var preview = game.canvas.toDataURL();
   } catch(e) {
     console.log(e)
   }
