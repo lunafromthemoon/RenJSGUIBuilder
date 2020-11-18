@@ -183,7 +183,6 @@ router.get('/change_workspace', (req, res, next) => {
     } else {
       res.json({"workspace":workspaceDir,"error":message.error});
     }
-    
   });
 });
 
@@ -212,11 +211,7 @@ router.get('/generate_gui/:guiName', (req, res, next) => {
     generateGui(guiName,JSON.parse(data));
     res.json({"generated":true})
   });
-  
 });
-
-
- 
 
 function generateGui(guiName,gui) {
   gui.madeWithRenJSBuilder = true;
@@ -302,9 +297,13 @@ function findAsset(gui,fileName) {
 }
 
 function generateGuiYAML(gui,buildPath){
-  fs.writeFileSync(path.join(buildPath,'GUI.yaml'), yaml.safeDump(gui));
-  fs.copyFileSync(path.join(__dirname,'/templates/SetupTemplate.yaml'), path.join(buildPath,'Setup.yaml'));
-  fs.copyFileSync(path.join(__dirname,'/templates/StoryTemplate.yaml'), path.join(buildPath,'Story.yaml'));
+  fs.mkdirSync(path.join(buildPath,'story'), { recursive: true });
+  fs.writeFileSync(path.join(buildPath,'story','GUI.yaml'), yaml.safeDump(gui));
+  fs.copyFileSync(path.join(__dirname,'/templates/SetupTemplate.yaml'), path.join(buildPath,"story",'Setup.yaml'));
+  fs.copyFileSync(path.join(__dirname,'/templates/StoryTemplate.yaml'), path.join(buildPath,"story",'Story.yaml'));
+  fs.copyFileSync(path.join(__dirname,'/templates/ConfigTemplate.yaml'), path.join(buildPath,"story",'Config.yaml'));
+  fs.copyFileSync(path.join(__dirname,'/templates/ReadmeTemplate.txt'), path.join(buildPath,'Readme.txt'));
+  fs.copyFileSync(path.join(__dirname,'/templates/indexTemplate.html'), path.join(buildPath,'index.html'));
 }
 
 function generateFontsCss(gui,buildPath,assetsPath) {
@@ -324,40 +323,36 @@ function generateFontsCss(gui,buildPath,assetsPath) {
 }
 
 function generateRenJSConfig(gui,buildPath,assetsPath) {
-  var splash = {};
-  if (gui.config.loader.background){
-    var asset = gui.assets.images[gui.config.loader.background.id]
-    splash.loadingScreen = `${assetsPath}${asset.fileName}`;
-  }
-  if (gui.config.loader['loading-bar']){
-    asset = gui.assets[gui.config.loader['loading-bar'].assetType][gui.config.loader['loading-bar'].id]
-    splash.loadingBar = {
-      asset: `${assetsPath}${asset.fileName}`,
-      position: {
-        x: parseInt(gui.config.loader['loading-bar'].x),
-        y: parseInt(gui.config.loader['loading-bar'].y)
-      },
-      size: {
-        w: parseInt(gui.config.loader['loading-bar'].width),
-        h: parseInt(gui.config.loader['loading-bar'].height)
+
+  fs.readFile(path.join(__dirname,'/templates/bootTemplate.js'),'utf8', (err, data) => {
+    data = data.replace("GUI_W",gui.resolution[0])
+    data = data.replace("GUI_H",gui.resolution[1])
+    data = data.replace("GUI_NAME",gui.name)
+    
+    var splash = {};
+    if (gui.config.loader.background){
+      var asset = gui.assets.images[gui.config.loader.background.id]
+      splash.loadingScreen = `${assetsPath}${asset.fileName}`;
+    }
+    if (gui.config.loader['loading-bar']){
+      asset = gui.assets[gui.config.loader['loading-bar'].assetType][gui.config.loader['loading-bar'].id]
+      splash.loadingBar = {
+        asset: `${assetsPath}${asset.fileName}`,
+        position: {
+          x: parseInt(gui.config.loader['loading-bar'].x),
+          y: parseInt(gui.config.loader['loading-bar'].y)
+        },
+        size: {
+          w: parseInt(gui.config.loader['loading-bar'].width),
+          h: parseInt(gui.config.loader['loading-bar'].height)
+        }
       }
     }
-  }
-  var configFile = {
-    name: gui.name,
-    w : gui.resolution[0],
-    h : gui.resolution[1],
-    mode: "AUTO",
-    scaleMode: "SHOW_ALL",
-    splash: splash,
-    logChoices: true,
-    fonts: `${assetsPath}fonts.css`,
-    guiConfig: "GUI.yaml",
-    storySetup: "Setup.yaml",
-    storyText: [ "Story.yaml" ],
-  }
-  var configJs = "var globalConfig = "+JSON.stringify(configFile,null,"  ")
-  fs.writeFileSync(path.join(buildPath,'config.js'), configJs);
+    data = data.replace("GUI_SPLASH",JSON.stringify(splash,null,"  "))
+    fs.mkdirSync(path.join(buildPath,'RenJS'), { recursive: true });
+    fs.writeFileSync(path.join(buildPath,"RenJS",'boot.js'), data);
+  });
+
 }
 
 module.exports = router;

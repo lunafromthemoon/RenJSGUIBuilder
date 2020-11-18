@@ -1,20 +1,27 @@
 start:
-  - play music_1:
-  - show background_static: WITH FADE CONTINUE
-  - show char_1: happy AT CENTER WITH FADE
-  - text: Hello World
-  - char_1 says normal: Hello for you too!
+  # - play music_id:
+  # - show static_background_id: WITH FADE CONTINUE
+  # - show char_id: happy AT CENTER WITH FADE
+  - text: This is your new GUI, how does it look?
+  - choice:
+    - Amazing:
+      - text: That's great! You can start writing your game!
+    - A bit wonky:
+      - text: Then you can go back to the RenJS GUI builder and edit it as many times as you need.
+  # - char_1 says normal: Hello for you too!
   - scene: next_scene
 
 next_scene:
-  - play music_2:
-  - show background_anim: WITH FADE CONTINUE
+  # - play music_2:
+  # - show background_anim: WITH FADE CONTINUE
   - text: Thanks for playing!
   - effect ROLLINGCREDITS:
     endGame: true
+    timePerLine: 1500
     text:
-      - RenJS developed by
+      - RenJS V2 developed by
       - lunafromthemoon
+      - In collaboration with
+      - RockDaFox
       - null
-      - Inspired by Ren'Py
       - Powered by PhaserJS
