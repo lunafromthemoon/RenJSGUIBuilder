@@ -5,10 +5,10 @@
     </button>
 
     <div class="collapse navbar-collapse" id="toolbox">
-        <ul class="navbar-nav">
-            <li class="nav-item mt-4">
+        <ul class="navbar-nav my-3 menu-creation-toolbox">
+            <li class="nav-item">
               <!-- <hr class="border-light">   -->
-                <div class="btn-group btn-block mb-3" role="group">
+                <div class="btn-group btn-block mb-2" role="group">
                   <button type="button" class="btn btn-outline-light">Add...</button>
                   <div class="btn-group" role="group">
                     <button id="addDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
@@ -26,13 +26,21 @@
                       <a class="dropdown-item asset-add asset-all" href="#" data-toggle="modal" data-target="#animation-modal">Animation</a>
                       <a class="dropdown-item asset-add asset-main asset-settings asset-hud asset-saveload" href="#" data-toggle="modal" data-target="#button-modal">Button</a>
                       <a class="dropdown-item asset-add asset-main asset-settings asset-hud asset-saveload" href="#" data-toggle="modal" data-target="#slider-modal">Slider</a>
-                      <a class="dropdown-item asset-add asset-fonts" href="#" data-toggle="modal" data-target="#fonts-modal">Font</a>
-                      <a class="dropdown-item asset-add asset-audio" href="#" data-toggle="modal" data-target="#audio-modal">Audio</a>
-
-                      
+                      <a class="dropdown-item asset-add asset-main asset-settings asset-saveload" href="#" data-toggle="modal" data-target="#background-music-modal">Background Music</a>
+                      <!-- <a class="dropdown-item asset-add asset-fonts" href="#" data-toggle="modal" data-target="#fonts-modal">Font</a> -->
+                      <!-- <a class="dropdown-item asset-add asset-audio" href="#" data-toggle="modal" data-target="#audio-modal">Audio</a> -->
                     </div>
                   </div>
                 </div>
+                <div class="btn-group btn-block mb-2" role="group">
+                  <button type="button" class="btn btn-outline-light">Select...</button>
+                  <div class="btn-group" role="group">
+                    <button id="selectDrop" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="selectDrop" id="selectMenu">
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-light btn-block" onclick="clearMenu()">Clear All Contents</button>
             </li>
             
           </ul>
@@ -42,89 +50,53 @@
                 <div class="card text-white bg-secondary border-light">
                   <div class="card-header border-light"><h3 class="mb-0">Background</h3></div>
                 </div>
+                <%- include('components/partials/remove-button', {type:'single'}); %>
               </div>
-              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
 
             <li class="nav-item collapse loading-bar-tools tools">
               <%- include('components/loading-bar-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
 
             <li class="nav-item collapse name-box-tools tools">
               <%- include('components/name-box-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
 
             <li class="nav-item collapse ctc-tools tools">
               <%- include('components/ctc-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
 
             <li class="nav-item collapse message-box-tools tools">
               <%- include('components/message-box-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'single'}); %>
             </li>
 
             <li class="nav-item collapse choice-tools tools">
               <%- include('components/choice-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'choice'}); %>
             </li>
             
             <li class="nav-item collapse interrupt-tools tools">
               <%- include('components/interrupt-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'interrupt'}); %>
             </li>
             
             <li class="nav-item collapse image-tools tools">
               <%- include('components/image-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'list'}); %>
-              
             </li>
             <li class="nav-item collapse button-tools tools">
               <%- include('components/button-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'list'}); %>
+              
             </li>
             <li class="nav-item collapse slider-tools tools">
               <%- include('components/slider-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'list'}); %>
             </li>
             <li class="nav-item collapse label-tools tools">
               <%- include('components/label-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'list'}); %>
             </li>
             <li class="nav-item collapse save-slot-tools tools">
               <%- include('components/save-slot-tools', {includeTitle:true}); %>
-              <%- include('components/partials/remove-button', {type:'list'}); %>
             </li>
-            <li class="nav-item collapse background-music-main background-music-saveload background-music-settings background-music">
-              
-              <div class="card border-light bg-secondary mb-3" style="max-width: 20rem;">
-                <div class="card-header border-light text-white">Background Music</div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <select class="form-control audio-music-select" id="background-music">
-                      <option value='none'>None</option>
-                    </select>
-                  </div>
-                  <div class="form-group">                
-                    <div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
-                      <label class="btn btn-playback active">
-                        <input type="radio" name="options" autocomplete="off" checked="" onclick="playMusic()"><i class="fas fa-play"></i>
-                      </label>
-                      <label class="btn btn-playback ">
-                        <input type="radio" name="options" autocomplete="off" onclick="stopMusic()"><i class="fas fa-stop"></i>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <li class="nav-item collapse background-music-tools tools">
+              <%- include('components/background-music-tools', {includeTitle:true}); %>
             </li>
-
-
-            
-            
         </ul>
-
     </div>
 </nav>

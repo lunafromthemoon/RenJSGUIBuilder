@@ -48,54 +48,89 @@ function loadFont(name,fileName) {
           font-style: normal;\
       }`)
     .appendTo("head");
-  var temp = $(".font-template").clone();
-
-  temp.removeClass('font-template');
-  temp.find('h4').css('font-family',name);
-  temp.find('.card-header > .font-name').html(name);
-  $("#fonts-container").append(temp)
-  temp.find('.remove-font').click(function (argument) {
+  let sampletText = $('.font-text').val();
+  let row = $(`<tr class="font-${name}">
+                <th class="align-middle" scope="row">${name}</th>
+                <td class="align-middle text-sample" >${sampletText}</td>
+                <td class="action-col"><button class="btn btn-icon btn-outline-light remove-font"><i class="fas fa-trash-alt"></i></button></td>
+              </tr>`);
+  
+  row.find('.text-sample').css('font-family',name);
+  row.find('.remove-font').click(function (argument) {
     var usedIn = findFont(name);
     if (usedIn) {
       var p = usedIn == 'label' ? "a" : "the";
       $("#error-modal").find(".modal-body").html(`<p>The font can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
       $("#error-modal").modal('show');
     } else {
-      $(this).closest('.card').remove();
       $(`.font-${name}`).remove();
       delete gui.assets.fonts[name]
     }
-  })
-  temp.find('.font-text').on('input',function(e){
+  });
+  $("#fonts-table").append(row);
+  row.find('.font-text').on('input',function(e){
     var val = $(this).val();
     $(this).siblings('h4').html(val);
   })
-  temp.show();
   $(".font-select").append(`<option class="font-${name}">${name}</option>`);
 }
 
 
+
 function loadAudio(name,type,fileName) {
-  var temp = $(".audio-template").clone();
-  temp.removeClass('audio-template');
-  temp.find('.card-header > .audio-name').html(name);
-  temp.find('.card-header > .badge').html(type);
-  temp.find('.audio-sample').attr('src',`/assets/${gui.name}/${fileName}`);
-  $("#audio-container").append(temp)
-  temp.find('.remove-audio').click(function (argument) {
+  let row = $(`<tr class="audio-${name}">
+                <th class="align-middle" scope="row">${name}</th>
+                <td class="align-middle" >${type}</td>
+                <td class="action-col">
+                  <button class="btn btn-icon btn-outline-light play-audio"><i class="fas fa-play"></i></button>
+                  <button class="btn btn-icon btn-outline-light remove-audio"><i class="fas fa-trash-alt"></i></button>
+                </td>
+              </tr>`);
+
+  // var temp = $(".audio-template").clone();
+  // temp.removeClass('audio-template');
+  // temp.find('.card-header > .audio-name').html(name);
+  // temp.find('.card-header > .badge').html(type);
+  // temp.find('.audio-sample').attr('src',`/assets/${gui.name}/${fileName}`);
+  $("#audio-table").append(row)
+  row.find('.remove-audio').click(function (argument) {
     var usedIn = findAudio(name);
     if (usedIn) {
       var p = usedIn == 'button' ? "a" : "the";
       $("#error-modal").find(".modal-body").html(`<p>The audio can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
       $("#error-modal").modal('show');
     } else {
-      $(this).closest('.card').remove();
-      $(`.audio-${type}-select`).remove();
+      $(`.audio-${name}`).remove();
       delete gui.assets.audio[name];
     }
+  });
+  row.find('.play-audio').click(function (argument) {
+    if ($(this).find("i").hasClass("fa-play")){
+      // play audio
+        stopAudioSample();
+      audioSample = game.add.audio(name);
+      audioSample.name = name;
+      audioSample.onStop.addOnce = ()=>{
+        stopAudioSample();
+      }
+      audioSample.play();
+    } else {
+      stopAudioSample();
+    }
+    $(this).find("i").toggleClass("fa-play");
+    $(this).find("i").toggleClass("fa-stop");
   })
-  temp.show();
+  // temp.show();
   $(`.audio-${type}-select`).append(`<option class="audio-${name}" value="${name}">${name}</option>`);
+}
+
+function stopAudioSample(){
+  if (audioSample){
+    $(`.audio-${audioSample.name}`).find(".play-audio i").removeClass("fa-play");
+    $(`.audio-${audioSample.name}`).find(".play-audio i").addClass("fa-stop");
+    audioSample.destroy();
+    audioSample = null;
+  }
 }
 
 var listComponents = {

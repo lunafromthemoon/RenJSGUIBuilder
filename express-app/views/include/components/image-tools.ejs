@@ -2,9 +2,12 @@
 <div class="accordion mb-3" id="<%= id %>-accordion">
 	<%if (includeTitle) {%>
 		<div class="card text-white bg-secondary border-light">
-		  <div class="card-header border-light"><h3 class="mb-0">Image</h3></div>
+		  <div class="card-header border-light"><h4 class="mb-0">Image</h4></div>
 		</div>
 	<%}%>
 	<%- include('partials/position', {id: id}); %>
+	<%if (includeTitle) {%>
+		<%- include('partials/remove-button', {type:'list'}); %>
+	<%}%>
 </div>
   

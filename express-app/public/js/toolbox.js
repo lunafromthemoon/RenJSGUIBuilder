@@ -3,11 +3,15 @@
 $('.remove-single-selected').click(function(e){
   if (!selected) return;
   removeAsset(selected);
-  console.log('selected.component!!!!!!!!!!!')
-  console.log(selected.component)
-  console.log(gui.config[currentMenu][selected.component])
-  delete gui.config[currentMenu][selected.component]
-  selected.destroy();
+  // console.log('selected.component!!!!!!!!!!!')
+  // console.log(selected.component);
+  // console.log(gui.config[currentMenu][selected.component])
+  //remove from selection list
+  $(`.${selected.component}-item`).remove();
+  delete gui.config[currentMenu][selected.component];
+  var s = selected;
+  selected = null;
+  s.destroy();
   $('.tools').hide()
 })
 
@@ -19,20 +23,31 @@ function removeAsset(component) {
   }
 }
 
+$('.remove-background-music-selected').click(function(e){
+  gameLoader.loadBackgroundMusic('none');
+  $('.bg-music-item').remove();
+  $('.tools').hide()
+});
+
 $('.remove-choice-selected').click(function(e){
   if (!selected) return;
+  $(`.${selected.component}-item`).remove();
   if (selected.interrupt){
+    $(`.${selected.interrupt.component}-item`).remove();
     removeAsset(selected.interrupt)
     delete gui.config[currentMenu]['interrupt']
   }
   removeAsset(selected)
   delete gui.config[currentMenu]['choice']
-  selected.destroy();
+  var s = selected;
+  selected = null;
+  s.destroy();
   $('.tools').hide()
 });
 
 $('.remove-interrupt-selected').click(function(e){
   if (!selected) return;
+  $(`.${selected.component}-item`).remove();
   var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
   if (choiceBox.interrupt){
     delete choiceBox.interrupt;
@@ -41,16 +56,21 @@ $('.remove-interrupt-selected').click(function(e){
   }
   removeAsset(selected)
   delete gui.config[currentMenu]['interrupt']
-  selected.destroy();
+  var s = selected;
+  selected = null;
+  s.destroy();
   $('.tools').hide()
 })
 
 $('.remove-list-selected').click(function(e){
   if (!selected) return;
   removeAsset(selected)
+  $(`#${selected.selectorIdx}`).remove();
   var list = gui.config[currentMenu][selected.listComponent];
   list.splice(list.findIndex(item => item.id === selected.config.id), 1)
-  selected.destroy();
+  var s = selected;
+  selected = null;
+  s.destroy();
   $('.tools').hide()
 })
 
@@ -408,15 +428,15 @@ $('#background-music').on('change',function(e){
   gameLoader.loadBackgroundMusic(bgMusic,true);
 })
 
-function stopMusic() {
-  if (gameLoader.spriteRefs[currentMenu+'backgroundMusic']){
+function toggleBackgroundMusic() {
+  const btn = $('.background-music-play-btn');
+  if (btn.hasClass('fa-play')){
+    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].play();
+  } else {
     gameLoader.spriteRefs[currentMenu+'backgroundMusic'].stop();
   }
-}
-function playMusic() {
-  if (gameLoader.spriteRefs[currentMenu+'backgroundMusic']){
-    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].play();
-  }
+  btn.toggleClass('fa-play');
+  btn.toggleClass('fa-stop');
 }
 
 function playMessageBox() {

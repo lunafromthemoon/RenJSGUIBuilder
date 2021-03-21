@@ -1,4 +1,22 @@
 
+var listComponent = ['labels','sliders','images','buttons','animations','save-slots'];
+var componentLabel = {
+  background: "Background Image",
+  backgroundMusic: "Background Music",
+  'loading-bar': "Loading Bar",
+  'message-box': "Message Box",
+  'name-box': "Name Box",
+  'ctc': "Click to Continue",
+  'choice': "Choice Box",
+  'interrupt': "Interrupt Box",
+  'buttons': "Button",
+  'labels': "Label",
+  'images': "Image",
+  'animations': "Animation",
+  'save-slots': "Save Slot",
+  'sliders': "Slider",
+}
+
 var preloader = {
   preload: function() {
     for (var key in gui.assets.audio){
@@ -16,7 +34,7 @@ var preloader = {
   },
 
   create: function(argument) {
-    changeMenu('loader');
+    // changeMenu('loader');
   }
 }
 
@@ -41,8 +59,18 @@ var gameLoader = {
       }
     }
     if (gui.config[currentMenu].backgroundMusic){
+      addBackgroundMusicTools();
       this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
     }
+  },
+
+  render: function(){
+    if (selected && selected.showDebugBox){
+      game.debug.spriteBounds(selected,"#ffff00",false);
+    } else {
+      game.debug.reset();
+    }
+    
   },
 
   loadComponent: function(component,config) {
@@ -77,9 +105,9 @@ var gameLoader = {
     // console.log("adding component to canvas")
     // console.log(component)
     // console.log(fileName)
-    var listComponent = ['slider','image','button','animations','save-slot'];
+    selected = null;
     var componentName = component;
-    if (listComponent.includes(component)){
+    if (listComponent.includes(component+'s')){
       componentName+='s';
       if (!(componentName in gui.config[currentMenu])){
         gui.config[currentMenu][componentName] = []
@@ -160,10 +188,19 @@ var gameLoader = {
     bg.config = config;
     bg.component = 'background';
     bg.inputEnabled = true;
-    bg.events.onInputDown.add(function(){
+
+    let selectBG = ()=>{
       showTools('background');
       selected = bg;
-    }, this);
+    }
+
+    bg.events.onInputDown.add(selectBG, this);
+
+    const selectMenuItem = $(`<a class="dropdown-item background-item" 
+                              href="#">Background</a>`);
+    selectMenuItem.click(selectBG);
+    $('#selectMenu').append(selectMenuItem);
+
   },
 
   loadLoadingBar: function(config){
@@ -322,6 +359,7 @@ var gameLoader = {
     sprite.inputEnabled = true;
     sprite.input.dragDistanceThreshold = 3;
     sprite.listComponent = name+'s';
+    sprite.showDebugBox = true;
     function selectImage(){
       selected = sprite;
       $(`.asset-x`).val(selected.x);
@@ -334,6 +372,17 @@ var gameLoader = {
       }
       showTools(name);
     }
+    let label = componentLabel[name];
+    if (listComponent.includes(sprite.listComponent)){
+      label = componentLabel[sprite.listComponent];
+      sprite.idx = $('#selectMenu').find(`.${name}`).length;
+      sprite.selectorIdx=name+"_"+sprite.idx;
+      label+=" #"+sprite.idx;
+    }
+    const selectMenuItem = $(`<a class="dropdown-item ${name} ${sprite.component}-item" 
+                              href="#" id="${sprite.selectorIdx}">${label}</a>`);
+    selectMenuItem.click(selectImage);
+    $('#selectMenu').append(selectMenuItem);
 
     sprite.events.onInputDown.add(selectImage, this);
     sprite.events.onDragStart.add(selectImage, this);
@@ -400,6 +449,18 @@ function setTextWithStyle(text,text_obj) {
     }
   })
   text_obj.text=text;
+}
+
+function addBackgroundMusicTools(){
+  const selectMenuItem = $(`<a class="dropdown-item bg-music-item" 
+                            href="#">Background Music</a>`);
+  selectMenuItem.click(()=>{
+    selected=null;
+    showTools('background-music');
+    $(`#background-music-select`).val(gui.config[currentMenu].backgroundMusic);
+    
+  });
+  $('#selectMenu').append(selectMenuItem);
 }
 
 function findFont(name) {
@@ -478,21 +539,27 @@ function changeMenu(menu){
     $(`.asset-${menu}`).show();
     $('.tools').hide()
     $(`.background-music`).hide();
-    $("#fonts-container").hide();
-    $("#canvas-container").hide();
-    $("#audio-container").hide();
+    // $("#fonts-container").hide();
+    $(".canvas-container").hide();
+    $('#selectMenu').html("")
+    // $("#audio-container").hide();
     currentMenu = menu;
-    if(menu == "fonts" || menu =='audio'){
+    selected = null;
+    if(menu=="general"){
+      $(`.menu-creation-toolbox`).hide();
       $(`#${menu}-container`).show();
-    } else {
-      if (menu!="loader") $(".asset-all").show();
-      if (gui.config[menu].backgroundMusic){
-        $(`#background-music`).val(gui.config[menu].backgroundMusic);
-      } else {
-        $(`#background-music`).val('none');
-      }
       
-      $(`.background-music-${menu}`).show();
+    } else {
+      $(`.menu-creation-toolbox`).show();
+      if (menu!="loader") $(".asset-all").show();     
+
+      // if (gui.config[menu].backgroundMusic){
+      //   $(`#background-music`).val(gui.config[menu].backgroundMusic);
+      // } else {
+      //   $(`#background-music`).val('none');
+      // }
+      
+      // $(`.background-music-${menu}`).show();
       $("#canvas-container").show();
       game.state.start('gameLoader');
     }
@@ -569,6 +636,16 @@ function init() {
     // gui = JSON.parse(gui)
     loaded = true;
   }
+  for (menu in gui.config){
+    if (Object.keys(gui.config[menu]).length>0 && !gui.config[menu].inactive){
+      $(`#${menu}-exists`).prop('checked',true);
+      $(`.menu-${menu}`).show();
+    }
+  }
+  window.toggleMenu = function(menu){
+    $(`.menu-${menu}`).toggle();
+    gui.config[menu].inactive=!gui.config[menu].inactive;
+  }
   $('#btn-generate-gui').click(function(){
     $('#generating-modal').find('.fa-cog').show();
     $('#generating-modal').find('p').hide();
@@ -618,16 +695,72 @@ function init() {
       loadAudio(key,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
     }
     game.state.start('preloader')
-  } else {
-    changeMenu('loader');
   }
+  // } else {
+   $('[data-toggle="tooltip"]').tooltip()
+    changeMenu('general');
+  // }
   
 }
+
+window.clearMenu = function(menu){
+  if (!menu) {
+    menu=currentMenu;
+  }
+  $('#confirm-button').unbind('click');
+
+
+  $('#confirm-button').click(function(){
+      // console.log("Removing contents of "+menu);
+      gui.config[menu] = {}
+      if ($(`#${menu}-exists`).prop('checked')){
+        $(`#${menu}-exists`).prop('checked',false);
+        toggleMenu(menu);
+        changeMenu('general');
+      }
+  });
+
+  $("#confirm-menu").html(menu);
+  $("#confirm-modal").modal('show');
+
+}
+
+// Audio
+
+window.openAudioModal = function(){
+  $("#audio-modal").modal('show');
+}
+
+// Fonts
+
+window.openFontsModal = function(){
+  $("#fonts-modal").modal('show');
+}
+
+window.changeFontStyle = function(style){
+  if (style=="normal"){
+    $('.text-sample').css("font-style","normal");
+    $('.text-sample').css("font-weight","normal");
+  };
+  if (style=="bold"){
+    $('.text-sample').css("font-style","normal");
+    $('.text-sample').css("font-weight","bold");
+  }
+  if (style=="italic"){
+    $('.text-sample').css("font-style","italic");
+    $('.text-sample').css("font-weight","normal");
+  }
+}
+
+$('.font-text').on('input',function(e){
+  $(".text-sample").html($(this).val());
+})
 
 // current state
 var lastUpload = null;
 var selected = null;
 var currentMenu = null;
+var audioSample = null;
 // phaser game object
 var game = null;
 init();

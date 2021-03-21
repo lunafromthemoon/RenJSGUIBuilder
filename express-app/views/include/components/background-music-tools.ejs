@@ -1,0 +1,23 @@
+<% id=(includeTitle) ? "background-music" : "background-music-start" %>
+<div class="accordion mb-3" id="<%= id %>-accordion">
+	<%if (includeTitle) {%>
+		<div class="card text-white bg-secondary border-light">
+		  <div class="card-header border-light"><h4 class="mb-0">Background Music</h4></div>
+		</div>
+	<%}%>
+	<div class="card text-white bg-secondary border-light">
+	  <div>
+	    <div class="card-body">
+	      <div class="form-group">
+	        <select class="custom-select audio-music-select mb-3" style="border-color: #F3969A;" id="<%= id %>-select">
+	          <!-- <option value='none'>None</option> -->
+	        </select>
+	        <button class="btn btn-outline-light btn-block" onclick="toggleBackgroundMusic()"><i class="fas fa-play <%= id %>-play-btn" ></i></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<%if (includeTitle) {%>
+		<%- include('partials/remove-button', {type:'background-music'}); %>
+	<%}%>
+</div>

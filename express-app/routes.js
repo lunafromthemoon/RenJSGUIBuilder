@@ -124,9 +124,10 @@ function updateGuiList(name,resolution,preview){
     let guis = (err) ? []  : JSON.parse(data);
     let gui = guis.find(x => x.name === name)
     if (!gui){
-      guis.push({name:name,resolution:resolution,preview:preview});
+      guis.push({name:name,resolution:resolution,preview:preview,date: new Date()});
     } else {
       gui.preview = preview;
+      gui.date = new Date();
     }
     fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
   });
@@ -138,7 +139,7 @@ router.get('/clone_gui/:toClone/:newName', (req, res, next) => {
   fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
     let guis = (err) ? []  : JSON.parse(data);
     let gui = guis.find(x => x.name === toClone)
-    guis.push({name:newName,resolution:gui.resolution,preview:gui.preview})
+    guis.push({name:newName,resolution:gui.resolution,preview:gui.preview, date: gui.date})
     fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
     ncp(path.join(guisDir,gui.name), path.join(guisDir,newName), function (err) {
       var guiConfigFile = path.join(guisDir,`${newName}/gui_config.json`) ;
@@ -214,6 +215,11 @@ router.get('/generate_gui/:guiName', (req, res, next) => {
 });
 
 function generateGui(guiName,gui) {
+  for (var menu in gui.config){
+    if (gui.config[menu].inactive){
+      gui.config[menu] = {};
+    }
+  }
   gui.madeWithRenJSBuilder = true;
   gui.assetsPath = 'assets/gui/'
   var buildPath = path.join(buildDir,guiName);
@@ -313,8 +319,8 @@ function generateFontsCss(gui,buildPath,assetsPath) {
     fontsCSS += `\n
       @font-face {\n
           font-family: '${font.name}';\n
-          src: url('/${assetsPath}${font.fileName}');\n
-          src: url('/${assetsPath}${font.fileName}').format('truetype');\n
+          src: url('${font.fileName}');\n
+          src: url('${font.fileName}').format('truetype');\n
           font-weight: normal;\n
           font-style: normal;\n
       }\n`
@@ -332,7 +338,7 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
     var splash = {};
     if (gui.config.loader.background){
       var asset = gui.assets.images[gui.config.loader.background.id]
-      splash.loadingScreen = `${assetsPath}${asset.fileName}`;
+      splash.background = `${assetsPath}${asset.fileName}`;
     }
     if (gui.config.loader['loading-bar']){
       asset = gui.assets[gui.config.loader['loading-bar'].assetType][gui.config.loader['loading-bar'].id]
@@ -349,8 +355,8 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
       }
     }
     data = data.replace("GUI_SPLASH",JSON.stringify(splash,null,"  "))
-    fs.mkdirSync(path.join(buildPath,'RenJS'), { recursive: true });
-    fs.writeFileSync(path.join(buildPath,"RenJS",'boot.js'), data);
+    // fs.mkdirSync(path.join(buildPath,'RenJS'), { recursive: true });
+    fs.writeFileSync(path.join(buildPath,'boot.js'), data);
   });
 
 }

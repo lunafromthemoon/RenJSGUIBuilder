@@ -5,27 +5,30 @@
 
   <div class="collapse navbar-collapse" id="navbarColor01">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item menu-section menu-loader active">
+      <li class="nav-item menu-section menu-general active">
+        <a class="nav-link" href="#" onclick="changeMenu('general');">General Config</a>
+      </li>
+      <li class="nav-item menu-section menu-loader collapse">
         <a class="nav-link" href="#" onclick="changeMenu('loader');">Loading Page</a>
       </li>
-      <li class="nav-item menu-section menu-main">
+      <li class="nav-item menu-section menu-main collapse">
         <a class="nav-link" href="#" onclick="changeMenu('main');">Main Menu</a>
       </li>
-      <li class="nav-item menu-section menu-hud">
+      <li class="nav-item menu-section menu-hud collapse">
         <a class="nav-link" href="#" onclick="changeMenu('hud');">HUD</a>
       </li>
-      <li class="nav-item menu-section menu-settings">
+      <li class="nav-item menu-section menu-settings collapse">
         <a class="nav-link" href="#" onclick="changeMenu('settings');">Settings Menu</a>
       </li>
-      <li class="nav-item menu-section menu-saveload">
+      <li class="nav-item menu-section menu-saveload collapse">
         <a class="nav-link" href="#" onclick="changeMenu('saveload');">Save/Load Menu</a>
       </li>
-      <li class="nav-item menu-section menu-fonts">
+      <!-- <li class="nav-item menu-section menu-fonts">
         <a class="nav-link" href="#" onclick="changeMenu('fonts');">Fonts</a>
-      </li>
-      <li class="nav-item menu-section menu-audio">
+      </li> -->
+      <!-- <li class="nav-item menu-section menu-audio">
         <a class="nav-link" href="#" onclick="changeMenu('audio');">Audio</a>
-      </li>
+      </li> -->
     </ul>    
   </div>
   <button type="button" class="btn btn-sm btn-outline-light mr-sm-2" id="btn-save-gui"><i class="fas fa-save"></i> Save</button>

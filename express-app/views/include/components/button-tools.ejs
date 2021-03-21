@@ -3,7 +3,7 @@
 <div class="accordion mb-3" id="<%= id %>-accordion">
   <%if (includeTitle) {%>
     <div class="card text-white bg-secondary border-light">
-      <div class="card-header border-light"><h3 class="mb-0">Button</h3></div>
+      <div class="card-header border-light"><h4 class="mb-0">Button</h4></div>
     </div>
   <%}%>
   <%- include('partials/position', {id:id}); %>
@@ -17,7 +17,7 @@
       <div class="card-body">
         <div class="form-group">
           <label for="<%= id %>-binding">Button binding</label>
-          <select class="form-control binding" id="<%= id %>-binding">
+          <select class="custom-select form-control binding" id="<%= id %>-binding">
             <option value='start'>Start Game</option>
             <option value='return'>Return to previous menu/game</option>
             <option value='main'>Open Main Menu</option>
@@ -44,6 +44,9 @@
     </div>
   </div>
   <%- include('partials/sfx', {id:id}); %>
+  <%if (includeTitle) {%>
+    <%- include('partials/remove-button', {type:'list'}); %>
+  <%}%>
 </div>
 
 

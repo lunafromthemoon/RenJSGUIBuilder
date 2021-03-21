@@ -80,13 +80,18 @@ $(document).ready(function () {
 		card.find('.btn-edit').attr('href','/edit?name='+guiList[i].name);
 		card.find('.btn-clone').attr('target',guiList[i].name);
 		card.find('.btn-remove').attr('target',guiList[i].name);
-		card.find('.resolution').html(`resolution: ${guiList[i].resolution[0]}x${guiList[i].resolution[1]}`)
+		card.find('.resolution').html(`Resolution: ${guiList[i].resolution[0]}x${guiList[i].resolution[1]} pixels.`)
+		if (guiList[i].date){
+			card.find('.last-edition').html(`Last edited on: ${new Date(guiList[i].date).toDateString()}.`)
+		}
+		
 		if (guiList[i].preview){
 			card.find('.card-img-top').attr('src',guiList[i].preview)
 		}
 		$('.card-columns').append(card);
 		card.removeClass('gui-template');
 		card.removeClass('d-none');
+		$('[data-toggle="tooltip"]').tooltip()
 	}
 
 	$('.btn-clone').click(function () {

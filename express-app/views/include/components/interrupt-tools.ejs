@@ -2,7 +2,7 @@
 <div class="accordion mb-3" id="<%= id %>-accordion">
   <%if (includeTitle) {%>
     <div class="card text-white bg-secondary border-light">
-      <div class="card-header border-light"><h3 class="mb-0">Interrupts</h3></div>
+      <div class="card-header border-light"><h4 class="mb-0">Interrupts</h4></div>
     </div>
     <div class="card text-white bg-secondary border-light" id="interrupt-state">
       <div class="card-header" id="interruptBoxHeader5">
@@ -70,4 +70,7 @@
   <%- include('partials/text-style', {id:id, text:"text"}); %>
   <%- include('partials/text-position', {id:id}); %>
   <%- include('partials/sfx', {id:id}); %>
+  <%if (includeTitle) {%>
+    <%- include('partials/remove-button', {type:'interrupt'}); %>
+  <%}%>
 </div>

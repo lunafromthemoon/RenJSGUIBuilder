@@ -10,7 +10,7 @@ const RenJSConfig =  {
   'name': "GUI_NAME",
   'renderer': Phaser.AUTO, // become renderer
   'scaleMode': Phaser.ScaleManager.SHOW_ALL,
-  'splash': GUI_SPLASH,
+  'loadingScreen': GUI_SPLASH,
   'fonts': 'assets/gui/fonts.css'
 }
 
