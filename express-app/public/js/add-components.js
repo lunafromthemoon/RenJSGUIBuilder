@@ -105,23 +105,27 @@ function loadAudio(name,type,fileName) {
     }
   });
   row.find('.play-audio').click(function (argument) {
-    if ($(this).find("i").hasClass("fa-play")){
-      // play audio
-        stopAudioSample();
-      audioSample = game.add.audio(name);
-      audioSample.name = name;
-      audioSample.onStop.addOnce = ()=>{
-        stopAudioSample();
-      }
-      audioSample.play();
-    } else {
-      stopAudioSample();
-    }
-    $(this).find("i").toggleClass("fa-play");
-    $(this).find("i").toggleClass("fa-stop");
+    playAudioSample(name,$(this))
   })
   // temp.show();
   $(`.audio-${type}-select`).append(`<option class="audio-${name}" value="${name}">${name}</option>`);
+}
+
+function playAudioSample(name,btn){
+  if (btn.find("i").hasClass("fa-play")){
+    // play audio
+    stopAudioSample();
+    audioSample = game.add.audio(name);
+    audioSample.name = name;
+    audioSample.onStop.addOnce = ()=>{
+      stopAudioSample();
+    }
+    audioSample.play();
+  } else {
+    stopAudioSample();
+  }
+  btn.find("i").toggleClass("fa-play");
+  btn.find("i").toggleClass("fa-stop");
 }
 
 function stopAudioSample(){
@@ -149,6 +153,10 @@ $('.upload-list-component').click(function(e){
 
 $('.upload-bg-component').click(function(e){
   addComponent('background',[])
+})
+
+$('.upload-background-music-component').click(function(e){
+  gameLoader.loadBackgroundMusic($('#background-music-start-select').val(),true);
 })
 
 $('.upload-loading-bar-component').click(function(e){
@@ -230,6 +238,13 @@ $('.modal').on('shown.bs.modal', function (e) {
     $(this).find('#save-slot-start-thumbnail-y').val(gui.config.saveload['save-slots'][0]['thumbnail-y'])
     $(this).find('#save-slot-start-thumbnail-width').val(gui.config.saveload['save-slots'][0]['thumbnail-width'])
     $(this).find('#save-slot-start-thumbnail-height').val(gui.config.saveload['save-slots'][0]['thumbnail-height'])
+  }
+  if ($(this).find('.text-font').length){
+    if ($.isEmptyObject(gui.assets.fonts)){
+      $(this).modal('hide')
+      $("#error-modal").find(".modal-body").html(`<p>This component has text associated with it, and therefore it requires a font, but there are no fonts loaded yet. You can load a font on the fonts section.</p>`);
+      $("#error-modal").modal('show');
+    }
   }
   if ($(this).find('.text-font').length){
     if ($.isEmptyObject(gui.assets.fonts)){

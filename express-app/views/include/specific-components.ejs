@@ -3,6 +3,12 @@
   <%- include('components/partials/upload-image', {id:"bg"}); %>
 <%- include('components/partials/modal-footer', {id:"bg",type:"bg"}); %>
 
+<%- include('components/partials/modal-header', {id:"background-music",title:"Background Music"}); %>
+  <p>The background music will play when opening this menu, and will stop when starting the game. When changing from this menu to another one, if the latter doesn't have a background music associated, the background music for this menu will keep playing.</p>
+  <%- include('components/background-music-tools', {includeTitle:false}); %>
+<%- include('components/partials/modal-footer', {id:"bgm",type:"bgm"}); %>
+
+
 <%- include('components/partials/modal-header', {id:"loading-bar",title:"Loading Bar"}); %>
   <p>The loading bar is a spritesheet with two frames: First frame is the empty bar, second is the full bar. When loading the component of the game, this bar will fill up from left to right. If only one frame is present, it will be considered the full state, and it will simply appear from left to right.</p>
   <%- include('components/partials/upload-image', {id:"loading-bar"}); %>

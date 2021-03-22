@@ -59,7 +59,7 @@ var gameLoader = {
       }
     }
     if (gui.config[currentMenu].backgroundMusic){
-      addBackgroundMusicTools();
+      
       this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
     }
   },
@@ -164,21 +164,25 @@ var gameLoader = {
 
   // show assets
 
-  loadBackgroundMusic: function(name,play) {
-    if (this.spriteRefs[currentMenu+'backgroundMusic']){
-      this.spriteRefs[currentMenu+'backgroundMusic'].destroy();
-    }
+  loadBackgroundMusic: function(name) {
+    // if (this.spriteRefs[currentMenu+'backgroundMusic']){
+    //   this.spriteRefs[currentMenu+'backgroundMusic'].destroy();
+    // }
+    
     if (name == 'none'){
-      delete this.spriteRefs[currentMenu+'backgroundMusic'];
+      // delete this.spriteRefs[currentMenu+'backgroundMusic'];
       delete gui.config[currentMenu].backgroundMusic;
       return;
     }
-    var music = game.add.audio(name);
-    this.spriteRefs[currentMenu+'backgroundMusic'] = music;
-    gui.config[currentMenu].backgroundMusic = name;
-    if (play){
-      music.play();  
+    if (!gui.config[currentMenu].backgroundMusic){
+      addBackgroundMusicTools();
     }
+    // var music = game.add.audio(name);
+    // this.spriteRefs[currentMenu+'backgroundMusic'] = music;
+    gui.config[currentMenu].backgroundMusic = name;
+    // if (play){
+    //   music.play();  
+    // }
   },
 
   loadBackground: function(config){
@@ -532,6 +536,8 @@ function changeTextPosition(sprite,text, config) {
 
 function changeMenu(menu){
   if (menu!=currentMenu){
+
+    $(`.general-help`).hide();
     $(".menu-section").removeClass('active');
     $(".menu-title").html($(`.menu-${menu} > a`).html());
     $(`.menu-${menu}`).addClass('active');
@@ -547,9 +553,15 @@ function changeMenu(menu){
     selected = null;
     if(menu=="general"){
       $(`.menu-creation-toolbox`).hide();
+      $(`.general-help`).show();
       $(`#${menu}-container`).show();
       
+      
     } else {
+      if (gui.config[menu].inactive){
+        $(`#${menu}-exists`).prop('checked',true);
+        toggleMenu(menu);
+      }
       $(`.menu-creation-toolbox`).show();
       if (menu!="loader") $(".asset-all").show();     
 

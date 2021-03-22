@@ -24,9 +24,10 @@ function removeAsset(component) {
 }
 
 $('.remove-background-music-selected').click(function(e){
+  stopAudioSample();
   gameLoader.loadBackgroundMusic('none');
-  $('.bg-music-item').remove();
   $('.tools').hide()
+  $('.bg-music-item').remove();
 });
 
 $('.remove-choice-selected').click(function(e){
@@ -424,20 +425,13 @@ function arrangeChoices(box) {
 }
 
 $('#background-music').on('change',function(e){
-  var bgMusic = $(this).val();
-  gameLoader.loadBackgroundMusic(bgMusic,true);
+  gameLoader.loadBackgroundMusic($(this).val(),true);
 })
 
-function toggleBackgroundMusic() {
-  const btn = $('.background-music-play-btn');
-  if (btn.hasClass('fa-play')){
-    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].play();
-  } else {
-    gameLoader.spriteRefs[currentMenu+'backgroundMusic'].stop();
-  }
-  btn.toggleClass('fa-play');
-  btn.toggleClass('fa-stop');
-}
+$('.play-bg-music').click(function(e){
+  const name = $(this).parent().find('.audio-music-select').val()
+  playAudioSample(name,$(this));
+})
 
 function playMessageBox() {
   if (!selected) return;
