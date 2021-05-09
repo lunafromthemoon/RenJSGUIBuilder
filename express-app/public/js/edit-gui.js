@@ -17,32 +17,40 @@ var componentLabel = {
   'sliders': "Slider",
 }
 
+var debuggerInfo = null;
+
+var screenScaled = false;
+
+function scaleScreen(){
+  if (screenScaled) return;
+  // set it so it enters the screen properly
+  game.scale.scaleMode = null;
+   game.scale.setResizeCallback((scale,parentBounds)=>{
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight-100;
+
+    // try to scale vertically first
+    var newScale = windowHeight / gui.resolution[1];  
+    var newHeight = windowHeight;
+    var newWidth = gui.resolution[0]*newScale;
+    if (newWidth>windowWidth){
+        // width still doesn't fit, scale horizontally
+        newScale = windowWidth / gui.resolution[0];
+        newWidth = windowWidth;
+        newHeight = gui.resolution[1]*newScale;
+    }          
+    scale.width = newWidth;
+    scale.height = newHeight;
+  },game)
+
+
+  game.scale.refresh();
+  screenScaled = true;
+}
+
 var preloader = {
 
-  init: function(){
-    // set it so it enters the screen properly
-    // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    game.scale.scaleMode = null;
-     game.scale.setResizeCallback((scale,parentBounds)=>{
-      var windowWidth = window.innerWidth;
-      var windowHeight = window.innerHeight-100;
-
-      // try to scale vertically first
-      var newScale = windowHeight / gui.resolution[1];  
-      var newHeight = windowHeight;
-      var newWidth = gui.resolution[0]*newScale;
-      if (newWidth>windowWidth){
-          // width still doesn't fit, scale horizontally
-          newScale = windowWidth / gui.resolution[0];
-          newWidth = windowWidth;
-          newHeight = gui.resolution[1]*newScale;
-      }          
-      scale.width = newWidth;
-      scale.height = newHeight;
-    },game)
-
-    game.scale.refresh();
-  },
+  init: scaleScreen,
 
   preload: function() {
     for (var key in gui.assets.audio){
@@ -68,6 +76,8 @@ var gameLoader = {
 
   spriteRefs: {},
 
+  init: scaleScreen,
+
   create: function () {
     var singleComponents = ['loading-bar','name-box','ctc','message-box','interrupt','choice','background']
     for (var i = singleComponents.length - 1; i >= 0; i--) {
@@ -91,11 +101,12 @@ var gameLoader = {
   },
 
   render: function(){
-    if (selected && selected.showDebugBox){
-      game.debug.spriteBounds(selected,"#ffff00",false);
-    } else {
-      game.debug.reset();
-    }
+    // if (selected && selected.showDebugBox){
+    //   console.log("showgin debug box")
+    //   // game.debug.spriteBounds(selected,"#ffff00",true);
+    // } else {
+    //   game.debug.reset();
+    // }
     
   },
 
@@ -220,6 +231,7 @@ var gameLoader = {
     bg.inputEnabled = true;
 
     let selectBG = ()=>{
+      if(debuggerInfo) debuggerInfo.destroy();
       showTools('background');
       selected = bg;
     }
@@ -257,7 +269,6 @@ var gameLoader = {
   },
 
   loadSaveSlot: function(config){
-    console.log("Adding save slot");
     var sprite = game.add.sprite(config.x,config.y,config.id);
     sprite.config = config;
     var thumbnail = game.add.graphics(config['thumbnail-x'], config['thumbnail-y']);
@@ -288,7 +299,6 @@ var gameLoader = {
 
   loadButton: function(config){
     var image = game.add.button(config.x,config.y,config.id,function(){
-      console.log('click on button')
       if (config.sfx && config.sfx != 'none') {
         var sfx = game.add.audio(config.sfx);
         sfx.onStop.addOnce(sfx.destroy);
@@ -391,6 +401,17 @@ var gameLoader = {
     sprite.listComponent = name+'s';
     sprite.showDebugBox = true;
     function selectImage(){
+      // create debugger info
+      if (debuggerInfo){
+        debuggerInfo.destroy();
+      }
+      debuggerInfo = game.add.graphics(0, 0);
+
+      debuggerInfo.lineStyle(4, 0xFFAA00, 1)
+      debuggerInfo.drawRect(0,0, sprite.width, sprite.height);
+      debuggerInfo.endFill();
+      sprite.addChild(debuggerInfo);
+
       selected = sprite;
       $(`.asset-x`).val(selected.x);
       $(`.asset-y`).val(selected.y);
@@ -400,6 +421,7 @@ var gameLoader = {
           $(`#${name}-${prop}`).val(selected.config[prop]);
         }
       }
+
       showTools(name);
     }
     let label = componentLabel[name];
@@ -486,6 +508,7 @@ function addBackgroundMusicTools(){
                             href="#">Background Music</a>`);
   selectMenuItem.click(()=>{
     selected=null;
+    if (debuggerInfo) debuggerInfo.destroy();
     showTools('background-music');
     $(`#background-music-select`).val(gui.config[currentMenu].backgroundMusic);
     
@@ -525,7 +548,6 @@ function findAudio(name) {
 
 function createChoiceBox(choiceType,start_x,start_y,index,config) {
   var separation = index*(parseInt(config.height)+parseInt(config.separation));
-  console.log(separation)
   var chBox = game.add.button(start_x, start_y+separation, config.id,function(){
       console.log(`click on ${choiceType} ${index}`);
       if (config.sfx && config.sfx != 'none') {
@@ -537,8 +559,6 @@ function createChoiceBox(choiceType,start_x,start_y,index,config) {
   if (chBox.animations.frameTotal == 2 || chBox.animations.frameTotal == 4){
     chBox.setFrames(1,0,1,0)
   }
-  // console.log("chBox.animations.frameTotal")
-  // console.log(chBox.animations.frameTotal)
   var text = game.add.text(0,0, `${choiceType} ${index}`, {font: config.size+'px '+config.font, fill: config.color});
   changeTextPosition(chBox,text, config)
   chBox.text = text;
@@ -657,11 +677,11 @@ function init() {
   if (gui.isNew){
     gui.assetCounter = 0;
     gui.config = {
-      loader: {},
-      main: {},
-      settings: {},
-      hud: {},
-      saveload: {}
+      loader: {inactive:true},
+      main: {inactive:true},
+      settings: {inactive:true},
+      hud: {inactive:true},
+      saveload: {inactive:true}
     }
     gui.assets = {
       images: {},

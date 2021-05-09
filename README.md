@@ -55,9 +55,12 @@ You can then package the code up using the command line:
 ```
 electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=../builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"RenJS-GUI-Builder\" --asar
 
-
-electron-packager . --overwrite --prune=true --out=../builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"RenJS-GUI-Builder\" --asar
+#will package for all platforms all combinations possible
+electron-packager . --overwrite --prune=true --all --out=../builds --version-string.ProductName=\"RenJS-GUI-Builder\" --asar
 ```
+
+Platforms:
+	* win32
 
 ## Author(s)
 
