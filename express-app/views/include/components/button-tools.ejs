@@ -31,13 +31,19 @@
             <option value='skip'>Skip (autoplay really fast)</option>
             <option value='mute'>Mute sound</option>
             <option disabled>_________</option>
-            <option value='other'>Other action</option>
+            <option value='other'>Other Action</option>
           </select>
         </div>
         <div class="form-group collapse" id='<%= id %>-slot-value'>
           <div class="form-group">
             <label for="<%= id %>-slot">Slot</label>
             <input class="form-control slot" type="number" id="<%= id %>-slot" value="0">
+          </div>
+        </div>  
+        <div class="form-group collapse" id='<%= id %>-other-value'>
+          <div class="form-group">
+            <label for="<%= id %>-other">Other Binding</label>
+            <input class="form-control other-binding" type="text" id="<%= id %>-other" value="other">
           </div>
         </div>  
       </div>

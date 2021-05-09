@@ -18,6 +18,32 @@ var componentLabel = {
 }
 
 var preloader = {
+
+  init: function(){
+    // set it so it enters the screen properly
+    // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.scaleMode = null;
+     game.scale.setResizeCallback((scale,parentBounds)=>{
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight-100;
+
+      // try to scale vertically first
+      var newScale = windowHeight / gui.resolution[1];  
+      var newHeight = windowHeight;
+      var newWidth = gui.resolution[0]*newScale;
+      if (newWidth>windowWidth){
+          // width still doesn't fit, scale horizontally
+          newScale = windowWidth / gui.resolution[0];
+          newWidth = windowWidth;
+          newHeight = gui.resolution[1]*newScale;
+      }          
+      scale.width = newWidth;
+      scale.height = newHeight;
+    },game)
+
+    game.scale.refresh();
+  },
+
   preload: function() {
     for (var key in gui.assets.audio){
       var fileName = gui.assets.audio[key].fileName

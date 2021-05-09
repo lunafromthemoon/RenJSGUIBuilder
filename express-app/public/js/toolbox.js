@@ -91,6 +91,11 @@ $('.slot').on('input',function(e){
   selected.config.slot = $(this).val();
 })
 
+$('.other-binding').on('input',function(e){
+  if (!selected) return;
+  selected.config['other-binding'] = $(this).val();
+})
+
 $('.asset-x').on('input',function(e){
   if (!selected) return;
   var x = parseInt($(this).val());
@@ -477,6 +482,9 @@ function showTools(tool){
   $(`.${tool}-tools`).show()
   if (tool == 'button'){
     $(`#button-slot-value`).toggle((selected.config.binding == 'save' || selected.config.binding == 'load'))
+    $('.slot').val(selected.config.slot);
+    $(`#button-other-value`).toggle((selected.config.binding == 'other'))
+    $('.other-binding').val(selected.config['other-binding']);
   }
   if (tool == 'name-box'){
     $('#name-box-text-centered').prop('checked',selected.config.isTextCentered);
@@ -510,6 +518,7 @@ function showTools(tool){
 $('#button-binding').on('change',function(e){
   var val = $("#button-binding").val();
   $("#button-slot-value").toggle((val =="save" || val == "load"));
+  $("#button-other-value").toggle((val =="other"));
 })
 
 $('.audio-sfx-select').on('change',function(e){

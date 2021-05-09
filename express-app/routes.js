@@ -218,6 +218,18 @@ function generateGui(guiName,gui) {
   for (var menu in gui.config){
     if (gui.config[menu].inactive){
       gui.config[menu] = {};
+    } else {
+      // remove unnecesary values and correct 'other' binding
+      if (gui.config[menu].buttons){
+        for (var i = gui.config[menu].buttons.length - 1; i >= 0; i--) {
+          if (gui.config[menu].buttons[i].binding == 'other'){
+            gui.config[menu].buttons[i].binding = gui.config[menu].buttons[i]['other-binding'];
+            delete gui.config[menu].buttons[i]['other-binding'];
+            delete gui.config[menu].buttons[i].height;
+            delete gui.config[menu].buttons[i].width;
+          }
+        }
+      }
     }
   }
   gui.madeWithRenJSBuilder = true;
@@ -333,29 +345,35 @@ function generateRenJSConfig(gui,buildPath,assetsPath) {
   fs.readFile(path.join(__dirname,'/templates/bootTemplate.js'),'utf8', (err, data) => {
     data = data.replace("GUI_W",gui.resolution[0])
     data = data.replace("GUI_H",gui.resolution[1])
-    data = data.replace("GUI_NAME",gui.name)
-    
-    var splash = {};
-    if (gui.config.loader.background){
-      var asset = gui.assets.images[gui.config.loader.background.id]
-      splash.background = `${assetsPath}${asset.fileName}`;
-    }
-    if (gui.config.loader['loading-bar']){
-      asset = gui.assets[gui.config.loader['loading-bar'].assetType][gui.config.loader['loading-bar'].id]
-      splash.loadingBar = {
-        asset: `${assetsPath}${asset.fileName}`,
-        position: {
-          x: parseInt(gui.config.loader['loading-bar'].x),
-          y: parseInt(gui.config.loader['loading-bar'].y)
-        },
-        size: {
-          w: parseInt(gui.config.loader['loading-bar'].width),
-          h: parseInt(gui.config.loader['loading-bar'].height)
+    data = data.replace("GUI_NAME",gui.name);
+    if (gui.config.loader){
+      var splash = {};
+      if (gui.config.loader.background){
+        var asset = gui.assets.images[gui.config.loader.background.id]
+        splash.background = `${assetsPath}${asset.fileName}`;
+      }
+      if (gui.config.loader['loading-bar']){
+        asset = gui.assets[gui.config.loader['loading-bar'].assetType][gui.config.loader['loading-bar'].id]
+        splash.loadingBar = {
+          asset: `${assetsPath}${asset.fileName}`,
+          position: {
+            x: parseInt(gui.config.loader['loading-bar'].x),
+            y: parseInt(gui.config.loader['loading-bar'].y)
+          },
+          size: {
+            w: parseInt(gui.config.loader['loading-bar'].width),
+            h: parseInt(gui.config.loader['loading-bar'].height)
+          }
         }
       }
+      data = data.replace("GUI_SPLASH",JSON.stringify(splash,null,"  "))
+      delete gui.config.loader;
+    } else {
+      // remove loading screen
+      data = data.replace("'loadingScreen': GUI_SPLASH,","");
     }
-    data = data.replace("GUI_SPLASH",JSON.stringify(splash,null,"  "))
-    // fs.mkdirSync(path.join(buildPath,'RenJS'), { recursive: true });
+    
+    
     fs.writeFileSync(path.join(buildPath,'boot.js'), data);
   });
 
