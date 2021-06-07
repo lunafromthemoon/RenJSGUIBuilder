@@ -23,6 +23,7 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+  mainWindow.maximize();
 }
 
 app.on("ready", createWindow);

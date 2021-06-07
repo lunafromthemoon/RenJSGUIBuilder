@@ -79,6 +79,7 @@ $(document).ready(function () {
 		  });
 		card.find('.btn-edit').attr('href','/edit?name='+guiList[i].name);
 		card.find('.btn-clone').attr('target',guiList[i].name);
+		card.find('.btn-export').attr('target',guiList[i].name);
 		card.find('.btn-remove').attr('target',guiList[i].name);
 		card.find('.resolution').html(`Resolution: ${guiList[i].resolution[0]}x${guiList[i].resolution[1]} pixels.`)
 		if (guiList[i].date){
@@ -93,6 +94,47 @@ $(document).ready(function () {
 		card.removeClass('d-none');
 		$('[data-toggle="tooltip"]').tooltip()
 	}
+
+	$('.btn-export').click(function () {
+		var target = $(this).attr('target');
+		$.ajax({
+        url: `/export_gui/${target}` ,
+        type: 'GET',
+        success: function (dataR) {
+
+        	console.log(dataR)
+          // window.location.href = `/edit?name=${name}`;
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+	})
+
+	$('#import-gui').click(function () {
+		$('#import-input').trigger('click');
+	})
+
+	$('#import-input').on("change", function(e){ 
+		console.log("onchange")
+	  var data = new FormData();
+	  data.append('file', e.target.files[0]);
+	  $.ajax({
+        url: `/import_gui` ,
+        data: data,
+        dataType: 'json',
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        success: function (dataR) {
+            location.reload();
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+    return false;
+	});
 
 	$('.btn-clone').click(function () {
 		var target = $(this).attr('target');

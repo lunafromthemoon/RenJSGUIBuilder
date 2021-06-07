@@ -202,7 +202,11 @@ $('#choice-align').on('change',function () {
   changeTextForAllBoxes();
 })
 
-
+$('#choice-text-width').on('input',function () {
+  if (!selected) return;
+  selected.config['text-width'] = $(this).val();
+  selected.text.wordWrapWidth = $(this).val();
+})
 
 $('#choice-offset-x').on('input',function () {
   if (!selected) return;

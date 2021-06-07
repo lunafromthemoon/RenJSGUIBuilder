@@ -10,7 +10,7 @@ const yaml = require('js-yaml');
 const unzipper = require('unzipper');
 
 
-let workspaceDir, guisDir, buildDir;
+let workspaceDir, guisDir, buildDir,exportDir;
 let workspaceReady = false;
 
 
@@ -32,13 +32,10 @@ function createWorkspace(callback) {
     if (!callback) callback = ()=>{console.log("Workspace Created!")};
     guisDir = path.join(workspaceDir,'guis/');
     buildDir = path.join(workspaceDir,'builds/');
-
-    console.log(__dirname)
-    console.log(guisDir)
+    exportDir = path.join(workspaceDir,'exports/');
 
     if (!fs.existsSync(guisDir)){
       fs.mkdirSync(guisDir, { recursive: true });
-
     }
     var contents = fs.readdirSync(guisDir);
     if (!contents || contents.length == 0){
@@ -89,7 +86,7 @@ router.get("/edit", function(req, res) {
 });
 
 // SET STORAGE
-var storage = multer.diskStorage({
+var assetsStorage = multer.diskStorage({
   destination: function (req, file, cb) {
   	var dir = path.join(guisDir,req.params.guiName);
   	if (!fs.existsSync(dir)){
@@ -102,9 +99,9 @@ var storage = multer.diskStorage({
   }
 })
  
-var upload = multer({ storage: storage })
+var uploadAssets = multer({ storage: assetsStorage })
 
-router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, next) => {
+router.post('/upload_asset/:guiName/:asset', uploadAssets.single('file'), (req, res, next) => {
   const file = req.file
   if (!file) {
   	console.log("No file")
@@ -119,18 +116,43 @@ router.post('/upload_asset/:guiName/:asset', upload.single('file'), (req, res, n
   
 });
 
+var uploadGUI = multer({ dest: guisDir })
+
+router.post('/import_gui', uploadGUI.single('file'), (req, res, next) => {
+  const file = req.file
+  if (!file) {
+    console.log("No file")
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+  const guiName = file.originalname.replace(".zip","");
+  const guiPath = path.join(guisDir,guiName)
+  if (fs.existsSync(guiPath)){
+    removeGUI(guiName);
+  }
+
+  fs.createReadStream(file.path)
+    .pipe(unzipper.Extract({ path: guiPath })
+    .on('finish',()=>{
+      fs.unlinkSync(file.path);
+      // zip file extracted, add gui_list.json data to guis.json
+      let guiData = JSON.parse(fs.readFileSync(path.join(guiPath,'gui_list.json')));
+      updateGuiList(guiData.name,guiData.resolution,guiData.preview);
+      res.json({"imported":true})
+    }));
+});
+
 function updateGuiList(name,resolution,preview){
-  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
-    let guis = (err) ? []  : JSON.parse(data);
-    let gui = guis.find(x => x.name === name)
-    if (!gui){
-      guis.push({name:name,resolution:resolution,preview:preview,date: new Date()});
-    } else {
-      gui.preview = preview;
-      gui.date = new Date();
-    }
-    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
-  });
+  let guis = JSON.parse(fs.readFileSync(path.join(guisDir,'guis.json')));
+  let gui = guis.find(x => x.name === name)
+  if (!gui){
+    guis.push({name:name,resolution:resolution,preview:preview,date: new Date()});
+  } else {
+    gui.preview = preview;
+    gui.date = new Date();
+  }
+  fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
 }
 
 router.get('/clone_gui/:toClone/:newName', (req, res, next) => {
@@ -153,15 +175,49 @@ router.get('/clone_gui/:toClone/:newName', (req, res, next) => {
   });
 });
 
-router.get('/remove_gui/:guiName', (req, res, next) => {
-  fs.readFile(path.join(guisDir,'guis.json'), (err, data) => {
-    let guis = (err) ? []  : JSON.parse(data);
-    guis.splice(guis.findIndex(item => item.name === req.params.guiName), 1)
-    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
-    rimraf.sync(path.join(guisDir,req.params.guiName));
-    res.json({"removed":true})
+var zipdir = require('zip-dir');
+
+router.get('/export_gui/:toExport', (req, res, next) => {
+  const toExport = req.params.toExport
+  const zipFile = path.join(exportDir,toExport+'.zip');
+  // create exports dir if it doesn't exist
+  if (!fs.existsSync(exportDir)){
+    fs.mkdirSync(exportDir, { recursive: true });
+  }
+  if (fs.existsSync(zipFile)){
+    fs.unlinkSync(zipFile)
+  }
+
+  const data = fs.readFileSync(path.join(guisDir,'guis.json'));
+  let guis = (!data) ? []  : JSON.parse(data);
+  // console.log(guis);
+  let gui = guis.find(x => x.name === toExport);
+  // console.log("gui config");
+  // console.log(gui);
+  // save gui list data inside the directory
+  fs.writeFileSync(path.join(guisDir,toExport,'gui_list.json'), JSON.stringify(gui));
+  // zip whole gui directory and save in exports directory
+  zipdir(path.join(guisDir,toExport), { saveTo: zipFile }, function (err, buffer) {
+    process.send({action:"open_dir",path:exportDir});
+    res.json({"exported":true})
   });
 });
+
+router.get('/remove_gui/:guiName', (req, res, next) => {
+  removeGUI(req.params.guiName);
+  res.json({"removed":true})
+});
+
+function removeGUI(guiName){
+  const data = fs.readFileSync(path.join(guisDir,'guis.json'));
+  let guis = (!data) ? []  : JSON.parse(data);
+  let idx = guis.findIndex(item => item.name === guiName);
+  if (idx!=-1){
+    guis.splice(idx, 1);
+    fs.writeFileSync(path.join(guisDir,'guis.json'), JSON.stringify(guis));
+    rimraf.sync(path.join(guisDir,guiName));
+  }
+}
 
 router.post('/save_gui/:guiName', (req, res, next) => {
   var gui = JSON.parse(req.body.gui)

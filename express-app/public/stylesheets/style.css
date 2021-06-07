@@ -13,6 +13,10 @@
 	/*max-width: 200px;*/
 }
 
+.card {
+  border: 0px;
+}
+
 .logo-icon {
 	max-height: 40px;
 }
@@ -33,6 +37,15 @@ h4.modal-title, legend {
 	color: #F3969A;
 }
 
+.paw {
+  background: url(../img/pattern.png);
+}
+
+.workspace-btn {
+  border: 1px;
+  font-style: italic;
+}
+
 .gallery-img {
 	max-height: 200px;
 }
@@ -42,7 +55,7 @@ h4.modal-title, legend {
 }
 
 .promo .title {
-  font-size: 98px;
+  font-size: 52px;
   color: #6cc3d5;
   margin-top: 0;
 }
@@ -207,7 +220,7 @@ a.btn-cta-light:hover, .btn-cta-light:hover {
 }
 
 .cta-container {
-  max-width: 540px;
+  width: 80%;
   margin: 0 auto;
   /*margin-top: 60px;*/
   -webkit-border-radius: 20px;
