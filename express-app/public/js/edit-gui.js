@@ -444,7 +444,10 @@ var gameLoader = {
       selected.config.x = selected.x;
       selected.config.y = selected.y;
     }, this);
-    if (!notDraggable) sprite.input.enableDrag(true);
+    if (!notDraggable){
+      sprite.input.enableDrag(true);
+      sprite.draggableElement = true;
+    } 
   },
 
   addFont: function (name, fileName) {
@@ -737,7 +740,9 @@ function init() {
         });
   })
 
-
+  $('#canvas-color').on('change',function(e){
+    game.stage.backgroundColor = $(this).val();
+  });
 
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
   game.preserveDrawingBuffer = true;

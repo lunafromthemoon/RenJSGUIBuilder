@@ -1,11 +1,36 @@
 
+$('.lock-selected').click(function(e){
+  if (!selected) return;
+  const icon = $(this).find('i');
+  if (icon.hasClass('fa-lock-open')){
+    // lock selected element
+    $(this).html(`<i class="fas fa-lock"></i> Locked`);
+    selected.lockedElement = true;
+    console.log("Locking selected")
+    console.log(selected)
+    if (selected.draggableElement){
+      console.log("making undraggable")
+      selected.input.disableDrag();
+    }
+  } else {
+    // unlock selected element
+    selected.lockedElement = false;
+    $(this).html(`<i class="fas fa-lock-open"></i> Unlocked`);
+    if (selected.draggableElement){
+      selected.input.enableDrag();
+    }
+  }
+})
+
+function elementCantBeRemovedError(){
+  $("#error-modal").find(".modal-body").html(`<p>This component is locked and can't be removed. If you want to remove it, unlock it first.</p>`);
+  $("#error-modal").modal('show');
+}
+
 
 $('.remove-single-selected').click(function(e){
-  if (!selected) return;
+  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
   removeAsset(selected);
-  // console.log('selected.component!!!!!!!!!!!')
-  // console.log(selected.component);
-  // console.log(gui.config[currentMenu][selected.component])
   //remove from selection list
   $(`.${selected.component}-item`).remove();
   delete gui.config[currentMenu][selected.component];
@@ -14,6 +39,7 @@ $('.remove-single-selected').click(function(e){
   s.destroy();
   $('.tools').hide()
 })
+
 
 function removeAsset(component) {
   // console.log(component)
@@ -31,7 +57,7 @@ $('.remove-background-music-selected').click(function(e){
 });
 
 $('.remove-choice-selected').click(function(e){
-  if (!selected) return;
+  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
   $(`.${selected.component}-item`).remove();
   if (selected.interrupt){
     $(`.${selected.interrupt.component}-item`).remove();
@@ -47,7 +73,7 @@ $('.remove-choice-selected').click(function(e){
 });
 
 $('.remove-interrupt-selected').click(function(e){
-  if (!selected) return;
+  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
   $(`.${selected.component}-item`).remove();
   var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
   if (choiceBox.interrupt){
@@ -64,7 +90,7 @@ $('.remove-interrupt-selected').click(function(e){
 })
 
 $('.remove-list-selected').click(function(e){
-  if (!selected) return;
+  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
   removeAsset(selected)
   $(`#${selected.selectorIdx}`).remove();
   var list = gui.config[currentMenu][selected.listComponent];
@@ -513,6 +539,11 @@ function showTools(tool){
   }
   if (tool == 'message-box'){
     $('#message-box-sample').val(selected.sample)
+  }
+  if (selected && !selected.lockedElement){
+    $('.lock-selected').html(`<i class="fas fa-lock-open"></i> Unlocked`);
+  } else {
+    $('.lock-selected').html(`<i class="fas fa-lock"></i> Locked`);
   }
   // if (tool == 'name-box' ||)
   // $('#choice-color').trigger('change');
