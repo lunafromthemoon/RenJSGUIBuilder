@@ -1,7 +1,7 @@
 <div class="card text-white bg-secondary border-light">
   <div class="card-header" id="<%= id %>TextStyleHeader">
     <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-style-tool" aria-expanded="false" aria-controls="<%= id %>-style-tool">
-      Text Style
+      <i class="fas fa-italic"></i> Text Style
     </a>
   </div>
   <div id="<%= id %>-style-tool" class="collapse" aria-labelledby="<%= id %>TextStyleHeader" data-parent="#<%= id %>-accordion">
@@ -18,6 +18,10 @@
         <div class="form-group">
           <label for="<%= id %>-size">Size</label>
           <input type="number" class="form-control text-size" target="<%= text %>" id="<%= id %>-size" value="20" />
+        </div>
+        <div class="form-group">
+          <label for="<%= id %>-size">Separation</label>
+          <input type="number" class="form-control text-lineSpacing" target="<%= text %>" id="<%= id %>-lineSpacing" value="0" />
         </div>
         <div class="form-group">
           <label for="<%= id %>-font">Font</label>

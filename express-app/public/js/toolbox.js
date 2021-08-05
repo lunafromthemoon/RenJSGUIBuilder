@@ -153,6 +153,23 @@ $(".text-size").on('input',function (argument) {
   }
 })
 
+$(".text-lineSpacing").on('input',function (argument) {
+  if (!selected) return;
+  var targetName = $(this).attr('target');
+  var target = (targetName) ? selected[targetName] : selected;
+  var lineSpacing = parseInt($(this).val()) 
+  target.lineSpacing = lineSpacing;
+  selected.config.lineSpacing = lineSpacing;
+  if (selected.nextChoices){
+    for (var i = 0; i < selected.nextChoices.length; i++) {
+      selected.nextChoices[i].text.lineSpacing = target.lineSpacing;
+    }
+  }
+  if (selected.interrupt && selected.interrupt.config.textStyleAsChoice) {
+    selected.interrupt.text.lineSpacing = target.lineSpacing;
+  }
+})
+
 $('.text-font').on('change',function(e){
   if (!selected) return;
   var targetName = $(this).attr('target');
@@ -174,6 +191,10 @@ $('.text-color').on('change',function(e){
   var targetName = $(this).attr('target');
   var target = (targetName) ? selected[targetName] : selected;
   target.fill = $(this).val();
+  if (targetName=="message"){
+    setTextWithStyle(selected.sample,target)
+  }
+  
   selected.config.color = $(this).val();
   if (selected.nextChoices){
     for (var i = 0; i < selected.nextChoices.length; i++) {

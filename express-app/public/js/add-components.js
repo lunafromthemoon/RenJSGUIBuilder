@@ -166,7 +166,7 @@ $('.upload-loading-bar-component').click(function(e){
 $('.upload-choice-component').click(function(e){
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
   var isTextCentered = $('#choice-start-text-centered').is(':checked');
-  addComponent("choice",['x','y','sfx','width','height','separation','size','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
+  addComponent("choice",['x','y','sfx','width','height','separation','size','lineSpacing','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
 })
 
 $('.upload-interrupt-component').click(function(e){
@@ -175,7 +175,7 @@ $('.upload-interrupt-component').click(function(e){
   var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
   var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
   var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
-  addComponent("interrupt",['x','y','sfx','width','height','separation','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
+  addComponent("interrupt",['x','y','sfx','width','height','separation','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){
@@ -185,11 +185,11 @@ $('.upload-ctc-component').click(function(e){
 
 $('.upload-name-box-component').click(function(e){
   var isTextCentered = $('#name-box-start-text-centered').is(':checked');
-  addComponent('name-box',['x','y','size','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
+  addComponent('name-box',['x','y','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
 })
 
 $('.upload-message-box-component').click(function(e){
-  addComponent('message-box',['x','y','sfx','size','font','color','align','offset-x','offset-y','text-width'])
+  addComponent('message-box',['x','y','sfx','size','lineSpacing','font','color','align','offset-x','offset-y','text-width'])
 })
 
 $('.upload-font').click(function(e){
@@ -220,9 +220,10 @@ $('.upload-label-component').click(function(e){
   var x = $("#label-start-x").val();
   var y = $("#label-start-y").val();
   var font = $("#label-start-font").val();
-  console.log(font)
+  var lineSpacing = $("#label-start-lineSpacing").val();
+  // console.log(font)
   var color = $("#label-start-color").val();
-  gameLoader.addLabel(x,y,size,text,font,color)
+  gameLoader.addLabel(x,y,size,text,font,color,lineSpacing)
 })
 
 $('.modal').on('shown.bs.modal', function (e) {

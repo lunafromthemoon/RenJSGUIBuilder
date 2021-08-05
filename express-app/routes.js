@@ -372,7 +372,10 @@ function findAsset(gui,fileName) {
 
 function generateGuiYAML(gui,buildPath){
   fs.mkdirSync(path.join(buildPath,'story'), { recursive: true });
-  fs.writeFileSync(path.join(buildPath,'story','GUI.yaml'), yaml.safeDump(gui));
+  console.log("GUI")
+  console.log(gui)
+  fs.writeFileSync(path.join(buildPath,'story','GUI.json'), JSON.stringify(gui));
+  fs.writeFileSync(path.join(buildPath,'story','GUI.yaml'), yaml.dump(gui));
   fs.copyFileSync(path.join(__dirname,'/templates/SetupTemplate.yaml'), path.join(buildPath,"story",'Setup.yaml'));
   fs.copyFileSync(path.join(__dirname,'/templates/StoryTemplate.yaml'), path.join(buildPath,"story",'Story.yaml'));
   fs.copyFileSync(path.join(__dirname,'/templates/ConfigTemplate.yaml'), path.join(buildPath,"story",'Config.yaml'));

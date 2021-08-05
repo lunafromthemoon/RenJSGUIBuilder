@@ -43,6 +43,11 @@ function scaleScreen(){
     scale.height = newHeight;
   },game)
 
+  game.renderer.renderSession.roundPixels = true;
+  // Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+  // game.stage.smoothed = false;
+  // Phaser.Canvas.setSmoothingEnabled(game.context, false);
+
 
   game.scale.refresh();
   screenScaled = true;
@@ -315,8 +320,9 @@ var gameLoader = {
   loadLabel: function(config) {
     var color = config.color ? config.color : "#ffffff"
     var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: color});
+    text.lineSpacing = config.lineSpacing ? config.lineSpacing : 0;
     text.config = config;
-    this.makeDraggable(text,'label',['text','color','size','font'])
+    this.makeDraggable(text,'label',['text','color','size','font','lineSpacing'])
   },
 
   loadChoice: function(config) {
@@ -334,7 +340,7 @@ var gameLoader = {
       chBox.nextChoices.push(nextChoice)
     }
     chBox.nextChoices[config.sample-2].tint = colorToSigned24Bit(config['chosen-color'])
-    this.makeDraggable(chBox,'choice',['sample','separation','sfx','font','color','chosen-color','size','align','offset-x','offset-y'],config.isBoxCentered)
+    this.makeDraggable(chBox,'choice',['sample','separation','sfx','font','color','chosen-color','lineSpacing','size','align','offset-x','offset-y'],config.isBoxCentered)
   },
 
   loadInterrupt: function (config) {
@@ -360,7 +366,7 @@ var gameLoader = {
       this.spriteRefs[currentMenu+'choice'].addChild(intBox);
       arrangeChoices(this.spriteRefs[currentMenu+'choice']);
     } 
-    this.makeDraggable(intBox,'interrupt',['separation','font','sfx','color','size','align','offset-x','offset-y'],config.inlineWithChoice)
+    this.makeDraggable(intBox,'interrupt',['separation','font','sfx','color','size','lineSpacing','align','offset-x','offset-y'],config.inlineWithChoice)
   },
 
   loadNameBox: function(config) {
@@ -369,7 +375,7 @@ var gameLoader = {
     sprite.config = config;
     sprite.component = 'name-box';
     var text = game.add.text(0,0, "Char Name", {font: config.size+'px '+config.font, fill: config.color});
-    changeTextPosition(sprite,text, config)
+    changeTextPosition(sprite,text, config);
     sprite.name = text;
     sprite.addChild(text);
     this.makeDraggable(sprite,'name-box',['size','font','color','align','offset-x','offset-y'])
@@ -386,11 +392,12 @@ var gameLoader = {
     text.wordWrap = true;
     text.align = config.align;
     text.wordWrapWidth = config['text-width'];
+    text.lineSpacing = config.lineSpacing ? config.lineSpacing : 0;
     setTextWithStyle(textSample,text)
     sprite.message = text;
     sprite.addChild(text);
     sprite.sample = textSample;
-    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width'])
+    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width','lineSpacing'])
   },
 
 
@@ -455,11 +462,11 @@ var gameLoader = {
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
-  addLabel: function(x,y,size,text,font,color) {
+  addLabel: function(x,y,size,text,font,color,lineSpacing) {
     if ( !('labels' in gui.config[currentMenu])){
       gui.config[currentMenu].labels = []
     }
-    var config = {x:x,y:y,size:size,text:text,font:font,color:color};
+    var config = {x,y,size,text,font,color,lineSpacing};
     gui.config[currentMenu].labels.push(config);
     this.loadLabel(config)
   },
@@ -570,6 +577,7 @@ function createChoiceBox(choiceType,start_x,start_y,index,config) {
 }
 
 function changeTextPosition(sprite,text, config) {
+  text.lineSpacing = config.lineSpacing ? config.lineSpacing : 0;
   if (config.isTextCentered) {
       text.setTextBounds(0,0, sprite.width, sprite.height);
       text.boundsAlignH = 'center';
