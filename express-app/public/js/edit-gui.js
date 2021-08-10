@@ -9,12 +9,12 @@ var componentLabel = {
   'ctc': "Click to Continue",
   'choice': "Choice Box",
   'interrupt': "Interrupt Box",
-  'buttons': "Button",
-  'labels': "Label",
-  'images': "Image",
-  'animations': "Animation",
-  'save-slots': "Save Slot",
-  'sliders': "Slider",
+  'button': "Button",
+  'label': "Label",
+  'image': "Image",
+  'animation': "Animation",
+  'save-slot': "Save Slot",
+  'slider': "Slider",
 }
 
 var debuggerInfo = null;
@@ -84,21 +84,15 @@ var gameLoader = {
   init: scaleScreen,
 
   create: function () {
-    var singleComponents = ['loading-bar','name-box','ctc','message-box','interrupt','choice','background']
-    for (var i = singleComponents.length - 1; i >= 0; i--) {
-      if (singleComponents[i] in gui.config[currentMenu]){
-        this.loadComponent(singleComponents[i],gui.config[currentMenu][singleComponents[i]])
+    if (gui.config[currentMenu].elements) {
+      for (var i = 0; i < gui.config[currentMenu].elements.length; i++) {
+        this.loadComponent(gui.config[currentMenu].elements[i].type,gui.config[currentMenu].elements[i]);
       }
     }
-    var components = ['buttons','sliders','labels','save-slots','images','animations']
-    for (var j = components.length - 1; j >= 0; j--) {
-      if (components[j] in gui.config[currentMenu]) {
-        for (var i = gui.config[currentMenu][components[j]].length - 1; i >= 0; i--) {
-          var config = gui.config[currentMenu][components[j]][i];
-          this.loadComponent(components[j],config)
-        }
-      }
-    }
+
+    
+
+    
     if (gui.config[currentMenu].backgroundMusic){
       
       this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
@@ -121,17 +115,17 @@ var gameLoader = {
     switch (component) {
       case 'background' : this.loadBackground(config); break;
       case 'loading-bar' : this.loadLoadingBar(config); break;
-      case 'images' : this.loadImage(config); break;
-      case 'animations' : this.loadImage(config); break;
-      case 'buttons' : this.loadButton(config); break;
-      case 'labels' : this.loadLabel(config); break;
-      case 'sliders' : this.loadSlider(config); break;
+      case 'image' : this.loadImage(config); break;
+      case 'animation' : this.loadImage(config); break;
+      case 'button' : this.loadButton(config); break;
+      case 'label' : this.loadLabel(config); break;
+      case 'slider' : this.loadSlider(config); break;
       case 'choice' : this.loadChoice(config); break;
       case 'interrupt' : this.loadInterrupt(config); break;
       case 'name-box' : this.loadNameBox(config); break;
       case 'message-box' : this.loadMessageBox(config); break;
       case 'ctc' : this.loadCtc(config); break;
-      case 'save-slots' : this.loadSaveSlot(config); break;
+      case 'save-slot' : this.loadSaveSlot(config); break;
     }
   },
 
@@ -149,20 +143,27 @@ var gameLoader = {
     // console.log(fileName)
     selected = null;
     var componentName = component;
-    if (listComponent.includes(component+'s')){
-      componentName+='s';
-      if (!(componentName in gui.config[currentMenu])){
-        gui.config[currentMenu][componentName] = []
-      }
-      gui.config[currentMenu][componentName].push(config)
-    } else {
+
+    if (!gui.config[currentMenu].elements){
+      gui.config[currentMenu].elements=[];
+    }
+    config.type = component;
+    gui.config[currentMenu].elements.push(config);
+
+    // if (listComponent.includes(component+'s')){
+    //   componentName+='s';
+    //   if (!(componentName in gui.config[currentMenu])){
+    //     gui.config[currentMenu][componentName] = []
+    //   }
+    //   gui.config[currentMenu][componentName].push(config)
+    // } else {
       if (this.spriteRefs[currentMenu+component]){
         // remove old unique component
         removeAsset(this.spriteRefs[currentMenu+component])
         this.spriteRefs[currentMenu+component].destroy();
       }
-      gui.config[currentMenu][component] = config;
-    }
+    //   gui.config[currentMenu][component] = config;
+    // }
     if (component == 'ctc' && config.animationStyle == 'tween'){
       delete config.width
       delete config.height
@@ -318,6 +319,7 @@ var gameLoader = {
   },
 
   loadLabel: function(config) {
+    config.id = genAssetId('label');
     var color = config.color ? config.color : "#ffffff"
     var text = game.add.text(config.x, config.y, config.text, {font: config.size+'px '+config.font, fill: color});
     text.lineSpacing = config.lineSpacing ? config.lineSpacing : 0;
@@ -327,46 +329,49 @@ var gameLoader = {
 
   loadChoice: function(config) {
     config.sample = 2;
-    var x = (config.isBoxCentered) ? gui.resolution[0]/2 - config.width/2 : config.x;
-    var y = (config.isBoxCentered) ? gui.resolution[1]/2 - (config.height*config.sample + parseInt(config.separation)*(config.sample-1))/2 : config.y;
-    var chBox = createChoiceBox('choice',x,y,0,config);
+    // var x = (config.isBoxCentered) ? gui.resolution[0]/2 - config.width/2 : config.x;
+    // var y = (config.isBoxCentered) ? gui.resolution[1]/2 - (config.height*config.sample + parseInt(config.separation)*(config.sample-1))/2 : config.y;
+    var chBox = createChoiceBox('choice',0,config);
     chBox.config = config;
     chBox.nextChoices = []
     chBox.component = 'choice';
     this.spriteRefs[currentMenu+'choice'] = chBox;
     for (var i = 1; i < config.sample; i++) {
-      var nextChoice = createChoiceBox('choice',0,0,i,config);
+      var nextChoice = createChoiceBox('choice',i,config);
       chBox.addChild(nextChoice);
       chBox.nextChoices.push(nextChoice)
     }
     chBox.nextChoices[config.sample-2].tint = colorToSigned24Bit(config['chosen-color'])
-    this.makeDraggable(chBox,'choice',['sample','separation','sfx','font','color','chosen-color','lineSpacing','size','align','offset-x','offset-y'],config.isBoxCentered)
+    arrangeChoices(chBox);
+    this.makeDraggable(chBox,'choice',['sample','separation','alignment','sfx','font','color','chosen-color','lineSpacing','size','align','offset-x','offset-y'],config.isBoxCentered)
   },
 
   loadInterrupt: function (config) {
-    if (config.textStyleAsChoice) {
-      config.size = gui.config.hud.choice.size
-      config.color = gui.config.hud.choice.color
-      config.font = gui.config.hud.choice.font
+    const choiceConfig = gui.config.hud.elements.find(element=>element.type=='choice');
+    if (choiceConfig && config.textStyleAsChoice) {
+      config.size = choiceConfig.size
+      config.color = choiceConfig.color
+      config.font = choiceConfig.font
     }
-    if (config.textPositionAsChoice) {
-      config.isTextCentered = gui.config.hud.choice.isTextCentered;
-      config.align = gui.config.hud.choice.align
-      config['offset-x'] = gui.config.hud.choice['offset-x']
-      config['offset-y'] = gui.config.hud.choice['offset-y']
+    if (choiceConfig && config.textPositionAsChoice) {
+      config.isTextCentered = choiceConfig.isTextCentered;
+      config.align = choiceConfig.align
+      config['offset-x'] = choiceConfig['offset-x']
+      config['offset-y'] = choiceConfig['offset-y']
     }
     if (!config.x) config.x = 0;
     if (!config.y) config.y = 0;
-    var intBox = createChoiceBox('interrupt',config.x,config.y,0,config);
+    var intBox = createChoiceBox('interrupt',0,config);
     this.spriteRefs[currentMenu+'interrupt'] = intBox;
     intBox.component = 'interrupt';
     intBox.config = config;
     if (config.inlineWithChoice) {
+      intBox.choice = this.spriteRefs[currentMenu+'choice'];
       this.spriteRefs[currentMenu+'choice'].interrupt = intBox;
       this.spriteRefs[currentMenu+'choice'].addChild(intBox);
       arrangeChoices(this.spriteRefs[currentMenu+'choice']);
     } 
-    this.makeDraggable(intBox,'interrupt',['separation','font','sfx','color','size','lineSpacing','align','offset-x','offset-y'],config.inlineWithChoice)
+    this.makeDraggable(intBox,'interrupt',['separation','alignment','font','sfx','color','size','lineSpacing','align','offset-x','offset-y'],config.inlineWithChoice)
   },
 
   loadNameBox: function(config) {
@@ -397,15 +402,15 @@ var gameLoader = {
     sprite.message = text;
     sprite.addChild(text);
     sprite.sample = textSample;
-    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width','lineSpacing'])
+    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width','lineSpacing'],config.locked)
   },
 
 
 
-  makeDraggable: function(sprite,name,otherProps,notDraggable){
+  makeDraggable: function(sprite,name,otherProps,notDraggable,locked){
     sprite.inputEnabled = true;
     sprite.input.dragDistanceThreshold = 3;
-    sprite.listComponent = name+'s';
+    // sprite.listComponent = name+'s';
     sprite.showDebugBox = true;
     function selectImage(){
       // create debugger info
@@ -425,27 +430,28 @@ var gameLoader = {
       if (otherProps) {
         for (var i = 0; i < otherProps.length; i++) {
           var prop = otherProps[i];
-          $(`#${name}-${prop}`).val(selected.config[prop]);
+          $(`#${sprite.config.type}-${prop}`).val(selected.config[prop]);
         }
       }
 
-      showTools(name);
+      showTools(sprite.config.type);
     }
-    let label = componentLabel[name];
-    if (listComponent.includes(sprite.listComponent)){
-      label = componentLabel[sprite.listComponent];
-      sprite.idx = $('#selectMenu').find(`.${name}`).length;
-      sprite.selectorIdx=name+"_"+sprite.idx;
-      label+=" #"+sprite.idx;
-    }
-    const selectMenuItem = $(`<a class="dropdown-item ${name} ${sprite.component}-item" 
-                              href="#" id="${sprite.selectorIdx}">${label}</a>`);
+    let label = `${componentLabel[sprite.config.type]} (${sprite.config.id})`;
+    // if (listComponent.includes(sprite.listComponent)){
+    //   label = componentLabel[sprite.listComponent];
+    //   sprite.idx = $('#selectMenu').find(`.${name}`).length;
+    //   sprite.selectorIdx=name+"_"+sprite.idx;
+    //   label+=" #"+sprite.idx;
+    // }
+    const selectMenuItem = $(`<a class="dropdown-item" href="#" id="${sprite.config.id}-selector">${label}</a>`);
     selectMenuItem.click(selectImage);
     $('#selectMenu').append(selectMenuItem);
 
     sprite.events.onInputDown.add(selectImage, this);
     sprite.events.onDragStart.add(selectImage, this);
     sprite.events.onDragStop.add(function(){
+      selected.x = Math.floor(selected.x);
+      selected.y = Math.floor(selected.y);
       $(`.asset-x`).val(selected.x);
       $(`.asset-y`).val(selected.y);
       selected.config.x = selected.x;
@@ -454,7 +460,12 @@ var gameLoader = {
     if (!notDraggable){
       sprite.input.enableDrag(true);
       sprite.draggableElement = true;
-    } 
+      if (sprite.config.locked){
+        // component is locked
+        sprite.input.disableDrag();
+      }
+    }
+
   },
 
   addFont: function (name, fileName) {
@@ -463,11 +474,11 @@ var gameLoader = {
   },
 
   addLabel: function(x,y,size,text,font,color,lineSpacing) {
-    if ( !('labels' in gui.config[currentMenu])){
-      gui.config[currentMenu].labels = []
-    }
-    var config = {x,y,size,text,font,color,lineSpacing};
-    gui.config[currentMenu].labels.push(config);
+    // if ( !('labels' in gui.config[currentMenu])){
+    //   gui.config[currentMenu].labels = []
+    // }
+    var config = {x,y,size,text,font,color,lineSpacing,type:'label'};
+    gui.config[currentMenu].elements.push(config);
     this.loadLabel(config)
   },
 }
@@ -527,38 +538,46 @@ function addBackgroundMusicTools(){
 }
 
 function findFont(name) {
-  if (gui.config.hud['name-box'] && gui.config.hud['name-box'].font == name) return 'name-box';
-  if (gui.config.hud['message-box'] && gui.config.hud['message-box'].font == name) return 'message-box';
-  if (gui.config.hud['choice'] && gui.config.hud['choice'].font == name) return 'choice';
-  if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].font == name) return 'interrupt';
-  for (var menu in gui.config ) {
-    if (gui.config[menu].labels) {
-      for (var i = gui.config[menu].labels.length - 1; i >= 0; i--) {
-        if (gui.config[menu].labels[i].font == name) return 'label';
-      }
-    }
+  for (var i = gui.config[menu].elements.length - 1; i >= 0; i--) {
+    if (gui.config[menu].elements[i].font == name) return gui.config[menu].elements[i].type;
   }
+
+  // if (gui.config.hud['name-box'] && gui.config.hud['name-box'].font == name) return 'name-box';
+  // if (gui.config.hud['message-box'] && gui.config.hud['message-box'].font == name) return 'message-box';
+  // if (gui.config.hud['choice'] && gui.config.hud['choice'].font == name) return 'choice';
+  // if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].font == name) return 'interrupt';
+  // for (var menu in gui.config ) {
+  //   if (gui.config[menu].labels) {
+  //     for (var i = gui.config[menu].labels.length - 1; i >= 0; i--) {
+  //       if (gui.config[menu].labels[i].font == name) return 'label';
+  //     }
+  //   }
+  // }
 }
 
 function findAudio(name) {
   if (gui.config.main.backgroundMusic == name) return 'main menu';
   if (gui.config.settings.backgroundMusic == name) return 'settings menu';
   if (gui.config.saveload.backgroundMusic == name) return 'saveload menu';
-  if (gui.config.hud['message-box'] && gui.config.hud['message-box'].sfx == name) return 'message-box';
-  if (gui.config.hud['choice'] && gui.config.hud['choice'].sfx == name) return 'choice';
-  if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].sfx == name) return 'interrupt';
-  for (var menu in gui.config ) {
-    if (gui.config[menu].buttons) {
-      for (var i = gui.config[menu].buttons.length - 1; i >= 0; i--) {
-        if (gui.config[menu].buttons[i].sfx == name) return menu+' menu button';
-      }
-    }
+  for (var i = gui.config[menu].elements.length - 1; i >= 0; i--) {
+    if (gui.config[menu].elements[i].sfx == name) return gui.config[menu].elements[i].type;
   }
+
+  // if (gui.config.hud['message-box'] && gui.config.hud['message-box'].sfx == name) return 'message-box';
+  // if (gui.config.hud['choice'] && gui.config.hud['choice'].sfx == name) return 'choice';
+  // if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].sfx == name) return 'interrupt';
+  // for (var menu in gui.config ) {
+  //   if (gui.config[menu].buttons) {
+  //     for (var i = gui.config[menu].buttons.length - 1; i >= 0; i--) {
+  //       if (gui.config[menu].buttons[i].sfx == name) return menu+' menu button';
+  //     }
+  //   }
+  // }
 }
 
-function createChoiceBox(choiceType,start_x,start_y,index,config) {
-  var separation = index*(parseInt(config.height)+parseInt(config.separation));
-  var chBox = game.add.button(start_x, start_y+separation, config.id,function(){
+function createChoiceBox(choiceType,index,config) {
+  // var separation = index*(parseInt(config.height)+parseInt(config.separation));
+  var chBox = game.add.button(0, 0, config.id,function(){
       console.log(`click on ${choiceType} ${index}`);
       if (config.sfx && config.sfx != 'none') {
         var sfx = game.add.audio(config.sfx);
@@ -703,6 +722,10 @@ function init() {
     delete gui.isNew;
   } else {
     // gui = JSON.parse(gui)
+    // convert from old categorized way to new way
+    convertGUIElementsToList();
+    
+
     loaded = true;
   }
   for (menu in gui.config){
@@ -794,6 +817,47 @@ window.clearMenu = function(menu){
   $("#confirm-menu").html(menu);
   $("#confirm-modal").modal('show');
 
+}
+
+function convertGUIElementsToList(){
+  var menus = ['loader','main','settings','hud','saveload']
+  for (const menu of menus){
+    if (!gui.config[menu].elements){
+      gui.config[menu].elements = [];
+    }
+    // if background present, convert to normal image
+    if (gui.config[menu].background){
+      gui.config[menu].background.type = 'image';
+      gui.config[menu].elements.push(gui.config[menu].background);
+      delete gui.config[menu].background
+    }
+    var singleComponents = ['choice', 'interrupt','message-box','ctc','name-box','loading-bar']
+    for (const component of singleComponents){
+      if (component in gui.config[menu]){
+        // add type to component configuration
+        gui.config[menu][component].type = component;
+        // add component to elements list
+        gui.config[menu].elements.push(gui.config[menu][component]);
+        // remove from main menu configuration
+        delete gui.config[menu][component];
+      }
+    }
+
+    var listComponents = ['button','slider','label','save-slot','image','animation']
+    for (const component of listComponents){
+      const list = component+'s';
+      if (list in gui.config[menu]) {
+        for (var i = 0; i < gui.config[menu][list].length; i++) {
+          gui.config[menu][list][i].type = component;
+          gui.config[menu].elements.push(gui.config[menu][list][i]);
+        }
+        // remove from main menu configuration
+        delete gui.config[menu][list];
+      }
+    }
+    // console.log(menu)
+    // console.log(gui.config[menu])
+  }
 }
 
 // Audio

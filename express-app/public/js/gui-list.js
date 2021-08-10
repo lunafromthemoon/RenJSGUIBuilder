@@ -7,7 +7,7 @@ $(document).ready(function () {
 		guiList = [];
 	}
 
-	$('#change-workspace').click(function (argument) {
+	$('.change-workspace').click(function (argument) {
 		$.ajax({
           url: `/change_workspace` ,
           type: 'GET',

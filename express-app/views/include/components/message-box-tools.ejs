@@ -52,6 +52,7 @@
     </div>
   </div>
   <%if (includeTitle) {%>
+    <%- include('partials/z-order', {id:id}); %>
     <%- include('partials/remove-button', {type:'single'}); %>
   <%}%>
 </div>

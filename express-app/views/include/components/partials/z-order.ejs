@@ -1,0 +1,15 @@
+<div class="card text-white bg-secondary border-light">
+  <div class="card-header" id="<%= id %>ZOrderHeader">
+    <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-z-order-tool" aria-expanded="false" aria-controls="<%= id %>-z-order-tool">
+      <i class="fas fa-layer-group"></i> Z-Order
+    </a>
+  </div>
+  <div id="<%= id %>-z-order-tool" class="collapse" aria-labelledby="<%= id %>ZOrderHeader" data-parent="#<%= id %>-accordion">
+    <div class="card-body">
+      <div class="btn-group btn-block" role="group" >
+        <button type="button" class="btn btn-secondary send-to-back">Send to back</button>
+        <button type="button" class="btn btn-secondary bring-to-front">Bring to front</button>
+      </div>
+    </div>
+  </div>
+</div>

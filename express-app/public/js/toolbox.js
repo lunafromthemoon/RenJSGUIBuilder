@@ -5,16 +5,13 @@ $('.lock-selected').click(function(e){
   if (icon.hasClass('fa-lock-open')){
     // lock selected element
     $(this).html(`<i class="fas fa-lock"></i> Locked`);
-    selected.lockedElement = true;
-    console.log("Locking selected")
-    console.log(selected)
+    selected.config.locked = true;
     if (selected.draggableElement){
-      console.log("making undraggable")
       selected.input.disableDrag();
     }
   } else {
     // unlock selected element
-    selected.lockedElement = false;
+    selected.config.locked = false;
     $(this).html(`<i class="fas fa-lock-open"></i> Unlocked`);
     if (selected.draggableElement){
       selected.input.enableDrag();
@@ -29,7 +26,7 @@ function elementCantBeRemovedError(){
 
 
 $('.remove-single-selected').click(function(e){
-  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
+  if (!selected || selected.config.locked) return elementCantBeRemovedError();
   removeAsset(selected);
   //remove from selection list
   $(`.${selected.component}-item`).remove();
@@ -57,7 +54,7 @@ $('.remove-background-music-selected').click(function(e){
 });
 
 $('.remove-choice-selected').click(function(e){
-  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
+  if (!selected || selected.config.locked) return elementCantBeRemovedError();
   $(`.${selected.component}-item`).remove();
   if (selected.interrupt){
     $(`.${selected.interrupt.component}-item`).remove();
@@ -73,7 +70,7 @@ $('.remove-choice-selected').click(function(e){
 });
 
 $('.remove-interrupt-selected').click(function(e){
-  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
+  if (!selected || selected.config.locked) return elementCantBeRemovedError();
   $(`.${selected.component}-item`).remove();
   var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
   if (choiceBox.interrupt){
@@ -90,7 +87,7 @@ $('.remove-interrupt-selected').click(function(e){
 })
 
 $('.remove-list-selected').click(function(e){
-  if (!selected || selected.lockedElement) return elementCantBeRemovedError();
+  if (!selected || selected.config.locked) return elementCantBeRemovedError();
   removeAsset(selected)
   $(`#${selected.selectorIdx}`).remove();
   var list = gui.config[currentMenu][selected.listComponent];
@@ -101,10 +98,54 @@ $('.remove-list-selected').click(function(e){
   $('.tools').hide()
 })
 
+$('.remove-selected').click(function(e){
+  if (!selected || selected.config.locked) return elementCantBeRemovedError();
+  removeAsset(selected)
+  $(`#${selected.config.id}-selector`).remove();
+  var list = gui.config[currentMenu].elements;
+  list.splice(list.findIndex(item => item.id === selected.config.id), 1)
+  console.log(selected)
+  if (selected.config.type == 'choice' && selected.interrupt){
+    // if the choice has inline interrupt, remove also interrupt box
+    $(`.${selected.interrupt.config.id}-selector`).remove();
+    removeAsset(selected.interrupt)
+    list.splice(list.findIndex(item => item.id === selected.interrupt.config.id), 1)
+  }
+  if (selected.config.type == 'interrupt' && selected.config.inlineWithChoice){
+    // selected is interrupt inline with choice, remove and rearrange choice boxes
+    delete selected.choice.interrupt
+    selected.choice.removeChild(selected);
+    arrangeChoices(selected.choic);
+  }
+  var s = selected;
+  selected = null;
+  s.destroy();
+  $('.tools').hide()
+})
+
 $("#label-text").on('input',function (argument) {
   if (!selected) return;
   selected.text = $("#label-text").val();
   selected.config.text = $("#label-text").val();
+})
+
+
+$('.send-to-back').on('click',function(e){
+  if (!selected) return;
+  const idx = gui.config[currentMenu].elements.findIndex(element=>element.id == selected.config.id);
+  const element = gui.config[currentMenu].elements[idx];
+  gui.config[currentMenu].elements.splice(idx,1);
+  gui.config[currentMenu].elements.unshift(element)
+  selected.sendToBack();
+})
+
+$('.bring-to-front').on('click',function(e){
+  if (!selected) return;
+  const idx = gui.config[currentMenu].elements.findIndex(element=>element.id == selected.config.id);
+  const element = gui.config[currentMenu].elements[idx];
+  gui.config[currentMenu].elements.splice(idx,1);
+  gui.config[currentMenu].elements.push(element)
+  selected.bringToTop();
 })
 
 $('.binding').on('change',function(e){
@@ -331,10 +372,12 @@ $('#interrupt-start-box-inline').on('change',function() {
     return;
   }
   if (selected.config.inlineWithChoice) {
+    selected.choice = choiceBox;
     choiceBox.interrupt = selected;
     choiceBox.addChild(selected);
     arrangeChoices(choiceBox);
   } else {
+    delete selected.choice;
     delete choiceBox.interrupt;
     choiceBox.removeChild(selected);
     arrangeChoices(choiceBox)
@@ -424,7 +467,7 @@ $('#choice-sample').on('input',function () {
       selected.nextChoices[selected.nextChoices.length-1].tint = 0xFFFFFF;
     }
     for (var i = 0; i < (samples-oldSamples); i++) {
-      var nextChoice = createChoiceBox("choice",0,0,oldSamples+i,selected.config);
+      var nextChoice = createChoiceBox("choice",oldSamples+i,selected.config);
       selected.addChild(nextChoice);
       selected.nextChoices.push(nextChoice);
     }
@@ -459,24 +502,47 @@ $('#choice-box-centered').on('change',function() {
   
 })
 
+$('#choice-alignment').on('change',function() {
+  if (!selected) return;
+  selected.config.alignment = $(this).val();
+  arrangeChoices(selected);
+})
+
 function arrangeChoices(box) {
-  var config = box.config;
+  const config = box.config;
+  console.log("Arranging choices");
+  console.log(config);
+  let separation = parseInt(config.separation)+parseInt(config.height);
   if (config.isBoxCentered){
-    var s = config.sample;
-    if (box.interrupt) {
-      s++;
-    }
-    box.x = gui.resolution[0]/2 - config.width/2;
-    box.y = gui.resolution[1]/2 - (config.height*s + parseInt(config.separation)*(s-1))/2;
-  } else {
-    box.x = box.config.x;
-    box.y = box.config.y;
+    config.alignment = 'centered';
+    config.x = gui.resolution[0]/2 - config.width/2;
+    config.y = gui.resolution[1]/2 - config.height/2;
+    // var s = config.sample;
+    // if (box.interrupt) {
+    //   s++;
+    // }
+    // box.x = gui.resolution[0]/2 - config.width/2;
+    // box.y = gui.resolution[1]/2 - (config.height*s + parseInt(config.separation)*(s-1))/2;
   }
+  if (!config.alignment) config.alignment = 'centered';
+  // place first box
+  box.x = config.x;
+  box.y = config.y;
+  if (config.alignment=='centered'){
+    // correct first box y
+    const samples = parseInt(config.sample) + (box.interrupt ? 1 : 0);
+    box.y -= (separation*(samples-1))/2
+  }
+  console.log(box.y)
+  if (config.alignment=='bottom-up'){
+    separation*=-1;
+  }
+
   for (var i = 0; i < box.nextChoices.length; i++) {
-    box.nextChoices[i].y = (i+1)*(parseInt(config.height)+parseInt(config.separation));
+    box.nextChoices[i].y = (i+1)*separation;
   }
   if (box.interrupt) {
-    box.interrupt.y = (box.nextChoices.length+1)*(parseInt(config.height)+parseInt(config.separation))
+    box.interrupt.y = (box.nextChoices.length+1)*separation;
   }
 }
 
@@ -561,7 +627,7 @@ function showTools(tool){
   if (tool == 'message-box'){
     $('#message-box-sample').val(selected.sample)
   }
-  if (selected && !selected.lockedElement){
+  if (selected && !selected.config.locked){
     $('.lock-selected').html(`<i class="fas fa-lock-open"></i> Unlocked`);
   } else {
     $('.lock-selected').html(`<i class="fas fa-lock"></i> Locked`);

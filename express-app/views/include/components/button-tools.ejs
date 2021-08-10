@@ -51,6 +51,7 @@
   </div>
   <%- include('partials/sfx', {id:id}); %>
   <%if (includeTitle) {%>
+    <%- include('partials/z-order', {id:id}); %>
     <%- include('partials/remove-button', {type:'list'}); %>
   <%}%>
 </div>

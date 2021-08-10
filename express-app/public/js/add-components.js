@@ -166,7 +166,7 @@ $('.upload-loading-bar-component').click(function(e){
 $('.upload-choice-component').click(function(e){
   var isBoxCentered = $('#choice-start-box-centered').is(':checked');
   var isTextCentered = $('#choice-start-text-centered').is(':checked');
-  addComponent("choice",['x','y','sfx','width','height','separation','size','lineSpacing','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
+  addComponent("choice",['x','y','sfx','width','height','separation','alignment','size','lineSpacing','font','color','chosen-color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered})
 })
 
 $('.upload-interrupt-component').click(function(e){
@@ -175,7 +175,7 @@ $('.upload-interrupt-component').click(function(e){
   var textPositionAsChoice = $('#interrupt-start-text-position-same-as-choices').is(':checked');
   var isBoxCentered = $('#interrupt-start-box-centered').is(':checked');
   var isTextCentered = $('#interrupt-start-text-centered').is(':checked');
-  addComponent("interrupt",['x','y','sfx','width','height','separation','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
+  addComponent("interrupt",['x','y','sfx','width','height','separation','alignment','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered,isBoxCentered:isBoxCentered,textStyleAsChoice:textStyleAsChoice,textPositionAsChoice:textPositionAsChoice,inlineWithChoice:inlineWithChoice})
 })
 
 $('.upload-ctc-component').click(function(e){
@@ -295,7 +295,7 @@ function uploadAsset(file, asset, callback){
 
 
 function addComponent(name,propNames,extra) {
-  var props = { id: genAssetId('asset') }
+  var props = { id: genAssetId(name) }
   for (var i = propNames.length - 1; i >= 0; i--) {
     var val = $(`#${name}-start-${propNames[i]}`).val();
     props[propNames[i]] = val;
@@ -308,11 +308,7 @@ function addComponent(name,propNames,extra) {
       props[key] = extra[key];
     }
   }
-  // console.log("adding component ")
-  // console.log(name)
-  // console.log(props)
   uploadAsset(lastUpload,props.id,function(fileName){
-    // props.fileName = fileName;
     gameLoader.addComponent(name,props,fileName)
   });
 }
