@@ -19,6 +19,25 @@ $('.lock-selected').click(function(e){
   }
 })
 
+$('.hide-selected').click(function(e){
+  if (!selected) return;
+  const icon = $(this).find('i');
+  const hiddenTag = " <small>(hidden)</small>";
+  if (icon.hasClass('fa-eye-slash')){
+    // show selected element
+    $(this).html(`<i class="fas fa-eye"></i> Visible`);
+    $(`#${selected.config.id}-selector`).html($(`#${selected.config.id}-selector`).html().replace(hiddenTag,""));
+    selected.config.visible = true;
+    selected.visible = true;
+  } else {
+    // hide selected element
+    selected.config.visible = false;
+    selected.visible = false;
+    $(`#${selected.config.id}-selector`).html($(`#${selected.config.id}-selector`).html() + hiddenTag);
+    $(this).html(`<i class="fas fa-eye-slash"></i> Hidden`);
+  }
+})
+
 function elementCantBeRemovedError(){
   $("#error-modal").find(".modal-body").html(`<p>This component is locked and can't be removed. If you want to remove it, unlock it first.</p>`);
   $("#error-modal").modal('show');

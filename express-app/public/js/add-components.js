@@ -49,7 +49,8 @@ function loadFont(name,fileName) {
       }`)
     .appendTo("head");
   let sampletText = $('.font-text').val();
-  let row = $(`<tr class="font-${name}">
+  const fontId = name.replace(/ /g,'')
+  let row = $(`<tr class="font-${fontId}">
                 <th class="align-middle" scope="row">${name}</th>
                 <td class="align-middle text-sample" >${sampletText}</td>
                 <td class="action-col"><button class="btn btn-icon btn-outline-light remove-font"><i class="fas fa-trash-alt"></i></button></td>
@@ -63,7 +64,7 @@ function loadFont(name,fileName) {
       $("#error-modal").find(".modal-body").html(`<p>The font can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
       $("#error-modal").modal('show');
     } else {
-      $(`.font-${name}`).remove();
+      $(`.font-${fontId}`).remove();
       delete gui.assets.fonts[name]
     }
   });

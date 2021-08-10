@@ -700,7 +700,7 @@ function genAssetId(asset) {
 // Init
 // -------------------------------------------------------------------------
 
-$('.colorpicker-component').colorpicker();
+
 
 function init() {
   var loaded = false;
@@ -771,9 +771,7 @@ function init() {
         });
   })
 
-  $('#canvas-color').on('change',function(e){
-    game.stage.backgroundColor = $(this).val();
-  });
+  
 
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
   game.preserveDrawingBuffer = true;
@@ -790,10 +788,53 @@ function init() {
     }
     game.state.start('preloader')
   }
-  // } else {
-   $('[data-toggle="tooltip"]').tooltip()
-    changeMenu('general');
-  // }
+
+  if (!gui.config.general){
+    gui.config.general = {
+      transitions: {
+        defaults: {
+          characters: "FADE",
+          backgrounds: "FADE",
+          cgs: "FADE",
+          music: "FADE",
+        },
+        say: "CUT",
+        visualChoices: "FADE",
+        textChoices: "CUT",
+        menus: "FADE",
+        skippable: false
+      },
+      fadetime : 750,
+      logChoices: true,
+      backgroundColor: "#000000"
+    }
+  }
+  $('#canvas-color').val(gui.config.general.backgroundColor);
+  $('.colorpicker-component').colorpicker();
+  $('#canvas-color').on('change',function(e){
+    gui.config.general.backgroundColor = $(this).val();
+    game.stage.backgroundColor = $(this).val();
+  });
+
+  $('#logChoicesInput').prop('checked',gui.config.general.logChoices);
+  $('#logChoicesInput').on('change',function() {
+    gui.config.general.logChoices = $(this).is(':checked');
+  });
+
+  console.log($(".transition-select[target='menus'")  )
+
+  $(".transition-select[target='menus'").val(gui.config.general.transitions.menus);
+  $(".transition-select[target='visualChoices'").val(gui.config.general.transitions.visualChoices);
+  $(".transition-select[target='textChoices'").val(gui.config.general.transitions.textChoices);
+
+  $('.transition-select').on('change',function(e){
+    var target = $(this).attr('target')
+    gui.config.general.transitions[target] = $(this).val();
+  });
+
+
+  $('[data-toggle="tooltip"]').tooltip()
+  changeMenu('general');
   
 }
 
