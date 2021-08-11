@@ -184,9 +184,15 @@ $('.upload-ctc-component').click(function(e){
   addComponent('ctc',['x','y','width','height'],{animationStyle:ctcStyle})
 })
 
+$('#name-box-start-tint-style-is-box').on('change',function(e){
+  var val = $("#button-start-binding").val();
+  $('#name-box-start-color').closest('.form-group').toggle($('#name-box-start-tint-style-is-box').is(':checked'));
+})
+
 $('.upload-name-box-component').click(function(e){
   var isTextCentered = $('#name-box-start-text-centered').is(':checked');
-  addComponent('name-box',['x','y','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered:isTextCentered})
+  var tintStyle = $('#name-box-start-tint-style-is-box').is(':checked') ? 'box' : 'text';
+  addComponent('name-box',['x','y','size','lineSpacing','font','color','align','offset-x','offset-y'],{isTextCentered,tintStyle})
 })
 
 $('.upload-message-box-component').click(function(e){

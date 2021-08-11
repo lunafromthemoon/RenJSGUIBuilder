@@ -44,17 +44,17 @@ function elementCantBeRemovedError(){
 }
 
 
-$('.remove-single-selected').click(function(e){
-  if (!selected || selected.config.locked) return elementCantBeRemovedError();
-  removeAsset(selected);
-  //remove from selection list
-  $(`.${selected.component}-item`).remove();
-  delete gui.config[currentMenu][selected.component];
-  var s = selected;
-  selected = null;
-  s.destroy();
-  $('.tools').hide()
-})
+// $('.remove-single-selected').click(function(e){
+//   if (!selected || selected.config.locked) return elementCantBeRemovedError();
+//   removeAsset(selected);
+//   //remove from selection list
+//   $(`.${selected.component}-item`).remove();
+//   delete gui.config[currentMenu][selected.component];
+//   var s = selected;
+//   selected = null;
+//   s.destroy();
+//   $('.tools').hide()
+// })
 
 
 function removeAsset(component) {
@@ -72,50 +72,50 @@ $('.remove-background-music-selected').click(function(e){
   $('.bg-music-item').remove();
 });
 
-$('.remove-choice-selected').click(function(e){
-  if (!selected || selected.config.locked) return elementCantBeRemovedError();
-  $(`.${selected.component}-item`).remove();
-  if (selected.interrupt){
-    $(`.${selected.interrupt.component}-item`).remove();
-    removeAsset(selected.interrupt)
-    delete gui.config[currentMenu]['interrupt']
-  }
-  removeAsset(selected)
-  delete gui.config[currentMenu]['choice']
-  var s = selected;
-  selected = null;
-  s.destroy();
-  $('.tools').hide()
-});
+// $('.remove-choice-selected').click(function(e){
+//   if (!selected || selected.config.locked) return elementCantBeRemovedError();
+//   $(`.${selected.component}-item`).remove();
+//   if (selected.interrupt){
+//     $(`.${selected.interrupt.component}-item`).remove();
+//     removeAsset(selected.interrupt)
+//     delete gui.config[currentMenu]['interrupt']
+//   }
+//   removeAsset(selected)
+//   delete gui.config[currentMenu]['choice']
+//   var s = selected;
+//   selected = null;
+//   s.destroy();
+//   $('.tools').hide()
+// });
 
-$('.remove-interrupt-selected').click(function(e){
-  if (!selected || selected.config.locked) return elementCantBeRemovedError();
-  $(`.${selected.component}-item`).remove();
-  var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
-  if (choiceBox.interrupt){
-    delete choiceBox.interrupt;
-    choiceBox.removeChild(selected);
-    arrangeChoices(choiceBox);  
-  }
-  removeAsset(selected)
-  delete gui.config[currentMenu]['interrupt']
-  var s = selected;
-  selected = null;
-  s.destroy();
-  $('.tools').hide()
-})
+// $('.remove-interrupt-selected').click(function(e){
+//   if (!selected || selected.config.locked) return elementCantBeRemovedError();
+//   $(`.${selected.component}-item`).remove();
+//   var choiceBox = gameLoader.spriteRefs[currentMenu+'choice'];
+//   if (choiceBox.interrupt){
+//     delete choiceBox.interrupt;
+//     choiceBox.removeChild(selected);
+//     arrangeChoices(choiceBox);  
+//   }
+//   removeAsset(selected)
+//   delete gui.config[currentMenu]['interrupt']
+//   var s = selected;
+//   selected = null;
+//   s.destroy();
+//   $('.tools').hide()
+// })
 
-$('.remove-list-selected').click(function(e){
-  if (!selected || selected.config.locked) return elementCantBeRemovedError();
-  removeAsset(selected)
-  $(`#${selected.selectorIdx}`).remove();
-  var list = gui.config[currentMenu][selected.listComponent];
-  list.splice(list.findIndex(item => item.id === selected.config.id), 1)
-  var s = selected;
-  selected = null;
-  s.destroy();
-  $('.tools').hide()
-})
+// $('.remove-list-selected').click(function(e){
+//   if (!selected || selected.config.locked) return elementCantBeRemovedError();
+//   removeAsset(selected)
+//   $(`#${selected.selectorIdx}`).remove();
+//   var list = gui.config[currentMenu][selected.listComponent];
+//   list.splice(list.findIndex(item => item.id === selected.config.id), 1)
+//   var s = selected;
+//   selected = null;
+//   s.destroy();
+//   $('.tools').hide()
+// })
 
 $('.remove-selected').click(function(e){
   if (!selected || selected.config.locked) return elementCantBeRemovedError();
@@ -252,7 +252,7 @@ $('.text-color').on('change',function(e){
   var target = (targetName) ? selected[targetName] : selected;
   target.fill = $(this).val();
   if (targetName=="message"){
-    setTextWithStyle(selected.sample,target)
+    setTextWithStyle(selected.config.sample,target)
   }
   
   selected.config.color = $(this).val();
@@ -420,6 +420,25 @@ $('#name-box-text-centered').on('change',function() {
   changeTextPosition(selected,selected.name,selected.config)
 })
 
+$('#name-box-tint-style-is-box').on('change',function() {
+  if (!selected) return;
+  selected.config.tintStyle = $(this).is(':checked') ? 'box' : "text";
+  $('#name-box-color').closest('.form-group').toggle(selected.config.tintStyle == 'box');
+  setNameBoxSampleColor(selected);
+})
+
+$('#name-box-sampleColor').on('change',function() {
+  if (!selected) return;
+  selected.config.sampleColor = $(this).val();
+  setNameBoxSampleColor(selected);
+})
+
+$('#name-box-sampleName').on('input',function() {
+  if (!selected) return;
+  selected.config.sampleName = $(this).val();
+  selected.name.text = selected.config.sampleName;
+})
+
 $('#name-box-align').on('change',function () {
   if (!selected) return;
   selected.config.align = $(this).val();
@@ -440,8 +459,8 @@ $('#name-box-offset-y').on('input',function () {
 
 $('#message-box-sample').on('input',function () {
   if (!selected) return;
-  selected.sample = $(this).val();
-  setTextWithStyle(selected.sample,selected.message)
+  selected.config.sample = $(this).val();
+  setTextWithStyle(selected.config.sample,selected.message)
 })
 
 $('#message-box-offset-x').on('input',function () {
@@ -496,6 +515,16 @@ $('#choice-sample').on('input',function () {
     selected.nextChoices[selected.nextChoices.length-1].tint = colorToSigned24Bit(selected.config['chosen-color'])
   }
   arrangeChoices(selected);
+})
+
+$('#choice-sampleText').on('input',function () {
+  if (!selected) return;
+  var sampleText = $(this).val();
+  selected.config.sampleText = sampleText;
+  selected.text.text = sampleText;
+  for (var i = selected.nextChoices.length - 1; i >= 0; i--) {
+    selected.nextChoices[i].text.text = sampleText;
+  }
 })
 
 $('#choice-separation').on('input',function () {
@@ -610,7 +639,7 @@ function resetMessageBox() {
     selected.sfx.destroy();
   }
   delete selected.playback;
-  setTextWithStyle(selected.sample,selected.message)
+  setTextWithStyle(selected.config.sample,selected.message)
 }
 
 function showTools(tool){
@@ -624,6 +653,8 @@ function showTools(tool){
   }
   if (tool == 'name-box'){
     $('#name-box-text-centered').prop('checked',selected.config.isTextCentered);
+    $('#name-box-tint-style-is-box').prop('checked',selected.config.tintStyle == 'box');
+    $('#name-box-color').closest('.form-group').toggle(selected.config.tintStyle == 'box');
     $(`#name-box-text-not-centered-options`).toggle(!selected.config.isTextCentered)
   }
   if (tool == 'choice') {
@@ -643,9 +674,9 @@ function showTools(tool){
     $(`#interrupt-text-not-centered-options`).toggle(!selected.config.isTextCentered);
     $('#interrupt-state').toggle(selected.animations.frameTotal >= 4);
   }
-  if (tool == 'message-box'){
-    $('#message-box-sample').val(selected.sample)
-  }
+  // if (tool == 'message-box'){
+  //   $('#message-box-sample').val(selected.config.sample)
+  // }
   if (selected && !selected.config.locked){
     $('.lock-selected').html(`<i class="fas fa-lock-open"></i> Unlocked`);
   } else {

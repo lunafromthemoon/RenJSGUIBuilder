@@ -4,7 +4,49 @@
     <div class="card text-white bg-secondary border-light">
       <div class="card-header border-light"><h4 class="mb-0">Name Box</h4></div>
     </div>
+    <div class="card text-white bg-secondary border-light">
+      <div class="card-header" id="nameBoxHeader4">
+        <a class="collapsed" type="button" data-toggle="collapse" data-target="#name-box-sample-tool" aria-expanded="false" aria-controls="name-box-sample-tool">
+          <i class="fas fa-vial"></i> Sample
+        </a>
+      </div>
+      <div id="name-box-sample-tool" class="collapse" aria-labelledby="nameBoxHeader4" data-parent="#name-box-accordion">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="<%= id %>-other">Sample Name</label>
+            <input class="form-control other-binding" type="text" id="name-box-sampleName" value="other">
+          </div>
+          <div class="form-group">
+            <label for="<%= id %>-chosen-color">Sample Color</label>
+            <div class="input-group colorpicker-component">
+              <input type="text" class="form-control" id="name-box-sampleColor" />
+              <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   <%}%>
+  <div class="card text-white bg-secondary border-light">
+    <div class="card-header" id="nameBoxHeader5">
+      <a class="collapsed" type="button" data-toggle="collapse" data-target="#<%= id %>-tint-style" aria-expanded="false" aria-controls="name-box-tint-style">
+        <i class="fas fa-paint-roller"></i> Tint Style
+      </a>
+    </div>
+    <div id="<%= id %>-tint-style" class="collapse" aria-labelledby="nameBoxHeader5" data-parent="#<%= id %>-accordion">
+      <div class="card-body">
+        <div class="form-group">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="<%= id %>-tint-style-is-box">
+            <label class="custom-control-label" for="name-box-tint-style-is-box">Tint Box</label>
+          </div>
+        </div>
+        <small class="form-text text-white">Each character has a color associated with them. This color will be used to change the appearence of the name box. If tint style is 'box', the box itself will be tinted and the text will remain the same (configurable in Text Style tab), otherwise, the box will be left untinted and the text will be colored accordingly.</small>  
+      </div>
+    </div>
+  </div>
   <%- include('partials/position', {id:id}); %>
   <%- include('partials/text-style', {id:id, text:"name"}); %>
   <%- include('partials/text-position', {id:id}); %>

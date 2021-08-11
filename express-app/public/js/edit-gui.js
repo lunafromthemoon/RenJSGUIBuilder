@@ -84,17 +84,15 @@ var gameLoader = {
   init: scaleScreen,
 
   create: function () {
+    game.stage.backgroundColor = gui.config.general.backgroundColor;
+
     if (gui.config[currentMenu].elements) {
       for (var i = 0; i < gui.config[currentMenu].elements.length; i++) {
         this.loadComponent(gui.config[currentMenu].elements[i].type,gui.config[currentMenu].elements[i]);
       }
     }
-
-    
-
     
     if (gui.config[currentMenu].backgroundMusic){
-      
       this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
     }
   },
@@ -343,7 +341,7 @@ var gameLoader = {
     }
     chBox.nextChoices[config.sample-2].tint = colorToSigned24Bit(config['chosen-color'])
     arrangeChoices(chBox);
-    this.makeDraggable(chBox,'choice',['sample','separation','alignment','sfx','font','color','chosen-color','lineSpacing','size','align','offset-x','offset-y'],config.isBoxCentered)
+    this.makeDraggable(chBox,'choice',['sample','sampleText','separation','alignment','sfx','font','color','chosen-color','lineSpacing','size','align','offset-x','offset-y'],config.isBoxCentered)
   },
 
   loadInterrupt: function (config) {
@@ -379,11 +377,15 @@ var gameLoader = {
     this.spriteRefs[currentMenu+'name-box'] = sprite;
     sprite.config = config;
     sprite.component = 'name-box';
-    var text = game.add.text(0,0, "Char Name", {font: config.size+'px '+config.font, fill: config.color});
+    if (!config.sampleColor) config.sampleColor = "#FFFFFF"
+    if (!config.sampleName) config.sampleName = "Char Name"
+    var text = game.add.text(0,0, config.sampleName, {font: config.size+'px '+config.font, fill: config.sampleColor});
     changeTextPosition(sprite,text, config);
+
     sprite.name = text;
     sprite.addChild(text);
-    this.makeDraggable(sprite,'name-box',['size','font','color','align','offset-x','offset-y'])
+    setNameBoxSampleColor(sprite);
+    this.makeDraggable(sprite,'name-box',['size','font','align','color','offset-x','offset-y','sampleName','sampleColor'])
   },
 
   loadMessageBox: function(config) {
@@ -391,21 +393,19 @@ var gameLoader = {
     this.spriteRefs[currentMenu+'message-box'] = sprite;
     sprite.config = config;
     sprite.component = 'message-box';
-
-    var textSample = "Lorem (color:#f593e6)ipsum(end) (color:red)dolor(end) sit amet, (italic)consectetur adipiscing elit(end), sed do (bold)eiusmod(end) tempor incididunt ut labore et dolore magna aliqua.";
+    if (!config.sample){
+      config.sample = "Lorem (color:#f593e6)ipsum(end) (color:red)dolor(end) sit amet, (italic)consectetur adipiscing elit(end), sed do (bold)eiusmod(end) tempor incididunt ut labore et dolore magna aliqua."; 
+    }
     var text = game.add.text(config['offset-x'],config['offset-y'], "", {font: config.size+'px '+config.font, fill: config.color});
     text.wordWrap = true;
     text.align = config.align;
     text.wordWrapWidth = config['text-width'];
     text.lineSpacing = config.lineSpacing ? config.lineSpacing : 0;
-    setTextWithStyle(textSample,text)
+    setTextWithStyle(config.sample,text)
     sprite.message = text;
     sprite.addChild(text);
-    sprite.sample = textSample;
-    this.makeDraggable(sprite,'message-box',['size','font','sfx','color','align','offset-x','offset-y','text-width','lineSpacing'],config.locked)
+    this.makeDraggable(sprite,'message-box',['size','sample','font','sfx','color','align','offset-x','offset-y','text-width','lineSpacing'],config.locked)
   },
-
-
 
   makeDraggable: function(sprite,name,otherProps,notDraggable,locked){
     sprite.inputEnabled = true;
@@ -537,6 +537,17 @@ function addBackgroundMusicTools(){
   $('#selectMenu').append(selectMenuItem);
 }
 
+function setNameBoxSampleColor(nameBox){
+  if (nameBox.config.tintStyle == 'box'){
+    nameBox.tint = colorToSigned24Bit(nameBox.config.sampleColor);
+    nameBox.name.fill = nameBox.config.color;
+  } else {
+    nameBox.tint = colorToSigned24Bit("#FFFFFF");
+    nameBox.name.fill = nameBox.config.sampleColor;
+  }
+}
+    
+
 function findFont(name) {
   for (var i = gui.config[menu].elements.length - 1; i >= 0; i--) {
     if (gui.config[menu].elements[i].font == name) return gui.config[menu].elements[i].type;
@@ -588,7 +599,10 @@ function createChoiceBox(choiceType,index,config) {
   if (chBox.animations.frameTotal == 2 || chBox.animations.frameTotal == 4){
     chBox.setFrames(1,0,1,0)
   }
-  var text = game.add.text(0,0, `${choiceType} ${index}`, {font: config.size+'px '+config.font, fill: config.color});
+  if (!config.sampleText){
+    config.sampleText = `${choiceType} ${index}`;
+  }
+  var text = game.add.text(0,0, config.sampleText, {font: config.size+'px '+config.font, fill: config.color});
   changeTextPosition(chBox,text, config)
   chBox.text = text;
   chBox.addChild(text);
@@ -775,6 +789,7 @@ function init() {
 
   game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
   game.preserveDrawingBuffer = true;
+
   game.state.add('gameLoader', gameLoader);
   
   if (loaded){
@@ -809,6 +824,7 @@ function init() {
       backgroundColor: "#000000"
     }
   }
+  
   $('#canvas-color').val(gui.config.general.backgroundColor);
   $('.colorpicker-component').colorpicker();
   $('#canvas-color').on('change',function(e){
