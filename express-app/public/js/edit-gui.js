@@ -192,14 +192,19 @@ var gameLoader = {
   preloadImage: function(id,fileName,callback){
     gui.assets.images[id] = {name:id,fileName:fileName};
     game.load.image(id, `assets/${gui.name}/${fileName}`);
-    game.load.onLoadComplete.addOnce(callback, this);
+    if (callback){
+      game.load.onLoadComplete.addOnce(callback, this);
+    }
     game.load.start();
   },
 
   preloadSpritesheet: function(id,fileName,w,h,callback){
     gui.assets.spritesheets[id] = {name:id,fileName:fileName,w:parseInt(w),h:parseInt(h)}
     game.load.spritesheet(id, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
-    game.load.onLoadComplete.addOnce(callback, this);
+    if (callback){
+      game.load.onLoadComplete.addOnce(callback, this);  
+    }
+    
     game.load.start();
   },
 
@@ -313,7 +318,7 @@ var gameLoader = {
       image.setFrames(1,0,1,0)
     }
     image.config = config;
-    this.makeDraggable(image,'button',['binding','slot','sfx'])
+    this.makeDraggable(image,'button',['binding','other-binding','slot','sfx'])
   },
 
   loadLabel: function(config) {
@@ -552,18 +557,6 @@ function findFont(name) {
   for (var i = gui.config[menu].elements.length - 1; i >= 0; i--) {
     if (gui.config[menu].elements[i].font == name) return gui.config[menu].elements[i].type;
   }
-
-  // if (gui.config.hud['name-box'] && gui.config.hud['name-box'].font == name) return 'name-box';
-  // if (gui.config.hud['message-box'] && gui.config.hud['message-box'].font == name) return 'message-box';
-  // if (gui.config.hud['choice'] && gui.config.hud['choice'].font == name) return 'choice';
-  // if (gui.config.hud['interrupt'] && gui.config.hud['interrupt'].font == name) return 'interrupt';
-  // for (var menu in gui.config ) {
-  //   if (gui.config[menu].labels) {
-  //     for (var i = gui.config[menu].labels.length - 1; i >= 0; i--) {
-  //       if (gui.config[menu].labels[i].font == name) return 'label';
-  //     }
-  //   }
-  // }
 }
 
 function findAudio(name) {
@@ -624,34 +617,80 @@ function changeTextPosition(sprite,text, config) {
     }
 }
 
+function addMenuToSelectionList(menuName){
+  const selectMenuItem = `<a class="dropdown-item" id="${menuName}Selector" href="#" onclick="changeMenu('${menuName}');">${menuName}</a>`
+  $("#menuSelectionList").append(selectMenuItem);
+}
+
+function addMenu(){
+  //create random name
+  const menuName = "menu"+Date.now()
+  //add new menu to config
+  gui.config.menus[menuName] = []
+  addMenuToSelectionList(menuName)
+  changeMenu(menuName)
+}
+
+function changeMenuName(){
+  const newName = "asdf"
+  gui.config.menus[newName] = gui.config.menus[currentMenu] 
+  delete gui.config.menus[currentMenu] 
+  $(`#${currentMenu}Selector`).html(newName)
+  $(`#${currentMenu}Selector`).attr("onclick",`changeMenu('${newName}')`);
+  $(`#${currentMenu}Selector`).prop('id',`#${newName}Selector`)
+  // TODO change menu title
+}
+
+window.clearMenu = function(){
+  $('#confirm-button').unbind('click');
+  $('#confirm-button').click(function(){
+      // console.log("Removing contents of "+menu);
+      if (currentMenu!='hud'){
+        gui.config.menus[currentMenu] = []  
+      } else {
+        gui.config.hud = []
+      }
+      
+      // reload menu
+      changeMenu(currentMenu);
+  });
+  $("#confirm-contents").html(`This action will remove all contents in the ${currentMenu} menu, but will not delete the menu itself.`);
+  $("#confirm-modal").modal('show');
+}
+
+window.deleteMenu = function(){
+  $('#confirm-button').unbind('click');
+  $('#confirm-button').click(function(){
+      // remove from config
+    delete gui.config.menus[currentMenu]
+    // remove from selection list
+    $(`#${currentMenu}Selector`).remove()
+    changeMenu('general');
+  });
+  $("#confirm-contents").html(`This action will delete the ${currentMenu} menu and all its contents.`);
+  $("#confirm-modal").modal('show');
+}
+
 function changeMenu(menu){
   if (menu!=currentMenu){
-
     $(`.general-help`).hide();
-    $(".menu-section").removeClass('active');
-    $(".menu-title").html($(`.menu-${menu} > a`).html());
-    $(`.menu-${menu}`).addClass('active');
     $(".asset-add").hide();
     $(`.asset-${menu}`).show();
     $('.tools').hide()
     $(`.background-music`).hide();
     // $("#fonts-container").hide();
     $(".canvas-container").hide();
-    $('#selectMenu').html("")
+    // $('#selectMenu').html("")
     // $("#audio-container").hide();
     currentMenu = menu;
     selected = null;
     if(menu=="general"){
       $(`.menu-creation-toolbox`).hide();
       $(`.general-help`).show();
-      $(`#${menu}-container`).show();
+      $(`#general-container`).show();
       
       
     } else {
-      if (gui.config[menu].inactive){
-        $(`#${menu}-exists`).prop('checked',true);
-        toggleMenu(menu);
-      }
       $(`.menu-creation-toolbox`).show();
       if (menu!="loader") $(".asset-all").show();     
 
@@ -677,32 +716,38 @@ function getThumbnail() {
   return canvas.toDataURL("image/jpeg");
 }
 
+async function saveGUI(){
+  return new Promise(resolve => {
+    $('#btn-save-gui').html('Saving...');
+    try {
+      var preview = getThumbnail();
+      // var preview = game.canvas.toDataURL();
+    } catch(e) {
+      console.log(e)
+    }
+    $.ajax({
+          url: `/save_gui/${gui.name}` ,
+          data: {gui:JSON.stringify(gui),preview:preview},
+          dataType: 'json',
+          type: 'POST',
+          // processData: false,
+          // contentType: false,
+          success: function (dataR) {
+            $('#btn-save-gui').html('Saved!');
+            setTimeout(function() {
+              $('#btn-save-gui').html('<i class="fas fa-save"></i> Save');
+            }, 2000);
+            resolve()
+          },
+          error: function (xhr, status, error) {
+              console.log('Error: ' + error.message);
+          }
+      });
+  })
+}
+
 $('#btn-save-gui').on('click',function(e){
-  try {
-    var preview = getThumbnail();
-    // var preview = game.canvas.toDataURL();
-  } catch(e) {
-    console.log(e)
-  }
-  
-  $('#btn-save-gui').html('Saving...');
-  $.ajax({
-        url: `/save_gui/${gui.name}` ,
-        data: {gui:JSON.stringify(gui),preview:preview},
-        dataType: 'json',
-        type: 'POST',
-        // processData: false,
-        // contentType: false,
-        success: function (dataR) {
-          $('#btn-save-gui').html('Saved!');
-          setTimeout(function() {
-            $('#btn-save-gui').html('<i class="fas fa-save"></i> Save');
-  }, 2000);
-        },
-        error: function (xhr, status, error) {
-            console.log('Error: ' + error.message);
-        }
-    });
+  saveGUI();
 });
 
 function genAssetId(asset) {
@@ -717,15 +762,14 @@ function genAssetId(asset) {
 
 
 function init() {
-  var loaded = false;
   if (gui.isNew){
     gui.assetCounter = 0;
     gui.config = {
-      loader: {inactive:true},
-      main: {inactive:true},
-      settings: {inactive:true},
-      hud: {inactive:true},
-      saveload: {inactive:true}
+      hud: {},
+      menus: {
+        loader: {},
+        main: {},  
+      }
     }
     gui.assets = {
       images: {},
@@ -734,55 +778,46 @@ function init() {
       audio: {},
     }
     delete gui.isNew;
-  } else {
-    // gui = JSON.parse(gui)
-    // convert from old categorized way to new way
-    convertGUIElementsToList();
-    
-
-    loaded = true;
+  } 
+  // add menus to menu selection list, hud is already added
+  for (menuName in gui.config.menus){
+    addMenuToSelectionList(menuName)
   }
-  for (menu in gui.config){
-    if (Object.keys(gui.config[menu]).length>0 && !gui.config[menu].inactive){
-      $(`#${menu}-exists`).prop('checked',true);
-      $(`.menu-${menu}`).show();
-    }
-  }
-  window.toggleMenu = function(menu){
-    $(`.menu-${menu}`).toggle();
-    gui.config[menu].inactive=!gui.config[menu].inactive;
-  }
+  // window.toggleMenu = function(menu){
+  //   $(`.menu-${menu}`).toggle();
+  //   gui.config[menu].inactive=!gui.config[menu].inactive;
+  // }
   $('#btn-generate-gui').click(function(){
     $('#generating-modal').find('.fa-cog').show();
     $('#generating-modal').find('p').hide();
     $('#open-dir').hide()
     $('#generating-modal').modal('show');
     $.ajax({
-          url: `/generate_gui/${gui.name}` ,
-          type: 'GET',
-          success: function (dataR) {
-            $('#generating-modal').find('.fa-cog').hide();
-            $('#generating-modal').find('p').show();
-            $('#open-dir').attr('target',name)
-            $('#open-dir').show()
-          },
-          error: function (xhr, status, error) {
-              console.log('Error: ' + error.message);
-          }
-      });
+      url: `/generate_gui/${gui.name}` ,
+      type: 'GET',
+      success: function (dataR) {
+        $('#generating-modal').find('.fa-cog').hide();
+        $('#generating-modal').find('p').show();
+        $('#open-dir').attr('target',name)
+        $('#open-dir').show()
+      },
+      error: function (xhr, status, error) {
+          console.log('Error: ' + error.message);
+      }
+  });
   });
 
   $('#open-dir').click(function (argument) {
     $.ajax({
-          url: `/open_dir/${gui.name}` ,
-          type: 'GET',
-          success: function (dataR) {
-            console.log(dataR)
-          },
-          error: function (xhr, status, error) {
-              console.log('Error: ' + error.message);
-          }
-        });
+      url: `/open_dir/${gui.name}` ,
+      type: 'GET',
+      success: function (dataR) {
+        console.log(dataR)
+      },
+      error: function (xhr, status, error) {
+          console.log('Error: ' + error.message);
+      }
+    });
   })
 
   
@@ -792,17 +827,15 @@ function init() {
 
   game.state.add('gameLoader', gameLoader);
   
-  if (loaded){
-    game.state.add('preloader', preloader);
-    for (var key in gui.assets.fonts) {
-    // for (var i = gui.assets.fonts.length - 1; i >= 0; i--) {
-      loadFont(key,gui.assets.fonts[key].fileName);
-    }
-    for (var key in gui.assets.audio) {
-      loadAudio(key,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
-    }
-    game.state.start('preloader')
+  game.state.add('preloader', preloader);
+  // load fonts and assets to the html lists
+  for (var key in gui.assets.fonts) {
+    loadFont(key,gui.assets.fonts[key].fileName);
   }
+  for (var key in gui.assets.audio) {
+    loadAudio(key,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
+  }
+  game.state.start('preloader')
 
   if (!gui.config.general){
     gui.config.general = {
@@ -854,27 +887,7 @@ function init() {
   
 }
 
-window.clearMenu = function(menu){
-  if (!menu) {
-    menu=currentMenu;
-  }
-  $('#confirm-button').unbind('click');
 
-
-  $('#confirm-button').click(function(){
-      // console.log("Removing contents of "+menu);
-      gui.config[menu] = {}
-      if ($(`#${menu}-exists`).prop('checked')){
-        $(`#${menu}-exists`).prop('checked',false);
-        toggleMenu(menu);
-        changeMenu('general');
-      }
-  });
-
-  $("#confirm-menu").html(menu);
-  $("#confirm-modal").modal('show');
-
-}
 
 function convertGUIElementsToList(){
   var menus = ['loader','main','settings','hud','saveload']
@@ -919,15 +932,8 @@ function convertGUIElementsToList(){
 
 // Audio
 
-window.openAudioModal = function(){
-  $("#audio-modal").modal('show');
-}
 
-// Fonts
 
-window.openFontsModal = function(){
-  $("#fonts-modal").modal('show');
-}
 
 window.changeFontStyle = function(style){
   if (style=="normal"){
@@ -949,7 +955,7 @@ $('.font-text').on('input',function(e){
 })
 
 // current state
-var lastUpload = null;
+
 var selected = null;
 var currentMenu = null;
 var audioSample = null;

@@ -1,142 +1,4 @@
-$('.custom-file-input').on('change',function(e){
-    if (e.target.files && e.target.files[0]) {
-      var fileName = e.target.files[0].name;
-      lastUpload = e.target.files[0];
-      $(this).next('.custom-file-label').html(fileName);
-      if ($(this).attr('id')=='font-input'){
-        var fontName = fileName.split(".")[0];
-        $('#font-name').val(fontName);
-        return
-      } 
-      var modal = $(this).closest('.modal-body');
-      var reader = new FileReader();
 
-      reader.onload = function (file) {
-        console.log("file read")
-        if (modal.find('.img-preview').length){
-          var image = new Image();
-          image.src = file.target.result;
-          modal.find('.img-preview').attr('src', image.src);
-          image.onload = function() {
-            if (modal.find('.asset-width').length){
-              modal.find('.asset-width').val(this.width)
-              modal.find('.asset-height').val(this.height)
-            }
-          };
-        } 
-        if (modal.find('.audio-preview').length){
-          modal.find('.audio-preview').attr('src',file.target.result);
-          modal.find('.audio-preview').show();
-          $("#audio-name").val(fileName.split(".")[0])
-        }
-      }
-      console.log("reading ")
-      console.log(lastUpload)
-      reader.readAsDataURL(lastUpload);
-    }
-})
-
-function loadFont(name,fileName) {
-  $("<style>")
-    .prop("type", "text/css")
-    .html(`\
-      @font-face {\
-          font-family: '${name}';\
-          src: url('/assets/${gui.name}/${fileName}');\
-          src: url('/assets/${gui.name}/${fileName}').format('truetype');\
-          font-weight: normal;\
-          font-style: normal;\
-      }`)
-    .appendTo("head");
-  let sampletText = $('.font-text').val();
-  const fontId = name.replace(/ /g,'')
-  let row = $(`<tr class="font-${fontId}">
-                <th class="align-middle" scope="row">${name}</th>
-                <td class="align-middle text-sample" >${sampletText}</td>
-                <td class="action-col"><button class="btn btn-icon btn-outline-light remove-font"><i class="fas fa-trash-alt"></i></button></td>
-              </tr>`);
-  
-  row.find('.text-sample').css('font-family',name);
-  row.find('.remove-font').click(function (argument) {
-    var usedIn = findFont(name);
-    if (usedIn) {
-      var p = usedIn == 'label' ? "a" : "the";
-      $("#error-modal").find(".modal-body").html(`<p>The font can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
-      $("#error-modal").modal('show');
-    } else {
-      $(`.font-${fontId}`).remove();
-      delete gui.assets.fonts[name]
-    }
-  });
-  $("#fonts-table").append(row);
-  row.find('.font-text').on('input',function(e){
-    var val = $(this).val();
-    $(this).siblings('h4').html(val);
-  })
-  $(".font-select").append(`<option class="font-${name}">${name}</option>`);
-}
-
-
-
-function loadAudio(name,type,fileName) {
-  let row = $(`<tr class="audio-${name}">
-                <th class="align-middle" scope="row">${name}</th>
-                <td class="align-middle" >${type}</td>
-                <td class="action-col">
-                  <button class="btn btn-icon btn-outline-light play-audio"><i class="fas fa-play"></i></button>
-                  <button class="btn btn-icon btn-outline-light remove-audio"><i class="fas fa-trash-alt"></i></button>
-                </td>
-              </tr>`);
-
-  // var temp = $(".audio-template").clone();
-  // temp.removeClass('audio-template');
-  // temp.find('.card-header > .audio-name').html(name);
-  // temp.find('.card-header > .badge').html(type);
-  // temp.find('.audio-sample').attr('src',`/assets/${gui.name}/${fileName}`);
-  $("#audio-table").append(row)
-  row.find('.remove-audio').click(function (argument) {
-    var usedIn = findAudio(name);
-    if (usedIn) {
-      var p = usedIn == 'button' ? "a" : "the";
-      $("#error-modal").find(".modal-body").html(`<p>The audio can't be removed because it's still being used by ${p} ${usedIn} component.</p>`);
-      $("#error-modal").modal('show');
-    } else {
-      $(`.audio-${name}`).remove();
-      delete gui.assets.audio[name];
-    }
-  });
-  row.find('.play-audio').click(function (argument) {
-    playAudioSample(name,$(this))
-  })
-  // temp.show();
-  $(`.audio-${type}-select`).append(`<option class="audio-${name}" value="${name}">${name}</option>`);
-}
-
-function playAudioSample(name,btn){
-  if (btn.find("i").hasClass("fa-play")){
-    // play audio
-    stopAudioSample();
-    audioSample = game.add.audio(name);
-    audioSample.name = name;
-    audioSample.onStop.addOnce = ()=>{
-      stopAudioSample();
-    }
-    audioSample.play();
-  } else {
-    stopAudioSample();
-  }
-  btn.find("i").toggleClass("fa-play");
-  btn.find("i").toggleClass("fa-stop");
-}
-
-function stopAudioSample(){
-  if (audioSample){
-    $(`.audio-${audioSample.name}`).find(".play-audio i").removeClass("fa-play");
-    $(`.audio-${audioSample.name}`).find(".play-audio i").addClass("fa-stop");
-    audioSample.destroy();
-    audioSample = null;
-  }
-}
 
 var listComponents = {
   slider: ['x','y','width','height','binding'],
@@ -199,22 +61,7 @@ $('.upload-message-box-component').click(function(e){
   addComponent('message-box',['x','y','sfx','size','lineSpacing','font','color','align','offset-x','offset-y','text-width'])
 })
 
-$('.upload-font').click(function(e){
-  var name = $("#font-name").val();
-  uploadAsset(lastUpload,name,function(fileName){
-    loadFont(name,fileName)
-    gameLoader.addFont(name,fileName)
-  });
-})
 
-$('.upload-audio').click(function(e){
-  var name = $("#audio-name").val();
-  var audioType = $('#audio-type input:checked').attr('opt');
-  uploadAsset(lastUpload,name,function(fileName){
-    loadAudio(name,audioType,fileName)
-    gameLoader.addAudio(name,audioType,fileName)
-  });
-})
 
 $('#button-start-binding').on('change',function(e){
   var val = $("#button-start-binding").val();
@@ -241,6 +88,8 @@ $('.modal').on('shown.bs.modal', function (e) {
   $(this).find('.img-preview').attr('src', thumbnail);
   $('.custom-file-input').val('')
   $(this).find('.custom-file-label').html("Choose file");
+  $(this).find('.reset-input').val('');
+
   if ($(this).find('.thumbnail-prop').length && gui.config.saveload['save-slots'].length){
     $(this).find('#save-slot-start-thumbnail-x').val(gui.config.saveload['save-slots'][0]['thumbnail-x'])
     $(this).find('#save-slot-start-thumbnail-y').val(gui.config.saveload['save-slots'][0]['thumbnail-y'])
@@ -280,24 +129,7 @@ $('#ctc-start-style input:radio').on('click',function(e){
   $("#ctc-spritesheet-options").toggle($(this).attr('opt') == 'spritesheet')
 });
 
-function uploadAsset(file, asset, callback){
-  var data = new FormData();
-  data.append('file', file);
-  $.ajax({
-        url: `/upload_asset/${gui.name}/${currentMenu}${asset}` ,
-        data: data,
-        dataType: 'json',
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        success: function (dataR) {
-            callback(dataR.fileName)
-        },
-        error: function (xhr, status, error) {
-            console.log('Error: ' + error.message);
-        }
-    });
-}
+
 
 
 
@@ -315,7 +147,7 @@ function addComponent(name,propNames,extra) {
       props[key] = extra[key];
     }
   }
-  uploadAsset(lastUpload,props.id,function(fileName){
-    gameLoader.addComponent(name,props,fileName)
-  });
+  // uploadAsset(lastUpload,props.id,function(fileName){
+  //   gameLoader.addComponent(name,props,fileName)
+  // });
 }

@@ -1,0 +1,173 @@
+<div class="modal" id="audio-asset-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Audio</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>You can add background music or sound effects for the different elements of the GUI. For example, when the player presses a button, or a typing sound when displaying text on the message box.</p>
+        <fieldset>
+          <legend>Audio file (.ogg, .wav, .mp3):</legend>
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="audio-input">
+                <label class="custom-file-label" for="audio-input">Choose file</label>
+              </div>
+            </div>
+          </div>
+          <audio controls class="audio-preview collapse" src="">
+            Your browser does not support the
+            <code>audio</code> element.
+          </audio>
+          <legend>Audio Name</legend>
+          <small class="form-text text-muted">The name will be used as key to refer to this asset inside the game. Make sure it's unique across all the assets.</small>
+          <div class="form-group">
+            <input class="form-control reset-input" id="audio-name" oninput="checkUniqueName(this,'audio')">
+          </div>
+          <legend>Audio Type</legend>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="audioType" id="audioTypeMusic" value="music">
+            <label class="form-check-label" for="audioTypeMusic">
+              Music
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="audioType" id="audioTypeSFX" value="sfx" checked>
+            <label class="form-check-label" for="audioTypeSFX">
+              Sound Effect
+            </label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary upload-asset" onclick="uploadAudio()" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="font-asset-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Font</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>The fonts are .ttf files that will give the style to the text on the game. You can download free fonts from <a href="https://fonts.google.com/">Google Fonts</a> or other font pages like <a href="https://www.fontsquirrel.com/">Font Squirrel</a>.</p>
+        <fieldset>
+          <legend>Font file (.ttf):</legend>
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="font-input">
+                <label class="custom-file-label" for="font-input">Choose file</label>
+              </div>
+            </div>
+          </div>
+          <legend>Font Name</legend>
+          <small class="form-text text-muted">The name will be used as key to refer to this font inside the game.</small>
+          <div class="form-group">
+            <input class="form-control reset-input" id="font-name" oninput="checkUniqueName(this,'fonts')">
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary upload-asset" data-dismiss="modal" onclick="uploadFont()">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="image-asset-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Image</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Images can be used for backgrounds, static buttons, decorations, etc.</p>
+        <fieldset>
+           <%- include('../components/partials/upload-image', {id:"image-asset"}); %>
+          <legend>Asset Name</legend>
+          <small class="form-text text-muted">The name will be used as key to refer to this asset inside the game. Make sure it's unique across all the assets.</small>
+          <div class="form-group">
+            <input class="form-control reset-input" id="image-name" oninput="checkUniqueName(this,'images')">
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary upload-asset" onclick="uploadImage()" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="spritesheet-asset-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Spritesheet</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>A spritesheet is a single image that contains many frames in it. These frames can be part of an animation or represent states of the same image. For example: A button can have two or three frames so it will look different when it's clicked.</p>
+        <fieldset>
+          <%- include('../components/partials/upload-image', {id:"spritesheet-asset"}); %>
+          <legend>Frame size:</legend>
+          <small class="form-text text-muted">The width and height of each frame in the image.</small>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Width</span>
+              </div>
+              <input type="number" class="form-control reset-input" id="spritesheet-width">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Height</span>
+              </div>
+              <input type="number" class="form-control reset-input" id="spritesheet-height">
+            </div>
+          </div>
+          <legend>Asset Name</legend>
+          <small class="form-text text-muted">The name will be used as key to refer to this asset inside the game. Make sure it's unique across all the assets.</small>
+          <div class="form-group">
+            <input class="form-control reset-input" id="spritesheet-name" oninput="checkUniqueName(this,'spritesheets')">
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary upload-asset" onclick="uploadSpritesheet()" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="image-preview-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="image-preview-img" class="card-img-top" src="#">
+      </div>
+    </div>
+  </div>
+</div>
