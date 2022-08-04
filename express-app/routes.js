@@ -75,7 +75,29 @@ router.get("/edit", function(req, res) {
       let guis = (err) ? []  : JSON.parse(data);
       let gui = guis.find(x => x.name === name);
       if (!gui) {
-        gui = {name:name, resolution: [parseInt(req.query.w),parseInt(req.query.h)], isNew:true};
+        // new GUI
+        gui = {
+          name: name,          
+          metadata: {
+            // used to save the WIP status of the GUI
+            componentCounter: 0,
+            resolution: {w:parseInt(req.query.w), h:parseInt(req.query.h) },
+          },
+          config: {
+            // mandatory elements = hud, main menu and loader
+            hud: [],
+            menus: {
+              loader: [],
+              main: [],  
+            }
+          },
+          assets: {
+            images: {},
+            spritesheets: {},
+            fonts: {},
+            audio: {},
+          }
+        };
         res.render("edit", { title: "RenJS - "+name, name: name, gui: JSON.stringify(gui) });
       } else {
         fs.readFile(path.join(guisDir,`${name}/gui_config.json`), (err, data) => {

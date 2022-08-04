@@ -85,16 +85,21 @@ var gameLoader = {
 
   create: function () {
     game.stage.backgroundColor = gui.config.general.backgroundColor;
-
-    if (gui.config[currentMenu].elements) {
-      for (var i = 0; i < gui.config[currentMenu].elements.length; i++) {
-        this.loadComponent(gui.config[currentMenu].elements[i].type,gui.config[currentMenu].elements[i]);
-      }
+    for (const component of currentMenuConfig){
+      // add it to the toolbox
+      
+      // add it to the canvas
+      this.loadComponent(component.type,component);
     }
+    // if (gui.config[currentMenu].elements) {
+    //   for (var i = 0; i < gui.config[currentMenu].elements.length; i++) {
+    //     this.loadComponent(gui.config[currentMenu].elements[i].type,gui.config[currentMenu].elements[i]);
+    //   }
+    // }
     
-    if (gui.config[currentMenu].backgroundMusic){
-      this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
-    }
+    // if (gui.config[currentMenu].backgroundMusic){
+    //   this.loadBackgroundMusic(gui.config[currentMenu].backgroundMusic);
+    // }
   },
 
   render: function(){
@@ -128,10 +133,6 @@ var gameLoader = {
   },
 
   addAudio: function(name,audioType,fileName) {
-    if(!gui.assets.audio) {
-      gui.assets.audio = {};
-    }
-    gui.assets.audio[name] = {fileName:fileName,name:name,type:audioType};
     this.preloadAudio(name,fileName);
   },
 
@@ -190,7 +191,6 @@ var gameLoader = {
   },
 
   preloadImage: function(id,fileName,callback){
-    gui.assets.images[id] = {name:id,fileName:fileName};
     game.load.image(id, `assets/${gui.name}/${fileName}`);
     if (callback){
       game.load.onLoadComplete.addOnce(callback, this);
@@ -199,7 +199,6 @@ var gameLoader = {
   },
 
   preloadSpritesheet: function(id,fileName,w,h,callback){
-    gui.assets.spritesheets[id] = {name:id,fileName:fileName,w:parseInt(w),h:parseInt(h)}
     game.load.spritesheet(id, `assets/${gui.name}/${fileName}`,parseInt(w),parseInt(h));
     if (callback){
       game.load.onLoadComplete.addOnce(callback, this);  
@@ -474,7 +473,6 @@ var gameLoader = {
   },
 
   addFont: function (name, fileName) {
-    gui.assets.fonts[name] = {fileName:fileName,name:name};
     game.add.text(gui.resolution[0], gui.resolution[1], name, {font: '42px '+name, fill: "#ffffff"});
   },
 
@@ -617,348 +615,10 @@ function changeTextPosition(sprite,text, config) {
     }
 }
 
-function addMenuToSelectionList(menuName){
-  const selectMenuItem = `<a class="dropdown-item" id="${menuName}Selector" href="#" onclick="changeMenu('${menuName}');">${menuName}</a>`
-  $("#menuSelectionList").append(selectMenuItem);
-}
 
-function addMenu(){
-  //create random name
-  const menuName = "menu"+Date.now()
-  //add new menu to config
-  gui.config.menus[menuName] = []
-  addMenuToSelectionList(menuName)
-  changeMenu(menuName)
-}
-
-function changeMenuName(){
-  const newName = "asdf"
-  gui.config.menus[newName] = gui.config.menus[currentMenu] 
-  delete gui.config.menus[currentMenu] 
-  $(`#${currentMenu}Selector`).html(newName)
-  $(`#${currentMenu}Selector`).attr("onclick",`changeMenu('${newName}')`);
-  $(`#${currentMenu}Selector`).prop('id',`#${newName}Selector`)
-  // TODO change menu title
-}
-
-window.clearMenu = function(){
-  $('#confirm-button').unbind('click');
-  $('#confirm-button').click(function(){
-      // console.log("Removing contents of "+menu);
-      if (currentMenu!='hud'){
-        gui.config.menus[currentMenu] = []  
-      } else {
-        gui.config.hud = []
-      }
-      
-      // reload menu
-      changeMenu(currentMenu);
-  });
-  $("#confirm-contents").html(`This action will remove all contents in the ${currentMenu} menu, but will not delete the menu itself.`);
-  $("#confirm-modal").modal('show');
-}
-
-window.deleteMenu = function(){
-  $('#confirm-button').unbind('click');
-  $('#confirm-button').click(function(){
-      // remove from config
-    delete gui.config.menus[currentMenu]
-    // remove from selection list
-    $(`#${currentMenu}Selector`).remove()
-    changeMenu('general');
-  });
-  $("#confirm-contents").html(`This action will delete the ${currentMenu} menu and all its contents.`);
-  $("#confirm-modal").modal('show');
-}
-
-function changeMenu(menu){
-  if (menu!=currentMenu){
-    $(`.general-help`).hide();
-    $(".asset-add").hide();
-    $(`.asset-${menu}`).show();
-    $('.tools').hide()
-    $(`.background-music`).hide();
-    // $("#fonts-container").hide();
-    $(".canvas-container").hide();
-    // $('#selectMenu').html("")
-    // $("#audio-container").hide();
-    currentMenu = menu;
-    selected = null;
-    if(menu=="general"){
-      $(`.menu-creation-toolbox`).hide();
-      $(`.general-help`).show();
-      $(`#general-container`).show();
-      
-      
-    } else {
-      $(`.menu-creation-toolbox`).show();
-      if (menu!="loader") $(".asset-all").show();     
-
-      // if (gui.config[menu].backgroundMusic){
-      //   $(`#background-music`).val(gui.config[menu].backgroundMusic);
-      // } else {
-      //   $(`#background-music`).val('none');
-      // }
-      
-      // $(`.background-music-${menu}`).show();
-      $("#canvas-container").show();
-      game.state.start('gameLoader');
-    }
-  }
-}
-
-function getThumbnail() {
-  var canvas = document.createElement("canvas");
-  let maxSize = 350;
-  canvas.width = maxSize;
-  canvas.height = (game.canvas.height * maxSize)/game.canvas.width;
-  canvas.getContext("2d").drawImage(game.canvas, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg");
-}
-
-async function saveGUI(){
-  return new Promise(resolve => {
-    $('#btn-save-gui').html('Saving...');
-    try {
-      var preview = getThumbnail();
-      // var preview = game.canvas.toDataURL();
-    } catch(e) {
-      console.log(e)
-    }
-    $.ajax({
-          url: `/save_gui/${gui.name}` ,
-          data: {gui:JSON.stringify(gui),preview:preview},
-          dataType: 'json',
-          type: 'POST',
-          // processData: false,
-          // contentType: false,
-          success: function (dataR) {
-            $('#btn-save-gui').html('Saved!');
-            setTimeout(function() {
-              $('#btn-save-gui').html('<i class="fas fa-save"></i> Save');
-            }, 2000);
-            resolve()
-          },
-          error: function (xhr, status, error) {
-              console.log('Error: ' + error.message);
-          }
-      });
-  })
-}
-
-$('#btn-save-gui').on('click',function(e){
-  saveGUI();
-});
 
 function genAssetId(asset) {
-    gui.assetCounter++;
-    return asset+gui.assetCounter;
-  }
-
-// -------------------------------------------------------------------------
-// Init
-// -------------------------------------------------------------------------
-
-
-
-function init() {
-  if (gui.isNew){
-    gui.assetCounter = 0;
-    gui.config = {
-      hud: {},
-      menus: {
-        loader: {},
-        main: {},  
-      }
-    }
-    gui.assets = {
-      images: {},
-      spritesheets: {},
-      fonts: {},
-      audio: {},
-    }
-    delete gui.isNew;
-  } 
-  // add menus to menu selection list, hud is already added
-  for (menuName in gui.config.menus){
-    addMenuToSelectionList(menuName)
-  }
-  // window.toggleMenu = function(menu){
-  //   $(`.menu-${menu}`).toggle();
-  //   gui.config[menu].inactive=!gui.config[menu].inactive;
-  // }
-  $('#btn-generate-gui').click(function(){
-    $('#generating-modal').find('.fa-cog').show();
-    $('#generating-modal').find('p').hide();
-    $('#open-dir').hide()
-    $('#generating-modal').modal('show');
-    $.ajax({
-      url: `/generate_gui/${gui.name}` ,
-      type: 'GET',
-      success: function (dataR) {
-        $('#generating-modal').find('.fa-cog').hide();
-        $('#generating-modal').find('p').show();
-        $('#open-dir').attr('target',name)
-        $('#open-dir').show()
-      },
-      error: function (xhr, status, error) {
-          console.log('Error: ' + error.message);
-      }
-  });
-  });
-
-  $('#open-dir').click(function (argument) {
-    $.ajax({
-      url: `/open_dir/${gui.name}` ,
-      type: 'GET',
-      success: function (dataR) {
-        console.log(dataR)
-      },
-      error: function (xhr, status, error) {
-          console.log('Error: ' + error.message);
-      }
-    });
-  })
-
-  
-
-  game = new Phaser.Game(gui.resolution[0], gui.resolution[1], Phaser.AUTO, "preload-canvas");
-  game.preserveDrawingBuffer = true;
-
-  game.state.add('gameLoader', gameLoader);
-  
-  game.state.add('preloader', preloader);
-  // load fonts and assets to the html lists
-  for (var key in gui.assets.fonts) {
-    loadFont(key,gui.assets.fonts[key].fileName);
-  }
-  for (var key in gui.assets.audio) {
-    loadAudio(key,gui.assets.audio[key].type,gui.assets.audio[key].fileName);
-  }
-  game.state.start('preloader')
-
-  if (!gui.config.general){
-    gui.config.general = {
-      transitions: {
-        defaults: {
-          characters: "FADE",
-          backgrounds: "FADE",
-          cgs: "FADE",
-          music: "FADE",
-        },
-        say: "CUT",
-        visualChoices: "FADE",
-        textChoices: "CUT",
-        menus: "FADE",
-        skippable: false
-      },
-      fadetime : 750,
-      logChoices: true,
-      backgroundColor: "#000000"
-    }
-  }
-  
-  $('#canvas-color').val(gui.config.general.backgroundColor);
-  $('.colorpicker-component').colorpicker();
-  $('#canvas-color').on('change',function(e){
-    gui.config.general.backgroundColor = $(this).val();
-    game.stage.backgroundColor = $(this).val();
-  });
-
-  $('#logChoicesInput').prop('checked',gui.config.general.logChoices);
-  $('#logChoicesInput').on('change',function() {
-    gui.config.general.logChoices = $(this).is(':checked');
-  });
-
-  console.log($(".transition-select[target='menus'")  )
-
-  $(".transition-select[target='menus'").val(gui.config.general.transitions.menus);
-  $(".transition-select[target='visualChoices'").val(gui.config.general.transitions.visualChoices);
-  $(".transition-select[target='textChoices'").val(gui.config.general.transitions.textChoices);
-
-  $('.transition-select').on('change',function(e){
-    var target = $(this).attr('target')
-    gui.config.general.transitions[target] = $(this).val();
-  });
-
-
-  $('[data-toggle="tooltip"]').tooltip()
-  changeMenu('general');
-  
+  gui.assetCounter++;
+  return asset+gui.assetCounter;
 }
 
-
-
-function convertGUIElementsToList(){
-  var menus = ['loader','main','settings','hud','saveload']
-  for (const menu of menus){
-    if (!gui.config[menu].elements){
-      gui.config[menu].elements = [];
-    }
-    // if background present, convert to normal image
-    if (gui.config[menu].background){
-      gui.config[menu].background.type = 'image';
-      gui.config[menu].elements.push(gui.config[menu].background);
-      delete gui.config[menu].background
-    }
-    var singleComponents = ['choice', 'interrupt','message-box','ctc','name-box','loading-bar']
-    for (const component of singleComponents){
-      if (component in gui.config[menu]){
-        // add type to component configuration
-        gui.config[menu][component].type = component;
-        // add component to elements list
-        gui.config[menu].elements.push(gui.config[menu][component]);
-        // remove from main menu configuration
-        delete gui.config[menu][component];
-      }
-    }
-
-    var listComponents = ['button','slider','label','save-slot','image','animation']
-    for (const component of listComponents){
-      const list = component+'s';
-      if (list in gui.config[menu]) {
-        for (var i = 0; i < gui.config[menu][list].length; i++) {
-          gui.config[menu][list][i].type = component;
-          gui.config[menu].elements.push(gui.config[menu][list][i]);
-        }
-        // remove from main menu configuration
-        delete gui.config[menu][list];
-      }
-    }
-    // console.log(menu)
-    // console.log(gui.config[menu])
-  }
-}
-
-// Audio
-
-
-
-
-window.changeFontStyle = function(style){
-  if (style=="normal"){
-    $('.text-sample').css("font-style","normal");
-    $('.text-sample').css("font-weight","normal");
-  };
-  if (style=="bold"){
-    $('.text-sample').css("font-style","normal");
-    $('.text-sample').css("font-weight","bold");
-  }
-  if (style=="italic"){
-    $('.text-sample').css("font-style","italic");
-    $('.text-sample').css("font-weight","normal");
-  }
-}
-
-$('.font-text').on('input',function(e){
-  $(".text-sample").html($(this).val());
-})
-
-// current state
-
-var selected = null;
-var currentMenu = null;
-var audioSample = null;
-// phaser game object
-var game = null;
-init();

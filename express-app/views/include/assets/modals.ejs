@@ -130,7 +130,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Width</span>
               </div>
-              <input type="number" class="form-control reset-input" id="spritesheet-width">
+              <input type="number" class="form-control reset-input asset-width" id="spritesheet-width">
             </div>
           </div>
           <div class="form-group">
@@ -138,7 +138,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Height</span>
               </div>
-              <input type="number" class="form-control reset-input" id="spritesheet-height">
+              <input type="number" class="form-control reset-input asset-height" id="spritesheet-height">
             </div>
           </div>
           <legend>Asset Name</legend>
@@ -167,6 +167,84 @@
       </div>
       <div class="modal-body">
         <img id="image-preview-img" class="card-img-top" src="#">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="change-menu-name-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Change Menu Name</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <fieldset>
+          <legend>Menu Name</legend>
+          <small class="form-text text-muted">This name has to be unique across all the menus.</small>
+          <div class="form-group">
+            <input class="form-control reset-input" id="new-menu-name" oninput="checkUniqueMenuName()">
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary change-menu-name" onclick="changeMenuName()" data-dismiss="modal">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="confirm-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Are you sure?</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-contents"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="confirm-button" data-dismiss="modal">Confirm</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="error-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">There is a problem!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="generating-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Generating!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+        <p>Your GUI was successfully generated and can be found in the build directory.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id='open-dir'>Open Directory</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
